@@ -9,7 +9,7 @@ INSERT INTO Utilisateur (pseudo, mail, mPasse, dInscription) VALUES
 ('melomane92', 'melomane92@mail.com', 'pass1', '2023-01-12'),
 ('rockfan', 'rockfan@mail.com', 'pass2', '2023-03-10'),
 ('jazzlover', 'jazzlover@mail.com', 'pass3', '2023-05-22'),
-('beatlemania', 'beatlemania@mail.com', '2023-07-15', 'pass4'),
+('beatlemania', 'beatlemania@mail.com', 'password', '2023-07-15'),
 ('vinyl_addict', 'vinyl_addict@mail.com', 'pass5', '2023-09-01'),
 ('electrohead', 'electrohead@mail.com', 'pass6', '2024-02-09'),
 ('queenfan', 'queenfan@mail.com', 'pass7', '2024-03-12'),
