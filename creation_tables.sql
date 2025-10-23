@@ -157,7 +157,7 @@ CREATE TABLE SuitUtilisateur (
     suivi           VARCHAR(50),
     dDebut          DATE NOT NULL,
     dFin            DATE,
-    CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin)
+    CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin),
     PRIMARY KEY (suivant, suivi),
     FOREIGN KEY (suivant) REFERENCES Utilisateur(pseudo)
         ON UPDATE CASCADE ON DELETE CASCADE,
@@ -170,7 +170,7 @@ CREATE TABLE SuitGroupe (
     idGroupe        SERIAL,
     dDebut          DATE NOT NULL,
     dFin            DATE,
-    CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin)
+    CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin),
     PRIMARY KEY (pseudo, idGroupe),
     FOREIGN KEY (pseudo) REFERENCES Utilisateur(pseudo)
         ON UPDATE CASCADE ON DELETE CASCADE,
