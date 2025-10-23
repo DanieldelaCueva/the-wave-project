@@ -6,16 +6,16 @@
 -- 1) UTILISATEURS (10)
 -- -----------------------------
 INSERT INTO Utilisateur (pseudo, mail, mPasse, dInscription) VALUES
-('melomane92', 'melomane92@mail.com', 'hashpass1', '2023-01-12'),
-('rockfan', 'rockfan@mail.com', 'hashpass2', '2023-03-10'),
-('jazzlover', 'jazzlover@mail.com', 'hashpass3', '2023-05-22'),
-('beatlemania', 'beatlemania@mail.com', '2023-07-15', 'hashpass4'),
-('vinyl_addict', 'vinyl_addict@mail.com', 'hashpass5', '2023-09-01'),
-('electrohead', 'electrohead@mail.com', 'hashpass6', '2024-02-09'),
-('queenfan', 'queenfan@mail.com', 'hashpass7', '2024-03-12'),
-('classicrock', 'classicrock@mail.com', 'hashpass8', '2024-04-01'),
-('indie_vibes', 'indie_vibes@mail.com', 'hashpass9', '2024-06-23'),
-('lofi_dreams', 'lofi_dreams@mail.com', 'hashpass10', '2024-08-30');
+('melomane92', 'melomane92@mail.com', 'pass1', '2023-01-12'),
+('rockfan', 'rockfan@mail.com', 'pass2', '2023-03-10'),
+('jazzlover', 'jazzlover@mail.com', 'pass3', '2023-05-22'),
+('beatlemania', 'beatlemania@mail.com', '2023-07-15', 'pass4'),
+('vinyl_addict', 'vinyl_addict@mail.com', 'pass5', '2023-09-01'),
+('electrohead', 'electrohead@mail.com', 'pass6', '2024-02-09'),
+('queenfan', 'queenfan@mail.com', 'pass7', '2024-03-12'),
+('classicrock', 'classicrock@mail.com', 'pass8', '2024-04-01'),
+('indie_vibes', 'indie_vibes@mail.com', 'pass9', '2024-06-23'),
+('lofi_dreams', 'lofi_dreams@mail.com', 'pass10', '2024-08-30');
 
 -- -----------------------------
 -- 2) GROUPES (10)
@@ -512,18 +512,18 @@ INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles)
 VALUES ('Last of the Wilds', '00:06:18', '2007-09-28', NULL);
 
 INSERT INTO Compose (idMorceau, idAlbum, ordreDsAlbum)
-VALUES (62, 13, 10);
+VALUES (61, 13, 10);
 
 -- Morceau joué par Nightwish
 INSERT INTO Joue (idGroupe, idMorceau)
-VALUES (11, 62);
+VALUES (11, 61);
 
 -- Artistes participants (sans Tarja)
 INSERT INTO Participe (idArtiste, idMorceau)
 VALUES
-(21, 62), -- Tuomas Holopainen (clavier)
-(22, 62), -- Emppu Liimatainen (guitare)
-(24, 62); -- Marko Hietala (basse)
+(21, 61), -- Tuomas Holopainen (clavier)
+(22, 61), -- Emppu Liimatainen (guitare)
+(24, 61); -- Marko Hietala (basse)
 
 INSERT INTO Album (titre, dParution, descAlbum)
 VALUES ('Hydra', '2014-01-31', 'Album de Within Temptation comportant plusieurs duos.');
@@ -533,18 +533,18 @@ VALUES ('Paradise (What About Us?)', '00:05:19', '2013-09-27',
 E'There’s no sense, the fire burns... what about us?');
 
 INSERT INTO Compose (idMorceau, idAlbum, ordreDsAlbum)
-VALUES (63, 14, 3);
+VALUES (62, 14, 3);
 
 -- Morceau joué par Within Temptation
 INSERT INTO Joue (idGroupe, idMorceau)
-VALUES (12, 63);
+VALUES (12, 62);
 
 -- Artistes participants
 INSERT INTO Participe (idArtiste, idMorceau)
 VALUES
-(25, 63), -- Sharon den Adel
-(26, 63), -- Robert Westerholt
-(20, 63); -- Tarja Turunen (invitée)
+(25, 62), -- Sharon den Adel
+(26, 62), -- Robert Westerholt
+(20, 62); -- Tarja Turunen (invitée)
 
 -- -----------------------------
 -- FIN DU SCRIPT D'INSERTION
