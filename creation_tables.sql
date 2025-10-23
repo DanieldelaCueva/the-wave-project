@@ -63,19 +63,19 @@ CREATE TABLE Playlist (
 -- =============================
 
 CREATE TABLE Compose (
-    idMorceau       SERIAL,
-    idAlbum         SERIAL,
+    idMorceau       INT,
+    idAlbum         INT,
     ordreDsAlbum    INT NOT NULL,
     PRIMARY KEY (idMorceau, idAlbum),
     FOREIGN KEY (idMorceau) REFERENCES Morceau(idMorceau)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idAlbum) REFERENCES Album(idAlbum)
-        ON UPDATE CASCADE ON DELETE CASCADE,
+        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE Publie (
-    idGroupe        SERIAL,
-    idAlbum         SERIAL,
+    idGroupe        INT,
+    idAlbum         INT,
     PRIMARY KEY (idGroupe, idAlbum),
     FOREIGN KEY (idGroupe) REFERENCES Groupe(idGroupe)
         ON UPDATE CASCADE ON DELETE CASCADE,
@@ -84,8 +84,8 @@ CREATE TABLE Publie (
 );
 
 CREATE TABLE Joue (
-    idGroupe        SERIAL,
-    idMorceau       SERIAL,
+    idGroupe        INT,
+    idMorceau       INT,
     PRIMARY KEY (idGroupe, idMorceau),
     FOREIGN KEY (idGroupe) REFERENCES Groupe(idGroupe)
         ON UPDATE CASCADE ON DELETE CASCADE,
@@ -94,8 +94,8 @@ CREATE TABLE Joue (
 );
 
 CREATE TABLE Participe (
-    idArtiste       SERIAL,
-    idMorceau       SERIAL,
+    idArtiste       INT,
+    idMorceau       INT,
     PRIMARY KEY (idArtiste, idMorceau),
     FOREIGN KEY (idArtiste) REFERENCES Artiste(idArtiste)
         ON UPDATE CASCADE ON DELETE CASCADE,
@@ -104,12 +104,12 @@ CREATE TABLE Participe (
 );
 
 CREATE TABLE Appartient (
-    idArtiste       SERIAL,
-    idGroupe        SERIAL,
-    idRole          SERIAL,
+    idArtiste       INT,
+    idGroupe        INT,
+    idRole          INT,
     dDebut          DATE NOT NULL,
     dFin            DATE,
-    CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin)
+    CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin),
     PRIMARY KEY (idArtiste, idGroupe, idRole),
     FOREIGN KEY (idArtiste) REFERENCES Artiste(idArtiste)
         ON UPDATE CASCADE ON DELETE CASCADE,
@@ -121,7 +121,7 @@ CREATE TABLE Appartient (
 
 CREATE TABLE Cree (
     pseudo          VARCHAR(50),
-    idPlaylist      SERIAL,
+    idPlaylist      INT,
     PRIMARY KEY (pseudo, idPlaylist),
     FOREIGN KEY (pseudo) REFERENCES Utilisateur(pseudo)
         ON UPDATE CASCADE ON DELETE CASCADE,
@@ -130,8 +130,8 @@ CREATE TABLE Cree (
 );
 
 CREATE TABLE Inclus (
-    idPlaylist      SERIAL,
-    idMorceau       SERIAL,
+    idPlaylist      INT,
+    idMorceau       INT,
     ordreDsPlaylist INT,
     PRIMARY KEY (idPlaylist, idMorceau),
     FOREIGN KEY (idPlaylist) REFERENCES Playlist(idPlaylist)
@@ -142,7 +142,7 @@ CREATE TABLE Inclus (
 
 CREATE TABLE Ecoute (
     pseudo          VARCHAR(50),
-    idMorceau       SERIAL,
+    idMorceau       INT,
     dureeEcoute     INTERVAL,
     dateEcoute      TIMESTAMP NOT NULL,
     PRIMARY KEY (pseudo, idMorceau),
@@ -167,7 +167,7 @@ CREATE TABLE SuitUtilisateur (
 
 CREATE TABLE SuitGroupe (
     pseudo          VARCHAR(50),
-    idGroupe        SERIAL,
+    idGroupe        INT,
     dDebut          DATE NOT NULL,
     dFin            DATE,
     CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin),
