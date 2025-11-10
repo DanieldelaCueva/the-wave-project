@@ -9,7 +9,6 @@ TRUNCATE TABLE
     SuitUtilisateur,
     Ecoute,
     Inclus,
-    Cree,
     Appartient,
     Participe,
     Joue,
