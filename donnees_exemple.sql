@@ -416,22 +416,14 @@ INSERT INTO Participe (idArtiste, idMorceau) VALUES
 -- -----------------------------
 -- 12) PLAYLIST (quelques exemples)
 -- -----------------------------
-INSERT INTO Playlist (titre, descPlaylist, visibilite, dCreation) VALUES
-('Best of 70s Rock', 'Hits incontournables des années 70', TRUE, '2024-01-01'),
-('Indie & Chill', 'Ambiance détendue pour l''après-midi', TRUE, '2024-02-14'),
-('Electro Party', 'Bangers électroniques', FALSE, '2024-03-03');
+INSERT INTO Playlist (titre, descPlaylist, visibilite, dCreation, pseudoCreateur) VALUES
+('Best of 70s Rock', 'Hits incontournables des années 70', TRUE, '2024-01-01', 'melomane92'),
+('Indie & Chill', 'Ambiance détendue pour l''après-midi', TRUE, '2024-02-14', 'indie_vibes'),
+('Electro Party', 'Bangers électroniques', FALSE, '2024-03-03', 'electrohead');
+
 
 -- -----------------------------
--- 13) CREE (qui crée quelle playlist)
--- -----------------------------
--- supposons idPlaylist 1..3 (ordre d'insertion)
-INSERT INTO Cree (pseudo, idPlaylist) VALUES
-('melomane92', 1),
-('indie_vibes', 2),
-('electrohead', 3);
-
--- -----------------------------
--- 14) INCLUS (morceaux dans playlists) - on inclut quelques morceaux
+-- 13) INCLUS (morceaux dans playlists) - on inclut quelques morceaux
 -- -----------------------------
 -- Playlist 1 (Best of 70s Rock) -> quelques classiques : Come Together (1), Bohemian Rhapsody (6), Stairway to Heaven (39)
 INSERT INTO Inclus (idPlaylist, idMorceau, ordreDsPlaylist) VALUES
@@ -446,7 +438,7 @@ INSERT INTO Inclus (idPlaylist, idMorceau, ordreDsPlaylist) VALUES
 (3,16,1),(3,18,2),(3,57,3),(3,59,4);
 
 -- -----------------------------
--- 15) ECOUTE (pseudo, idMorceau, dureeEcoute, dateEcoute)
+-- 14) ECOUTE (pseudo, idMorceau, dureeEcoute, dateEcoute)
 -- Quelques écoutes simulées (clé primaire pseudo+idMorceau)
 -- -----------------------------
 INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
@@ -458,7 +450,7 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('lofi_dreams', 23, '00:04:29', '2024-10-02 20:45:00');
 
 -- -----------------------------
--- 16) SUITUTILISATEUR (qui suit qui)
+-- 15) SUITUTILISATEUR (qui suit qui)
 -- -----------------------------
 INSERT INTO SuitUtilisateur (suivant, suivi, dDebut) VALUES
 ('melomane92', 'rockfan', '2024-01-10'),
@@ -466,7 +458,7 @@ INSERT INTO SuitUtilisateur (suivant, suivi, dDebut) VALUES
 ('lofi_dreams', 'queenfan', '2024-03-12');
 
 -- -----------------------------
--- 17) SUITGROUPE (utilisateur suit groupe)
+-- 16) SUITGROUPE (utilisateur suit groupe)
 -- -----------------------------
 INSERT INTO SuitGroupe (pseudo, idGroupe, dDebut) VALUES
 ('rockfan', 1, '2024-01-05'),

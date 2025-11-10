@@ -44,8 +44,8 @@ CREATE TABLE Album (
 );
 
 CREATE TABLE Utilisateur (
-    pseudo          VARCHAR(50) PRIMARY KEY,
-    mail            VARCHAR(150) UNIQUE NOT NULL,
+    pseudo          VARCHAR(100) PRIMARY KEY,
+    mail            VARCHAR(255) UNIQUE NOT NULL,
     mPasse          VARCHAR(255) NOT NULL,
     dInscription    DATE NOT NULL
 );
@@ -55,7 +55,9 @@ CREATE TABLE Playlist (
     titre           VARCHAR(200) NOT NULL,
     descPlaylist    TEXT,
     visibilite      BOOLEAN DEFAULT TRUE,
-    dCreation       DATE DEFAULT CURRENT_DATE
+    dCreation       DATE DEFAULT CURRENT_DATE,
+    pseudoCreateur        VARCHAR(100) NOT NULL,
+    FOREIGN KEY (pseudoCreateur) REFERENCES Utilisateur(pseudo)
 );
 
 -- =============================
@@ -119,20 +121,10 @@ CREATE TABLE Appartient (
         ON UPDATE CASCADE ON DELETE SET NULL
 );
 
-CREATE TABLE Cree (
-    pseudo          VARCHAR(50),
-    idPlaylist      INT,
-    PRIMARY KEY (pseudo, idPlaylist),
-    FOREIGN KEY (pseudo) REFERENCES Utilisateur(pseudo)
-        ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (idPlaylist) REFERENCES Playlist(idPlaylist)
-        ON UPDATE CASCADE ON DELETE CASCADE
-);
-
 CREATE TABLE Inclus (
     idPlaylist      INT,
     idMorceau       INT,
-    ordreDsPlaylist INT,
+    ordreDsPlaylist INT NOT NULL,
     PRIMARY KEY (idPlaylist, idMorceau),
     FOREIGN KEY (idPlaylist) REFERENCES Playlist(idPlaylist)
         ON UPDATE CASCADE ON DELETE CASCADE,
