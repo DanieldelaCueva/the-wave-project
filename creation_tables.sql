@@ -150,7 +150,7 @@ CREATE TABLE SuitUtilisateur (
     dDebut          DATE NOT NULL,
     dFin            DATE,
     CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin),
-    PRIMARY KEY (suivant, suivi, dDebut, dFin),
+    PRIMARY KEY (suivant, suivi, dDebut),
     FOREIGN KEY (suivant) REFERENCES Utilisateur(pseudo)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (suivi) REFERENCES Utilisateur(pseudo)
@@ -163,7 +163,7 @@ CREATE TABLE SuitGroupe (
     dDebut          DATE NOT NULL,
     dFin            DATE,
     CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin),
-    PRIMARY KEY (pseudo, idGroupe, dDebut, dFin),
+    PRIMARY KEY (pseudo, idGroupe, dDebut),
     FOREIGN KEY (pseudo) REFERENCES Utilisateur(pseudo)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idGroupe) REFERENCES Groupe(idGroupe)
