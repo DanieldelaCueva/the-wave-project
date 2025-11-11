@@ -552,8 +552,8 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 INSERT INTO SuitUtilisateur (suivant, suivi, dDebut, dFin) VALUES
 ('melomane92', 'rockfan', '2024-01-10', '2025-01-01'),
 ('indie_vibes', 'beatlemania', '2024-02-01', NULL),
-('lofi_dreams', 'queenfan', '2024-03-12', NULL);
-('melomane92', 'rockfan', '2025-01-10', NULL),
+('lofi_dreams', 'queenfan', '2024-03-12', NULL),
+('melomane92', 'rockfan', '2025-01-10', NULL);
 
 -- -----------------------------
 -- 16) SUITGROUPE (utilisateur suit groupe)
