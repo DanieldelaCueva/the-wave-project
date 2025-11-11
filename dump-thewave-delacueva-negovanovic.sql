@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 8BN0Bp3ejhRMf3UsPCOSURNJknbMqJuF1DWVmbrX5r3xWKI18ME5FbYIAgINzk2
+\restrict N1hWtq3yTNdSTBYvjXtYTHbt4TFXpqtUIJTWz7VUCPQCJ8SavMbJWaQwzc6u05m
 
 -- Dumped from database version 15.14 (Debian 15.14-0+deb12u1)
 -- Dumped by pg_dump version 17.6 (Debian 17.6-0+deb13u1)
@@ -1322,7 +1322,7 @@ ALTER TABLE ONLY public.appartient
 --
 
 ALTER TABLE ONLY public.appartient
-    ADD CONSTRAINT appartient_idrole_fkey FOREIGN KEY (idrole) REFERENCES public.role(idrole) ON UPDATE CASCADE ON DELETE SET NULL;
+    ADD CONSTRAINT appartient_idrole_fkey FOREIGN KEY (idrole) REFERENCES public.role(idrole);
 
 
 --
@@ -1354,7 +1354,7 @@ ALTER TABLE ONLY public.ecoute
 --
 
 ALTER TABLE ONLY public.ecoute
-    ADD CONSTRAINT ecoute_pseudo_fkey FOREIGN KEY (pseudo) REFERENCES public.utilisateur(pseudo) ON UPDATE CASCADE ON DELETE SET NULL;
+    ADD CONSTRAINT ecoute_pseudo_fkey FOREIGN KEY (pseudo) REFERENCES public.utilisateur(pseudo);
 
 
 --
@@ -1472,5 +1472,5 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 8BN0Bp3ejhRMf3UsPCOSURNJknbMqJuF1DWVmbrX5r3xWKI18ME5FbYIAgINzk2
+\unrestrict N1hWtq3yTNdSTBYvjXtYTHbt4TFXpqtUIJTWz7VUCPQCJ8SavMbJWaQwzc6u05m
 
