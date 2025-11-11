@@ -118,7 +118,6 @@ CREATE TABLE Appartient (
     FOREIGN KEY (idGroupe) REFERENCES Groupe(idGroupe)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idRole) REFERENCES Role(idRole)
-        ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE Inclus (
@@ -138,8 +137,7 @@ CREATE TABLE Ecoute (
     dureeEcoute     INTERVAL,
     dateEcoute      TIMESTAMP NOT NULL,
     PRIMARY KEY (pseudo, idMorceau, dateEcoute),
-    FOREIGN KEY (pseudo) REFERENCES Utilisateur(pseudo)
-        ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY (pseudo) REFERENCES Utilisateur(pseudo),
     FOREIGN KEY (idMorceau) REFERENCES Morceau(idMorceau)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
