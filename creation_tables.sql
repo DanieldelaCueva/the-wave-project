@@ -137,7 +137,7 @@ CREATE TABLE Ecoute (
     idMorceau       INT,
     dureeEcoute     INTERVAL,
     dateEcoute      TIMESTAMP NOT NULL,
-    PRIMARY KEY (pseudo, idMorceau),
+    PRIMARY KEY (pseudo, idMorceau, dateEcoute),
     FOREIGN KEY (pseudo) REFERENCES Utilisateur(pseudo)
         ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY (idMorceau) REFERENCES Morceau(idMorceau)
@@ -150,7 +150,7 @@ CREATE TABLE SuitUtilisateur (
     dDebut          DATE NOT NULL,
     dFin            DATE,
     CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin),
-    PRIMARY KEY (suivant, suivi),
+    PRIMARY KEY (suivant, suivi, dDebut, dFin),
     FOREIGN KEY (suivant) REFERENCES Utilisateur(pseudo)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (suivi) REFERENCES Utilisateur(pseudo)
@@ -163,9 +163,49 @@ CREATE TABLE SuitGroupe (
     dDebut          DATE NOT NULL,
     dFin            DATE,
     CONSTRAINT dateCoherente CHECK (dFin IS NULL OR dDebut <= dFin),
-    PRIMARY KEY (pseudo, idGroupe),
+    PRIMARY KEY (pseudo, idGroupe, dDebut, dFin),
     FOREIGN KEY (pseudo) REFERENCES Utilisateur(pseudo)
         ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (idGroupe) REFERENCES Groupe(idGroupe)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+-- =============================
+-- VUE POUR LES STATS
+-- =============================
+
+CREATE VIEW vue_stats_morceaux AS
+SELECT 
+    t1.idMorceau,
+    titre AS titre_morceau,
+    nom AS nom_groupe,
+
+    COUNT(dateEcoute) AS nb_ecoutes_uniques,
+    COUNT(DISTINCT pseudo) AS nb_personnes_ayant_ecoute,
+    
+    -- sous-requête pour compter les partages publics
+    (
+        SELECT COUNT(idPlaylist)
+        FROM (Inclus
+        NATURAL JOIN Playlist) as t3
+        WHERE visibilite = TRUE AND t1.idMorceau = t3.idMorceau
+    ) AS nb_partages_publics,
+
+    ROUND(
+        0.10 * COUNT(DISTINCT pseudo)
+        + 0.01 * (COUNT(dateEcoute) - COUNT(DISTINCT pseudo)),
+        2
+    ) AS remuneration_euros
+
+FROM 
+    
+    (Morceau 
+        NATURAL JOIN Joue 
+        NATURAL JOIN Groupe) AS t1
+    LEFT JOIN Ecoute AS t2 ON t1.idMorceau = t2.idMorceau
+    
+
+GROUP BY 
+    t1.idMorceau, titre, nom;
+
+
