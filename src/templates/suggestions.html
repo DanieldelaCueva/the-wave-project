@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Suggestions – The Wave{% endblock %}
+{% block content %}
+<h1>Suggestions pour vous</h1>
+
+{% for block in suggestions %}
+    <h2>{{ block.reason }}</h2>
+    <div class="grid">
+        {% for item in block.items %}
+            <div class="card">
+                <h3>{{ item.title }}</h3>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Connexion – The Wave{% endblock %}
+{% block content %}
+<div class="login-container">
+    <h1>Bienvenue sur The Wave</h1>
+
+    <form method="POST" class="card">
+        <label>Pseudonyme</label>
+        <input type="text" name="username" required>
+
+        <label>Mot de passe</label>
+        <input type="password" name="password" required>
+
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <a href="/inscription" class="link">Créer un compte</a>
+</div>
+{% endblock %}

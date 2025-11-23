@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ album.title }} – The Wave{% endblock %}
+{% block content %}
+<h1>{{ album.title }}</h1>
+<p>{{ album.description }}</p>
+
+<img class="album-cover" src="{{ album.cover }}" alt="Pochette">
+
+<h2>Morceaux</h2>
+<ol>
+    {% for track in tracks %}
+        <li>{{ track.title }} ({{ track.duration }})</li>
+    {% endfor %}
+</ol>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Recherche – The Wave{% endblock %}
+{% block content %}
+<h1>Recherche</h1>
+<form method="GET" class="search-bar">
+    <input name="q" placeholder="Rechercher un titre, un artiste, un album…" value="{{ q }}">
+    <button type="submit">Chercher</button>
+</form>
+
+<h2>Résultats</h2>
+<div class="grid">
+    {% for item in results %}
+        <div class="card">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.type }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

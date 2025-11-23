@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}The Wave{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="logo"><img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo The Wave"></a>
+        <nav>
+            <a href="/recherche">Recherche</a>
+            <a href="/suggestions">Suggestions</a>
+            <a href="/profil">Profil</a>
+        </nav>
+    </header>
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

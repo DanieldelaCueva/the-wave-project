@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ group.name }} – The Wave{% endblock %}
+{% block content %}
+<h1>{{ group.name }}</h1>
+<p>{{ group.genre }} – {{ group.nationality }}</p>
+<p>{{ followers }} abonnés</p>
+
+<h2>Membres actuels</h2>
+<ul>
+    {% for artist in current_members %}
+        <li>{{ artist.name }} ({{ artist.role }})</li>
+    {% endfor %}
+</ul>
+
+<h2>Anciens membres</h2>
+<ul>
+    {% for artist in past_members %}
+        <li>{{ artist.name }} ({{ artist.start }} – {{ artist.end }})</li>
+    {% endfor %}
+</ul>
+
+<h2>Morceaux</h2>
+<div class="grid">
+    {% for track in tracks %}
+        <div class="card">
+            <h3>{{ track.title }}</h3>
+            <p>{{ track.duration }}</p>
+        </div>
+    {% endfor %}
+</div>
+
+<h2>Albums</h2>
+<div class="grid">
+    {% for album in albums %}
+        <div class="card album-card">
+            <img src="{{ album.cover }}" class="cover" alt="Pochette">
+            <h3>{{ album.title }}</h3>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

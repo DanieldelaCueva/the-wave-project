@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ track.title }} – The Wave{% endblock %}
+{% block content %}
+<h1>{{ track.title }}</h1>
+<p>{{ track.duration }}</p>
+<p>Par : {{ track.group }}</p>
+
+<button class="play-button">▶ Écouter</button>
+<p>Vous êtes en train d'écouter {{ track.title }}</p>
+
+<h2>Paroles</h2>
+<pre class="lyrics">{{ track.lyrics }}</pre>
+{% endblock %}
