@@ -26,10 +26,10 @@ def accueil():
     
     with connect() as conn:
         with conn.cursor() as cur1:
-            cur1.execute("SELECT titre, album.imCouverture, nom AS nomGroupe FROM album NATURAL JOIN publie JOIN groupe ON publie.idgroupe = groupe.idgroupe ORDER BY dParution DESC LIMIT 5")
+            cur1.execute("SELECT titre, encode(album.imCouverture, 'base64') AS couverture, nom AS nomGroupe FROM album NATURAL JOIN publie JOIN groupe ON publie.idgroupe = groupe.idgroupe ORDER BY dParution DESC LIMIT 5")
             derniers_albums = cur1.fetchall()
         with conn.cursor() as cur2:
-            cur2.execute("SELECT nom, imCouverture, count(pseudo) as abonnes FROM groupe NATURAL JOIN suitGroupe GROUP BY idGroupe ORDER BY abonnes DESC LIMIT 3")
+            cur2.execute("SELECT nom, encode(imCouverture, 'base64') AS couverture, count(pseudo) as abonnes FROM groupe NATURAL JOIN suitGroupe GROUP BY idGroupe ORDER BY abonnes DESC LIMIT 3")
             groupes_plus_suivis = cur2.fetchall()
         with conn.cursor() as cur3:
             cur3.execute("SELECT titre, sum(dureeEcoute) as tpsEcoute FROM morceau NATURAL JOIN ecoute GROUP BY idMorceau ORDER BY tpsEcoute DESC LIMIT 5")
