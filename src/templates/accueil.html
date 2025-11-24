@@ -20,7 +20,7 @@
     <div class="grid">
         {% for groupe in groupes_plus_suivis %}
             <div class="card">
-                <img src="{{ groupe.imCouverture }}" class="cover" alt="Pochette">
+                <img src="data:image/png;base64,{{ groupe.couverture }}" class="cover" alt="Pochette">
                 <h3>{{ groupe.nom }}</h3>
                 {% if groupe.abonnes == 1 %}
                 <p>{{ groupe.abonnes }} abonné</p>
@@ -37,7 +37,7 @@
     <div class="grid">
         {% for album in derniers_albums %}
             <div class="card album-card">
-                <img src="{{ album.imCouverture }}" class="cover" alt="Pochette">
+                <img src="data:image/png;base64,{{ album.couverture }}" class="cover" alt="Pochette">
                 <h3>{{ album.titre }}</h3>
                 <p>{{ album.nomGroupe }}</p>
             </div>
