@@ -1,14 +1,40 @@
 from flask import Flask, render_template, request
+import psycopg2
+import psycopg2.extras
+
+def connect():
+    """
+    Changer ceci pour le rendu final
+    """
+    conn = psycopg2.connect(
+        host = 'localhost',
+        dbname = 'delacuevapuert_db',
+        user='postgres',
+        password = 'admin', # mot de passe de la base
+        cursor_factory = psycopg2.extras.NamedTupleCursor,
+    )
+    conn.autocommit = True
+    return conn
 
 app = Flask(__name__)
 
 @app.route('/')
 def accueil():
-    # exemples de données de démo
-    top_tracks = []
-    top_groups = []
-    last_albums = []
-    return render_template('accueil.html', top_tracks=top_tracks, top_groups=top_groups, last_albums=last_albums)
+    derniers_albums = ()
+    groupes_plus_suivis = ()
+    morceaux_plus_ecoutes = ()
+    
+    with connect() as conn:
+        with conn.cursor() as cur1:
+            cur1.execute("SELECT titre, album.imCouverture, nom AS nomGroupe FROM album NATURAL JOIN publie JOIN groupe ON publie.idgroupe = groupe.idgroupe ORDER BY dParution DESC LIMIT 5")
+            derniers_albums = cur1.fetchall()
+        with conn.cursor() as cur2:
+            cur2.execute("SELECT nom, imCouverture, count(pseudo) as abonnes FROM groupe NATURAL JOIN suitGroupe GROUP BY idGroupe ORDER BY abonnes DESC LIMIT 3")
+            groupes_plus_suivis = cur2.fetchall()
+        with conn.cursor() as cur3:
+            cur3.execute("SELECT titre, sum(dureeEcoute) as tpsEcoute FROM morceau NATURAL JOIN ecoute GROUP BY idMorceau ORDER BY tpsEcoute DESC LIMIT 5")
+            morceaux_plus_ecoutes = cur3.fetchall()
+    return render_template('accueil.html', derniers_albums = derniers_albums, groupes_plus_suivis = groupes_plus_suivis, morceaux_plus_ecoutes = morceaux_plus_ecoutes)
 
 @app.route('/connexion', methods=['GET','POST'])
 def connexion():

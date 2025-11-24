@@ -5,16 +5,72 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 
+/* --- HEADER --- */
+
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 25px;
-    background: #071025;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding: 14px 32px;
+    background: linear-gradient(180deg, #0b132b, #071025);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(6px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-.navbar a { color: #e6eef4; margin-left: 20px; text-decoration: none; }
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo img {
+    height: 40px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
+.title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin: 0;
+    color: #e9f1f7;
+}
+
+.nav-links {
+    display: flex;
+    gap: 28px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-weight: 500;
+    color: #cdd9e3;
+    padding: 6px 0;
+    position: relative;
+    transition: color .2s ease;
+}
+
+/* Línea elegante al pasar el ratón */
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -2px;
+    width: 0%; height: 2px;
+    background: #1db954; /* verde estilo Spotify */
+    border-radius: 2px;
+    transition: width .25s ease;
+}
+
+.nav-links a:hover {
+    color: #ffffff;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
 
 .logo img { height: 36px; }
 

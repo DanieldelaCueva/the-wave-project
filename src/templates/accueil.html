@@ -6,11 +6,10 @@
 <section>
     <h2>Morceaux les plus écoutés</h2>
     <div class="grid">
-        {% for track in top_tracks %}
+        {% for morceau in morceaux_plus_ecoutes %}
             <div class="card music-card">
-                <img src="{{ track.cover }}" class="cover" alt="Pochette">
-                <h3>{{ track.title }}</h3>
-                <p>{{ track.artist }}</p>
+                <h3>{{ morceau.titre }}</h3>
+                <p>{{ morceau.tpsecoute }}</p>
             </div>
         {% endfor %}
     </div>
@@ -19,10 +18,15 @@
 <section>
     <h2>Groupes les plus suivis</h2>
     <div class="grid">
-        {% for group in top_groups %}
+        {% for groupe in groupes_plus_suivis %}
             <div class="card">
-                <h3>{{ group.name }}</h3>
-                <p>{{ group.followers }} abonnés</p>
+                <img src="{{ groupe.imCouverture }}" class="cover" alt="Pochette">
+                <h3>{{ groupe.nom }}</h3>
+                {% if groupe.abonnes == 1 %}
+                <p>{{ groupe.abonnes }} abonné</p>
+                {% else %}
+                <p>{{ groupe.abonnes }} abonnés</p>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
@@ -31,11 +35,11 @@
 <section>
     <h2>Derniers albums publiés</h2>
     <div class="grid">
-        {% for album in last_albums %}
+        {% for album in derniers_albums %}
             <div class="card album-card">
-                <img src="{{ album.cover }}" class="cover" alt="Pochette">
-                <h3>{{ album.title }}</h3>
-                <p>{{ album.group }}</p>
+                <img src="{{ album.imCouverture }}" class="cover" alt="Pochette">
+                <h3>{{ album.titre }}</h3>
+                <p>{{ album.nomGroupe }}</p>
             </div>
         {% endfor %}
     </div>
