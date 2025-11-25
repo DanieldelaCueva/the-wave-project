@@ -1,19 +1,30 @@
 {% extends "base.html" %}
 {% block title %}Connexion – The Wave{% endblock %}
 {% block content %}
-<div class="login-container">
-    <h1>Bienvenue sur The Wave</h1>
+<div class="login-wrapper">
 
-    <form method="POST" class="card">
-        <label>Pseudonyme</label>
-        <input type="text" name="username" required>
+    <div class="login-card">
+        <h1 class="login-title">Connexion</h1>
+        <p class="login-subtitle">Bienvenue sur <strong>The Wave</strong></p>
 
-        <label>Mot de passe</label>
-        <input type="password" name="password" required>
+        {% if etat == 1 %}
+        <div class="login-error">
+            ❌ Utilisateur introuvable ou mot de passe incorrect.
+        </div>
+        {% endif %}
 
-        <button type="submit">Se connecter</button>
-    </form>
+        <form method="POST" action="authentication">
+            <label>Pseudonyme</label>
+            <input type="text" name="pseudo" required>
 
-    <a href="/inscription" class="link">Créer un compte</a>
+            <label>Mot de passe</label>
+            <input type="password" name="mdp" required>
+
+            <button type="submit" class="login-button">Se connecter</button>
+        </form>
+
+        <a href="/inscription" class="login-link">Créer un compte</a>
+    </div>
+
 </div>
 {% endblock %}

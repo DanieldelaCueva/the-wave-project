@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, session,url_for
 import psycopg2
 import psycopg2.extras
+
+import secrets
 
 def connect():
     """
@@ -17,6 +19,8 @@ def connect():
     return conn
 
 app = Flask(__name__)
+
+app.secret_key = b'%s' % secrets.token_bytes()
 
 @app.route('/')
 def accueil():
@@ -36,12 +40,32 @@ def accueil():
             morceaux_plus_ecoutes = cur3.fetchall()
     return render_template('accueil.html', derniers_albums = derniers_albums, groupes_plus_suivis = groupes_plus_suivis, morceaux_plus_ecoutes = morceaux_plus_ecoutes)
 
-@app.route('/connexion', methods=['GET','POST'])
+@app.route('/connexion')
 def connexion():
     if request.method == 'POST':
         # authentification placeholder
         return 'Connexion (placeholder)'
-    return render_template('connexion.html')
+    return render_template('connexion.html', etat=0)
+
+@app.route('/authentication', methods = ['POST'])
+def authentication():
+    pseudo = request.form.get("pseudo")
+    mdp = request.form.get("mdp")
+    with connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT mpasse FROM utilisateur WHERE pseudo='%s'" % pseudo)
+            resultat = cur.fetchone()
+            print(resultat.mpasse)
+            if resultat == None:
+                return render_template('connexion.html', etat=1)
+            elif mdp == resultat.mpasse:
+                session['pseudo'] = pseudo
+                return redirect(url_for('accueil'))
+            else:
+                return render_template('connexion.html', etat=1)
+
+
+
 
 @app.route('/recherche')
 def recherche():
