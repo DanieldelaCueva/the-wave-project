@@ -15,7 +15,7 @@ FONCTIONS AUXILIAIRES
 def verifier_si_connecte():
     utilisateur = session.get("pseudo")
     if utilisateur == None:
-        return redirect(url_for("/connexion"))
+        return redirect(url_for("connexion"))
 
 
 """
@@ -64,7 +64,7 @@ def accueil():
 @app.route('/connexion')
 def connexion():
     if session.get("pseudo") == None:
-        return redirect(url_for("/accueil"))
+        return redirect(url_for("accueil"))
     return render_template('connexion.html', etat=0)
 
 @app.route('/authentication', methods = ['POST'])
