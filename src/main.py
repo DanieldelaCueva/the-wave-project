@@ -11,7 +11,7 @@ def connect():
     Changer ceci pour le rendu final
     """
     conn = psycopg2.connect(
-        host = 'sqledu.uni-eiffel.fr',
+        host = 'sqledu.univ-eiffel.fr',
         dbname = DB_NAME,
         password = DB_PASSWORD,
         cursor_factory = psycopg2.extras.NamedTupleCursor,
