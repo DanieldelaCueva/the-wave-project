@@ -1,3 +1,6 @@
+"""
+IMPORTATION DES BIBLIOTHÈQUES NÉCESSAIRES
+"""
 from flask import Flask, render_template, request, redirect, session,url_for
 import psycopg2
 import psycopg2.extras
@@ -6,6 +9,18 @@ import secrets
 
 from keys import DB_NAME, DB_PASSWORD
 
+"""
+FONCTIONS AUXILIAIRES
+"""
+def verifier_si_connecte():
+    utilisateur = session.get("pseudo")
+    if utilisateur == None:
+        return redirect(url_for("/connexion"))
+
+
+"""
+PARAMÉTRAGE DE LA BASE DE DONNÉES
+"""
 def connect():
     """
     Changer ceci pour le rendu final
@@ -19,12 +34,17 @@ def connect():
     conn.autocommit = True
     return conn
 
+"""
+APPLICATION WEB
+"""
 app = Flask(__name__)
 
 app.secret_key = b'%s' % secrets.token_bytes()
 
 @app.route('/')
 def accueil():
+    verifier_si_connecte()
+
     derniers_albums = ()
     groupes_plus_suivis = ()
     morceaux_plus_ecoutes = ()
@@ -43,9 +63,8 @@ def accueil():
 
 @app.route('/connexion')
 def connexion():
-    if request.method == 'POST':
-        # authentification placeholder
-        return 'Connexion (placeholder)'
+    if session.get("pseudo") == None:
+        return redirect(url_for("/accueil"))
     return render_template('connexion.html', etat=0)
 
 @app.route('/authentication', methods = ['POST'])
