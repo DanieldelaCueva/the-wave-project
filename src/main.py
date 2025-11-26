@@ -4,15 +4,16 @@ import psycopg2.extras
 
 import secrets
 
+from keys import DB_NAME, DB_PASSWORD
+
 def connect():
     """
     Changer ceci pour le rendu final
     """
     conn = psycopg2.connect(
-        host = 'localhost',
-        dbname = 'delacuevapuert_db',
-        user='postgres',
-        password = 'admin', # mot de passe de la base
+        host = 'sqledu.uni-eiffel.fr',
+        dbname = DB_NAME,
+        password = DB_PASSWORD,
         cursor_factory = psycopg2.extras.NamedTupleCursor,
     )
     conn.autocommit = True
