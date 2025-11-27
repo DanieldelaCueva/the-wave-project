@@ -1,30 +1,57 @@
-{% extends "base.html" %}
-{% block title %}Connexion – The Wave{% endblock %}
-{% block content %}
-<div class="login-wrapper">
+<!DOCTYPE html>
+<html lang="fr">
 
-    <div class="login-card">
-        <h1 class="login-title">Connexion</h1>
-        <p class="login-subtitle">Bienvenue sur <strong>The Wave</strong></p>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}The Wave{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
 
-        {% if etat == 1 %}
-        <div class="login-error">
-            ❌ Utilisateur introuvable ou mot de passe incorrect.
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <a href="/" class="logo">
+                <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo The Wave" />
+            </a>
+            <p class="title">THE WAVE</p>
         </div>
-        {% endif %}
 
-        <form method="POST" action="authentication">
-            <label>Pseudonyme</label>
-            <input type="text" name="pseudo" required>
+        <nav class="nav-links">
+            <a href="/recherche">Recherche</a>
+            <a href="/suggestions">Suggestions</a>
+            <a href="/profil">Profil</a>
+        </nav>
+    </header>
 
-            <label>Mot de passe</label>
-            <input type="password" name="mdp" required>
+    <main class="content">
+        <div class="login-wrapper">
 
-            <button type="submit" class="login-button">Se connecter</button>
-        </form>
+            <div class="login-card">
+                <h1 class="login-title">Connexion</h1>
+                <p class="login-subtitle">Bienvenue sur <strong>The Wave</strong></p>
 
-        <a href="/inscription" class="login-link">Créer un compte</a>
-    </div>
+                {% if etat == 1 %}
+                <div class="login-error">
+                    ❌ Utilisateur introuvable ou mot de passe incorrect.
+                </div>
+                {% endif %}
 
-</div>
-{% endblock %}
+                <form method="POST" action="authentication">
+                    <label>Pseudonyme</label>
+                    <input type="text" name="pseudo" required>
+
+                    <label>Mot de passe</label>
+                    <input type="password" name="mdp" required>
+
+                    <button type="submit" class="login-button">Se connecter</button>
+                </form>
+
+                <a href="/inscription" class="login-link">Créer un compte</a>
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>

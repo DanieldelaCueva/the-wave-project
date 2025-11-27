@@ -209,3 +209,22 @@ pre.lyrics { white-space: pre-wrap; background: rgba(255,255,255,0.02); padding:
 .username{
     color:#7b5cff;
 }
+
+.logout-link {
+    padding: 6px 14px;
+    background: #ff5252;
+    color: white !important;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background .2s ease, transform .15s ease;
+}
+
+.logout-link:hover {
+    background: #ff6b6b;
+    transform: translateY(-2px);
+}
+
+/* Desactivar la línea inferior del hover para este botón */
+.logout-link::after {
+    display: none;
+}

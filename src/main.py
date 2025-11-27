@@ -4,10 +4,10 @@ IMPORTATION DES BIBLIOTHÈQUES NÉCESSAIRES
 from flask import Flask, render_template, request, redirect, session,url_for
 import psycopg2
 import psycopg2.extras
-
 import secrets
+from passlib.hash import pbkdf2_sha256
 
-from keys import DB_NAME, DB_PASSWORD
+import db
 
 """
 FONCTIONS AUXILIAIRES
@@ -19,23 +19,6 @@ def verifier_si_connecte():
         return False
     else:
         return True
-
-
-"""
-PARAMÉTRAGE DE LA BASE DE DONNÉES
-"""
-def connect():
-    """
-    Changer ceci pour le rendu final
-    """
-    conn = psycopg2.connect(
-        host = 'sqledu.univ-eiffel.fr',
-        dbname = DB_NAME,
-        password = DB_PASSWORD,
-        cursor_factory = psycopg2.extras.NamedTupleCursor,
-    )
-    conn.autocommit = True
-    return conn
 
 """
 APPLICATION WEB
@@ -53,7 +36,7 @@ def accueil():
     groupes_plus_suivis = ()
     morceaux_plus_ecoutes = ()
     
-    with connect() as conn:
+    with db.connect() as conn:
         with conn.cursor() as cur1:
             cur1.execute("SELECT titre, encode(album.imCouverture, 'base64') AS couverture, nom AS nomGroupe FROM album NATURAL JOIN publie JOIN groupe ON publie.idgroupe = groupe.idgroupe ORDER BY dParution DESC LIMIT 5")
             derniers_albums = cur1.fetchall()
@@ -75,18 +58,25 @@ def connexion():
 def authentication():
     pseudo = request.form.get("pseudo")
     mdp = request.form.get("mdp")
-    with connect() as conn:
+    with db.connect() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT mpasse FROM utilisateur WHERE pseudo='%s'" % pseudo)
             resultat = cur.fetchone()
             print(resultat.mpasse)
             if resultat == None:
                 return render_template('connexion.html', etat=1)
-            elif mdp == resultat.mpasse:
+            elif pbkdf2_sha256.verify(mdp,resultat.mpasse):
                 session['pseudo'] = pseudo
                 return redirect(url_for('accueil'))
             else:
                 return render_template('connexion.html', etat=1)
+
+@app.route('/deconnexion')
+def deconnexion():
+    if not verifier_si_connecte():
+        return redirect(url_for("connexion"))
+    session.pop("pseudo")
+    return redirect(url_for("connexion"))
 
 
 @app.route('/profil')
