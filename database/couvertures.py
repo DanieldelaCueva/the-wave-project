@@ -61,7 +61,12 @@ imgs_albums = imagenes[N_GROUPES + N_ARTISTES:]
 # 2. INSERTAR EN POSTGRES
 # -------------------------
 
-conn = psycopg2.connect(**DB)
+conn = psycopg2.connect(
+    host = 'sqledu.univ-eiffel.fr',
+    dbname = 'delacuevapuert_db',
+    password = 'CooperZar!73#',
+    cursor_factory = psycopg2.extras.NamedTupleCursor
+)
 cur = conn.cursor()
 
 # --- Groupe ---
