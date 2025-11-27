@@ -16,7 +16,9 @@ def verifier_si_connecte():
     utilisateur = session.get("pseudo")
     print(utilisateur)
     if utilisateur == None:
-        return redirect(url_for("connexion"))
+        return False
+    else:
+        return True
 
 
 """
@@ -44,7 +46,8 @@ app.secret_key = b'%s' % secrets.token_bytes()
 
 @app.route('/')
 def accueil():
-    verifier_si_connecte()
+    if not verifier_si_connecte():
+        return redirect(url_for("connexion"))
 
     derniers_albums = ()
     groupes_plus_suivis = ()
@@ -86,6 +89,14 @@ def authentication():
                 return render_template('connexion.html', etat=1)
 
 
+@app.route('/profil')
+def profil():
+    if not verifier_si_connecte():
+        return redirect(url_for("connexion"))
+
+    pseudo = session.get("pseudo")
+
+    return render_template('profil.html', pseudo = pseudo, top_tracks=[], history=[], playlists=[])
 
 
 @app.route('/recherche')
@@ -93,10 +104,6 @@ def recherche():
     q = request.args.get('q','')
     results = []
     return render_template('recherche.html', q=q, results=results)
-
-@app.route('/profil')
-def profil():
-    return render_template('profil.html', top_tracks=[], history=[], playlists=[])
 
 if __name__ == '__main__':
     app.run(debug=True)

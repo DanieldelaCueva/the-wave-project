@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Profil – The Wave{% endblock %}
 {% block content %}
-<h1>Votre profil</h1>
+<h1>Bonjour <span class="username">{{ pseudo }}</span> !</h1>
 
-<h2>Morceaux les plus écoutés</h2>
+<h2>Vos morceaux les plus écoutés</h2>
 <div class="grid">
     {% for track in top_tracks %}
         <div class="card">
@@ -12,14 +12,14 @@
     {% endfor %}
 </div>
 
-<h2>Dernières écoutes</h2>
+<h2>Vos dernières écoutes</h2>
 <ul>
     {% for entry in history %}
         <li>{{ entry.track }} – {{ entry.date }}</li>
     {% endfor %}
 </ul>
 
-<h2>Playlists</h2>
+<h2>Vos Playlists</h2>
 <div class="grid">
     {% for playlist in playlists %}
         <div class="card">
