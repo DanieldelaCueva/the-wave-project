@@ -4,33 +4,23 @@ import random
 import psycopg2
 import psycopg2.extras
 
-# -------------------------
-# CONFIG DB
-# -------------------------
-DB = {
-    "dbname": "delacuevapuert_db",
-    "user": "postgres",
-    "password": "admin",
-    "host": "localhost",
-    "port": 5432
-}
+import db
 
-# Necesidades
 N_GROUPES = 12
 N_ARTISTES = 26
 N_ALBUMS = 14
 TOTAL = N_GROUPES + N_ARTISTES + N_ALBUMS
 
 
-# -------------------------
-# 1. GENERAR PNG ABSTRACTOS
-# -------------------------
+# -----------------------
+# 1. GENERER PN ABSTRAITS
+# -----------------------
 
-def generar_imagen_abstracta(size=400):
+def generer_image_asbtraite(size=400):
     img = Image.new("RGB", (size, size), color=(0, 0, 0))
     d = ImageDraw.Draw(img)
 
-    # Dibujar líneas aleatorias
+    # Dessiner lignes aléatoires
     for _ in range(20):
         x1, y1 = random.randint(0, size), random.randint(0, size)
         x2, y2 = random.randint(0, size), random.randint(0, size)
@@ -41,32 +31,27 @@ def generar_imagen_abstracta(size=400):
         )
         d.line((x1, y1, x2, y2), fill=color, width=random.randint(2, 8))
 
-    # Guardar en bytes
+    # Sauvergarder en bytes
     buffer = io.BytesIO()
     img.save(buffer, format="PNG")
     return buffer.getvalue()
 
 
-print(f"Generando {TOTAL} imágenes abstractas…")
-imagenes = [generar_imagen_abstracta() for _ in range(TOTAL)]
-print("   ✓ Imágenes generadas\n")
+print(f"Génération de {TOTAL} images abstraites…")
+images = [generer_image_asbtraite() for _ in range(TOTAL)]
+print("   ✓ Images générées\n")
 
-# Distribuir
-imgs_groupes = imagenes[:N_GROUPES]
-imgs_artistes = imagenes[N_GROUPES:N_GROUPES + N_ARTISTES]
-imgs_albums = imagenes[N_GROUPES + N_ARTISTES:]
+# Distribution
+imgs_groupes = images[:N_GROUPES]
+imgs_artistes = images[N_GROUPES:N_GROUPES + N_ARTISTES]
+imgs_albums = images[N_GROUPES + N_ARTISTES:]
 
 
 # -------------------------
-# 2. INSERTAR EN POSTGRES
+# 2. INSERTION EN POSTGRES
 # -------------------------
 
-conn = psycopg2.connect(
-    host = 'sqledu.univ-eiffel.fr',
-    dbname = 'delacuevapuert_db',
-    password = 'CooperZar!73#',
-    cursor_factory = psycopg2.extras.NamedTupleCursor
-)
+conn = db.connect()
 cur = conn.cursor()
 
 # --- Groupe ---
@@ -75,7 +60,7 @@ for i, img in enumerate(imgs_groupes, start=1):
         "UPDATE Groupe SET imCouverture = %s WHERE idgroupe = %s",
         (psycopg2.Binary(img), i)
     )
-print("✓ Imágenes insertadas en Groupe")
+print("✓ Images insérées dans Groupe")
 
 # --- Artiste ---
 for i, img in enumerate(imgs_artistes, start=1):
@@ -83,7 +68,7 @@ for i, img in enumerate(imgs_artistes, start=1):
         "UPDATE Artiste SET imCouverture = %s WHERE idartiste = %s",
         (psycopg2.Binary(img), i)
     )
-print("✓ Imágenes insertadas en Artiste")
+print("✓ Images insérées dans Artiste")
 
 # --- Album ---
 for i, img in enumerate(imgs_albums, start=1):
@@ -91,10 +76,10 @@ for i, img in enumerate(imgs_albums, start=1):
         "UPDATE Album SET imCouverture = %s WHERE idalbum = %s",
         (psycopg2.Binary(img), i)
     )
-print("✓ Imágenes insertadas en Album")
+print("✓ Images insérées dans Album")
 
 conn.commit()
 cur.close()
 conn.close()
 
-print("\n🎉 ¡Proceso completado! 52 imágenes abstractas añadidas a la base de datos.")
+print("\nTerminé")
