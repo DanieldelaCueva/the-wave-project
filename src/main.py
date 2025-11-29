@@ -78,6 +78,41 @@ def deconnexion():
     session.pop("pseudo")
     return redirect(url_for("connexion"))
 
+@app.route('/inscription')
+def inscription():
+    if session.get("pseudo") != None:
+        return redirect(url_for("accueil"))
+    return render_template('inscription.html', etat=0)
+
+@app.route('/traitement_inscription', methods=['POST'])
+def traitement_inscription():
+    pseudo = request.form.get("pseudo")
+    email = request.form.get("email")
+    mdp1 = request.form.get("mdp")
+    mdp2 = request.form.get("mdp_confirm")
+    with db.connect() as conn:
+        cur1 = conn.cursor()
+        cur1.execute("SELECT pseudo FROM utilisateur WHERE pseudo='%s'" % pseudo)
+        if not cur1.fetchone():
+            cur1.close()
+            cur2 = conn.cursor()
+            cur2.execute("SELECT mail FROM utilisateur WHERE mail = '%s'" % email)
+            if not cur2.fetchone():
+                cur2.close()
+                if mdp1 and mdp1 == mdp2:
+                    hashed = pbkdf2_sha256.hash(mdp1)
+                    requete = "INSERT INTO utilisateur VALUES ('%s', '%s', '%s', CURRENT_DATE)" % (pseudo, email, hashed)
+                    with conn.cursor() as cur3:
+                        cur3.execute(requete)
+                        return redirect(url_for("connexion"))
+                else:
+                    return render_template('inscription.html', etat=3) # erreur: les mdp ne coincident pas
+            else:
+                cur2.close()
+                return render_template('inscription.html', etat=2) # erreur: l'email existe déjà
+        else:
+            cur1.close()
+            return render_template('inscription.html', etat=1) # erreur: le pseudo existe déjà
 
 @app.route('/profil')
 def profil():
@@ -88,6 +123,9 @@ def profil():
 
     return render_template('profil.html', pseudo = pseudo, top_tracks=[], history=[], playlists=[])
 
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204
 
 @app.route('/recherche')
 def recherche():

@@ -2,7 +2,6 @@ from PIL import Image, ImageDraw
 import io
 import random
 import psycopg2
-import psycopg2.extras
 
 import db
 
