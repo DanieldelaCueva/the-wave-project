@@ -6,16 +6,16 @@
 -- 1) UTILISATEURS (10)
 -- -----------------------------
 INSERT INTO Utilisateur (pseudo, mail, mPasse, dInscription) VALUES
-('melomane92', 'melomane92@mail.com', 'pass1', '2023-01-12'),
-('rockfan', 'rockfan@mail.com', 'pass2', '2023-03-10'),
-('jazzlover', 'jazzlover@mail.com', 'pass3', '2023-05-22'),
-('beatlemania', 'beatlemania@mail.com', 'password', '2023-07-15'),
-('vinyl_addict', 'vinyl_addict@mail.com', 'pass5', '2023-09-01'),
-('electrohead', 'electrohead@mail.com', 'pass6', '2024-02-09'),
-('queenfan', 'queenfan@mail.com', 'pass7', '2024-03-12'),
-('classicrock', 'classicrock@mail.com', 'pass8', '2024-04-01'),
-('indie_vibes', 'indie_vibes@mail.com', 'pass9', '2024-06-23'),
-('lofi_dreams', 'lofi_dreams@mail.com', 'pass10', '2024-08-30');
+('melomane92', 'melomane92@mail.com', '$pbkdf2-sha256$29000$ZUyp1Xov5fwfw5hTqjWGUA$AXUlrqN1Quf9pgcN51mPvgt4kfSlQcYPz0szJ1FE8Iw', '2023-01-12'),
+('rockfan', 'rockfan@mail.com', '$pbkdf2-sha256$29000$NYYQonTuHeN87/3fW8uZkw$kh0c8Fqn7AhnFMUrXp.uCpBnLy3JnhAfidh/i/sIVaY', '2023-03-10'),
+('jazzlover', 'jazzlover@mail.com', '$pbkdf2-sha256$29000$SQnBOGcMAaB0TglByNnbew$4/sMWITnTzno.KdcsBp1jVYcMOrir2OrVv66t81SYDY', '2023-05-22'),
+('beatlemania', 'beatlemania@mail.com', '$pbkdf2-sha256$29000$F8LYW.v9/38PIURorZXSeg$a92TGhTDWlZ2T51Q.xi8ATuGXJ0okc1FSSin8G1Z4V4', '2023-07-15'),
+('vinyl_addict', 'vinyl_addict@mail.com', '$pbkdf2-sha256$29000$W2utlXLO.b.X8n4vRcjZOw$0MNFNSgI01GIVF0iurdBMHtiDD1AKsfIQ2Do4EzR14U', '2023-09-01'),
+('electrohead', 'electrohead@mail.com', '$pbkdf2-sha256$29000$FcK4d661Vqp1zrl3jjFmTA$L3glR0xJiOFrvpjY3w4znANEHBAGbrH6/pvhVkXSLes', '2024-02-09'),
+('queenfan', 'queenfan@mail.com', '$pbkdf2-sha256$29000$GmPs/Z8TghBirPVeq7UWYg$C2TuiRpfS3PU1Z2FD8tKtMHZSQFlVd9n7lwGMllQfSs', '2024-03-12'),
+('classicrock', 'classicrock@mail.com', '$pbkdf2-sha256$29000$lbIWAiCktPb.HyME4Lz3vg$sRcR/.WDSn4KpdDsb9hi1QRuXZmRS2JS81BksuxquN0', '2024-04-01'),
+('indie_vibes', 'indie_vibes@mail.com', '$pbkdf2-sha256$29000$VkqptbZ2zhmj1Nr7H4MQYg$8enj2.IOa.OfATLLflfEC3XhJFRnuvTXtllbQ6Pmap0', '2024-06-23'),
+('lofi_dreams', 'lofi_dreams@mail.com', '$pbkdf2-sha256$29000$NqY0pvSeU2oN4bwXolSqFQ$U8g9m5VPPgyjsBpkI4q5mNO1fVOyHntDTIG0/Io90BY', '2024-08-30');
 
 -- -----------------------------
 -- 2) GROUPES (10)
