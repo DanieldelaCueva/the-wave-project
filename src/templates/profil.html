@@ -1,30 +1,60 @@
-{% extends "base.html" %}
-{% block title %}Profil – The Wave{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Profil – The Wave{% endblock %} {%
+block content %}
 <h1>Bonjour <span class="username">{{ pseudo }}</span> !</h1>
+
+<p>
+  {% if abonnes == 1 %}
+  <i>{{ abonnes }} abbonné</i>
+  {% else %}
+  <i>{{ abonnes }} abbonnés</i>
+  {% endif %}
+</p>
 
 <h2>Vos morceaux les plus écoutés</h2>
 <div class="grid">
-    {% for track in top_tracks %}
-        <div class="card">
-            <h3>{{ track.title }}</h3>
-        </div>
-    {% endfor %}
+  {% if morceaux_plus_ecoutes %} {% for morceau in morceaux_plus_ecoutes %}
+  <a href="ecouter/{{morceau.idmorceau}}" class="card-link">
+    <div class="card music-card">
+      <h3>{{ morceau.titre }}</h3>
+      <p><i>{{ morceau.groupe }}</i></p>
+      <p>{{ morceau.tpsecoute }}</p>
+    </div>
+  </a>
+  {% endfor %} {% else %}
+  <p>Vous n'avez pas encore d'écoutes!</p>
+  {% endif %}
 </div>
 
 <h2>Vos dernières écoutes</h2>
-<ul>
-    {% for entry in history %}
-        <li>{{ entry.track }} – {{ entry.date }}</li>
-    {% endfor %}
-</ul>
+<div class="grid">
+  {% if dernieres_ecoutes %} {% for morceau in dernieres_ecoutes %}
+  <a href="ecouter/{{morceau.idmorceau}}" class="card-link">
+    <div class="card music-card">
+      <h3>{{ morceau.titre }}</h3>
+      <p><i>{{ morceau.groupe }}</i></p>
+      <p>{{ morceau.dateecoute }}</p>
+    </div>
+  </a>
+  {% endfor %} {% else %}
+  <p>Vous n'avez pas encore d'écoutes!</p>
+  {% endif %}
+</div>
 
 <h2>Vos Playlists</h2>
 <div class="grid">
-    {% for playlist in playlists %}
-        <div class="card">
-            <h3>{{ playlist.title }}</h3>
-        </div>
-    {% endfor %}
+  {% if playlists %} {% for playlist in playlists %}
+  <a href="playlist/{{playlist.idplaylist}}" class="card-link">
+    <div class="card music-card">
+      <h3>{{ playlist.titre }}</h3>
+      {% if playlist.visibilite %}
+      <p><i>Publique</i></p>
+      {% else %}
+      <p><i>Privée</i></p>
+      {% endif %}
+    </div>
+  </a>
+  {% endfor %} {% else %}
+  <p>Vous n'avez pas encore crée de playlist!</p>
+  {% endif %}
 </div>
 {% endblock %}

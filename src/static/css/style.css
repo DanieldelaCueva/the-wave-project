@@ -76,9 +76,12 @@ body {
 
 .content { padding: 30px; max-width: 1100px; margin: auto; }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; align-items: stretch; }
 
 .card {
+    flex: 1 1 auto;          /* ⚡ ocupa todo el espacio disponible dentro del <a> */
+    display: flex;
+    flex-direction: column;
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     padding: 15px;
     border-radius: 12px;
@@ -90,6 +93,14 @@ body {
 .card:hover { transform: translateY(-6px); box-shadow: 0 8px 24px rgba(2,6,23,0.7); }
 
 .cover { width: 100%; border-radius: 8px; display: block; }
+
+.card-link {
+    display: flex;           /* ⚡ cambiar de block a flex */
+    flex-direction: column;  /* apilar hijos */
+    height: 100%;            /* ocupa toda la celda del grid */
+    text-decoration: none;
+    color: inherit;         /* no cambia colores del texto */
+}
 
 /* --- LOGIN PAGE --- */
 

@@ -1,47 +1,61 @@
-{% extends "base.html" %}
-{% block title %}Accueil – The Wave{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Accueil – The Wave{% endblock %} {%
+block content %}
 <h1>À la une</h1>
 
 <section>
-    <h2>Morceaux les plus écoutés</h2>
-    <div class="grid">
-        {% for morceau in morceaux_plus_ecoutes %}
-            <div class="card music-card">
-                <h3>{{ morceau.titre }}</h3>
-                <p>{{ morceau.tpsecoute }}</p>
-            </div>
-        {% endfor %}
-    </div>
+  <h2>Morceaux les plus écoutés</h2>
+  <div class="grid">
+    {% for morceau in morceaux_plus_ecoutes %}
+    <a href="ecouter/{{morceau.idmorceau}}" class="card-link">
+      <div class="card music-card">
+        <h3>{{ morceau.titre }}</h3>
+        <p><i>{{ morceau.groupe }}</i></p>
+        <p>{{ morceau.tpsecoute }}</p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
 </section>
 
 <section>
-    <h2>Groupes les plus suivis</h2>
-    <div class="grid">
-        {% for groupe in groupes_plus_suivis %}
-            <div class="card">
-                <img src="data:image/png;base64,{{ groupe.couverture }}" class="cover" alt="Pochette">
-                <h3>{{ groupe.nom }}</h3>
-                {% if groupe.abonnes == 1 %}
-                <p>{{ groupe.abonnes }} abonné</p>
-                {% else %}
-                <p>{{ groupe.abonnes }} abonnés</p>
-                {% endif %}
-            </div>
-        {% endfor %}
-    </div>
+  <h2>Groupes les plus suivis</h2>
+  <div class="grid">
+    {% for groupe in groupes_plus_suivis %}
+    <a href="groupe/{{groupe.idgroupe}}" class="card-link">
+      <div class="card">
+        <img
+          src="data:image/png;base64,{{ groupe.couverture }}"
+          class="cover"
+          alt="Pochette"
+        />
+        <h3>{{ groupe.nom }}</h3>
+        {% if groupe.abonnes == 1 %}
+        <p>{{ groupe.abonnes }} abonné</p>
+        {% else %}
+        <p>{{ groupe.abonnes }} abonnés</p>
+        {% endif %}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
 </section>
 
 <section>
-    <h2>Derniers albums publiés</h2>
-    <div class="grid">
-        {% for album in derniers_albums %}
-            <div class="card album-card">
-                <img src="data:image/png;base64,{{ album.couverture }}" class="cover" alt="Pochette">
-                <h3>{{ album.titre }}</h3>
-                <p>{{ album.nomGroupe }}</p>
-            </div>
-        {% endfor %}
-    </div>
+  <h2>Derniers albums publiés</h2>
+  <div class="grid">
+    {% for album in derniers_albums %}
+    <a href="album/{{album.idalbum}}" class="card-link">
+      <div class="card album-card">
+        <img
+          src="data:image/png;base64,{{ album.couverture }}"
+          class="cover"
+          alt="Pochette"
+        />
+        <h3>{{ album.titre }}</h3>
+        <p><i>{{ album.nomgroupe }}</i></p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
 </section>
 {% endblock %}

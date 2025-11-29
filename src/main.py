@@ -38,13 +38,21 @@ def accueil():
     
     with db.connect() as conn:
         with conn.cursor() as cur1:
-            cur1.execute("SELECT titre, encode(album.imCouverture, 'base64') AS couverture, nom AS nomGroupe FROM album NATURAL JOIN publie JOIN groupe ON publie.idgroupe = groupe.idgroupe ORDER BY dParution DESC LIMIT 5")
+            cur1.execute("""SELECT idAlbum, titre, encode(album.imCouverture, 'base64') AS couverture, nom AS nomGroupe 
+                         FROM album NATURAL JOIN publie JOIN groupe ON publie.idgroupe = groupe.idgroupe 
+                         ORDER BY dParution DESC LIMIT 5""")
             derniers_albums = cur1.fetchall()
         with conn.cursor() as cur2:
-            cur2.execute("SELECT nom, encode(imCouverture, 'base64') AS couverture, count(pseudo) as abonnes FROM groupe NATURAL JOIN suitGroupe GROUP BY idGroupe ORDER BY abonnes DESC LIMIT 3")
+            cur2.execute("""SELECT idGroupe, nom, encode(imCouverture, 'base64') AS couverture, count(pseudo) as abonnes 
+                         FROM groupe NATURAL JOIN suitGroupe 
+                         GROUP BY idGroupe 
+                         ORDER BY abonnes DESC LIMIT 3""")
             groupes_plus_suivis = cur2.fetchall()
         with conn.cursor() as cur3:
-            cur3.execute("SELECT titre, sum(dureeEcoute) as tpsEcoute FROM morceau NATURAL JOIN ecoute GROUP BY idMorceau ORDER BY tpsEcoute DESC LIMIT 5")
+            cur3.execute("""SELECT idMorceau, titre, sum(dureeEcoute) as tpsEcoute, nom AS groupe
+                         FROM morceau NATURAL JOIN ecoute NATURAL JOIN joue NATURAL JOIN groupe
+                         GROUP BY (idMorceau, groupe) 
+                         ORDER BY tpsEcoute DESC LIMIT 5""")
             morceaux_plus_ecoutes = cur3.fetchall()
     return render_template('accueil.html', derniers_albums = derniers_albums, groupes_plus_suivis = groupes_plus_suivis, morceaux_plus_ecoutes = morceaux_plus_ecoutes)
 
@@ -118,10 +126,35 @@ def traitement_inscription():
 def profil():
     if not verifier_si_connecte():
         return redirect(url_for("connexion"))
-
     pseudo = session.get("pseudo")
 
-    return render_template('profil.html', pseudo = pseudo, top_tracks=[], history=[], playlists=[])
+    with db.connect() as conn:
+        with conn.cursor() as cur1:
+            cur1.execute("""SELECT idMorceau, titre, nom AS groupe, sum(dureeEcoute) AS tpsEcoute 
+                            FROM morceau NATURAL JOIN ecoute NATURAL JOIN joue NATURAL JOIN groupe
+                            WHERE pseudo = '%s' 
+                            GROUP BY (idMorceau, groupe) 
+                            ORDER BY tpsEcoute DESC LIMIT 5;""" % pseudo)
+            morceaux_plus_ecoutes = cur1.fetchall()
+        with conn.cursor() as cur2:
+            cur2.execute("""SELECT idMorceau, titre, nom AS groupe, dateEcoute::date
+                            FROM morceau NATURAL JOIN ecoute NATURAL JOIN joue NATURAL JOIN groupe
+                            WHERE pseudo = '%s'
+                            ORDER BY dateEcoute DESC LIMIT 5;""" % pseudo)
+            dernieres_ecoutes = cur2.fetchall()
+        with conn.cursor() as cur3:
+            cur3.execute("""SELECT idPlaylist, titre, visibilite
+                            FROM playlist
+                            WHERE pseudoCreateur = '%s'
+                            ORDER BY dCreation DESC LIMIT 5;""" % pseudo)
+            playlists = cur3.fetchall()
+        with conn.cursor() as cur4:
+            cur4.execute("""SELECT count(suivant)
+                         FROM suitUtilisateur
+                         WHERE suivi = '%s' AND dFin IS NULL""" % pseudo)
+            abonnes = cur4.fetchone().count
+        
+    return render_template('profil.html', pseudo = pseudo, abonnes=abonnes, morceaux_plus_ecoutes = morceaux_plus_ecoutes, dernieres_ecoutes=dernieres_ecoutes, playlists=playlists)
 
 @app.route('/favicon.ico')
 def favicon():
