@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, redirect, session,url_for
 import psycopg2
 import psycopg2.extras
 import secrets
+import random
 
 from passlib.hash import pbkdf2_sha256
 
@@ -224,6 +225,43 @@ def creation_playlist(pseudo):
                 return redirect(url_for("profil"))
     else:
         return redirect(url_for("creer_playlist"))
+    
+@app.route('/suggestions')
+@validation_connexion
+def suggestions(pseudo):
+    with db.connect() as conn:
+        with conn.cursor() as cur1:
+            cur1.execute("""SELECT idArtiste, prenom ||' '|| nom AS nom, count(*) AS nb_ecoutes
+                         FROM ecoute NATURAL JOIN participe NATURAL JOIN artiste
+                         WHERE pseudo = '%s'
+                         GROUP BY (idArtiste, prenom, nom)
+                         HAVING count(*) >= 3
+                         """ % pseudo)
+            artistes_tres_ecoutes = cur1.fetchall()
+            if artistes_tres_ecoutes:
+                # on choisit quel des artistes très écoutés va être utilisé pour la recommendation
+                artiste_utilise = artistes_tres_ecoutes[random.randint(0,len(artistes_tres_ecoutes)-1)]
+            
+                with conn.cursor() as cur2:
+                    # on selectionne les morceaux joués par cet artiste sauf les deux plus écoutés par l'utilisateur
+                    cur2.execute("""(SELECT idMorceau, titre, nom AS groupe
+                    FROM morceau NATURAL JOIN participe NATURAL JOIN joue NATURAL JOIN groupe
+                    WHERE idArtiste = %i)
+                    EXCEPT
+                    (SELECT idMorceau, titre, nom AS groupe
+                    FROM morceau NATURAL JOIN ecoute NATURAL JOIN participe NATURAL JOIN joue NATURAL JOIN groupe
+                    WHERE pseudo = '%s' AND idArtiste = %i
+                    GROUP BY (idMorceau, titre, groupe.nom)
+                    ORDER BY sum(dureeEcoute) DESC LIMIT 2);
+                    """ % (artiste_utilise.idartiste, pseudo, artiste_utilise.idartiste))
+                    morceaux = cur2.fetchall()
+                    suggestion_1 = {
+                        "nom_artiste" : artiste_utilise.nom,
+                        "morceaux" : morceaux
+                    }
+            else:
+                suggestion_1 = {}
+    return render_template('utilisateur/suggestions.html', suggestion_1 = suggestion_1)
 
 @app.route('/recherche')
 def recherche():

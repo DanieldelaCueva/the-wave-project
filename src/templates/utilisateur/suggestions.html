@@ -1,16 +1,54 @@
-{% extends "base.html" %}
-{% block title %}Suggestions – The Wave{% endblock %}
+{% extends "base.html" %} {% block title %}Suggestions – The Wave{% endblock %}
 {% block content %}
-<h1>Suggestions pour vous</h1>
 
-{% for block in suggestions %}
-    <h2>{{ block.reason }}</h2>
-    <div class="grid">
-        {% for item in block.items %}
-            <div class="card">
-                <h3>{{ item.title }}</h3>
-            </div>
-        {% endfor %}
-    </div>
-{% endfor %}
+<h1>Découvrez de nouveaux morceaux ...</h1>
+<div class="two-columns">
+  <!-- COLONNE GAUCHE : morceaux d'un artiste très écouté -->
+  <div class="column">
+    {% if suggestion_1 %}
+    <h2><span style="color:#7b5cff">{{ suggestion_1.nom_artiste }}</span>, que vous écoutez souvent, joue aussi dans : </h2>
+
+    {% if suggestion_1.morceaux %} {% for morceau in suggestion_1.morceaux %}
+    <a href="ecouter/{{morceau.idmorceau}}" class="list-card-link">
+      <div class="list-card">
+        <div class="list-card-info">
+          <h3>{{ morceau.titre }}</h3>
+          <p><i>{{ morceau.groupe }}</i></p>
+        </div>
+      </div>
+    </a>
+    {% endfor %} {% else %}
+    <p>Vous n'avez pas encore d'écoutes!</p>
+    {% endif %}
+    {% else %}
+    <h2>Recommendation d'artistes que <span style="color:#7b5cff">vous écoutez souvent</span> : </h2>
+    <p>Vous n'avez pas d'historique d'écoutes fréquentes.</p>
+    {% endif %}
+  </div>
+
+  <!-- COLONNE DROITE : morceaux joués par des groupes suivis -->
+  <div class="column">
+    <h2>Des groupes que <span style="color:#7b5cff">vous suivez</span> jouent aussi :</h2>
+
+    {% if dernieres_ecoutes %} {% for morceau in dernieres_ecoutes %}
+    <a href="ecouter/{{morceau.idmorceau}}" class="list-card-link">
+      <div class="list-card">
+        <div class="list-card-info">
+          <h3>{{ morceau.titre }}</h3>
+          <p><i>{{ morceau.groupe }}</i></p>
+        </div>
+        <div class="list-card-meta">
+          <span>{{ morceau.dateecoute }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %} {% else %}
+    <p>Vous n'avez pas encore d'écoutes!</p>
+    {% endif %}
+  </div>
+</div>
+<h1>... de nouveaux groupes ...</h1>
+
+<h1>... ou des nouvelles playlists !</h1>
+
 {% endblock %}
