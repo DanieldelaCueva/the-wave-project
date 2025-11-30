@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}The Wave{% endblock %}</title>
     <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
@@ -26,7 +30,7 @@
         <a href="/recherche">Recherche</a>
         <a href="/suggestions">Suggestions</a>
         <a href="/profil">Profil</a>
-        <a href="/deconnexion" style="color:#7b5cff">Deconnexion</a>
+        <a href="/deconnexion" style="color: #7b5cff">Deconnexion</a>
       </nav>
     </header>
 

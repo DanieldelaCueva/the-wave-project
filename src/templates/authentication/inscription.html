@@ -1,69 +1,67 @@
 <!DOCTYPE html>
 <html lang="fr">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inscription — The Wave</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-</head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+  </head>
 
-<body>
+  <body>
     <header class="navbar">
-        <div class="brand">
-            <a href="/" class="logo">
-                <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo The Wave" />
-            </a>
-            <p class="title">THE WAVE</p>
-        </div>
+      <div class="brand">
+        <a href="/" class="logo">
+          <img
+            src="{{ url_for('static', filename='img/logo.jpg') }}"
+            alt="Logo The Wave"
+          />
+        </a>
+        <p class="title">THE WAVE</p>
+      </div>
     </header>
 
     <main class="content">
-        <div class="login-wrapper">
+      <div class="login-wrapper">
+        <div class="login-card">
+          <h1 class="login-title">Inscription</h1>
+          <p class="login-subtitle">Créer votre compte The Wave</p>
 
-            <div class="login-card">
-                <h1 class="login-title">Inscription</h1>
-                <p class="login-subtitle">Créer votre compte The Wave</p>
+          {% if etat == 1 %}
+          <div class="login-error">❌ Le pseudonyme existe déjà.</div>
+          {% endif %} {% if etat == 2 %}
+          <div class="login-error">❌ L'adresse email existe déjà.</div>
+          {% endif %} {% if etat == 3 %}
+          <div class="login-error">❌ Les mots de passe ne coincident pas.</div>
+          {% endif %}
 
-                {% if etat == 1 %}
-                <div class="login-error">
-                    ❌ Le pseudonyme existe déjà.
-                </div>
-                {% endif %}
+          <form method="POST" action="/traitement_inscription">
+            <label>Pseudonyme</label>
+            <input type="text" name="pseudo" required />
 
-                {% if etat == 2 %}
-                <div class="login-error">
-                    ❌ L'adresse email existe déjà.
-                </div>
-                {% endif %}
+            <label>Email</label>
+            <input type="email" name="email" required />
 
-                {% if etat == 3 %}
-                <div class="login-error">
-                    ❌ Les mots de passe ne coincident pas.
-                </div>
-                {% endif %}
+            <label>Mot de passe</label>
+            <input type="password" name="mdp" required />
 
-                <form method="POST" action="/traitement_inscription">
-                    <label>Pseudonyme</label>
-                    <input type="text" name="pseudo" required>
+            <label>Confirmer le mot de passe</label>
+            <input type="password" name="mdp_confirm" required />
 
-                    <label>Email</label>
-                    <input type="email" name="email" required>
+            <button type="submit" class="login-button">Créer un compte</button>
+          </form>
 
-                    <label>Mot de passe</label>
-                    <input type="password" name="mdp" required>
-
-                    <label>Confirmer le mot de passe</label>
-                    <input type="password" name="mdp_confirm" required>
-
-                    <button type="submit" class="login-button">Créer un compte</button>
-                </form>
-
-                <a href="/connexion" class="login-link">Déjà un compte ? Se connecter</a>
-            </div>
-
+          <a href="/connexion" class="login-link"
+            >Déjà un compte ? Se connecter</a
+          >
         </div>
+      </div>
     </main>
-</body>
-
+  </body>
 </html>

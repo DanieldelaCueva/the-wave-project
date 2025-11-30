@@ -225,10 +225,6 @@ def creation_playlist(pseudo):
     else:
         return redirect(url_for("creer_playlist"))
 
-@app.route('/favicon.ico')
-def favicon():
-    return '', 204
-
 @app.route('/recherche')
 def recherche():
     q = request.args.get('q','')
