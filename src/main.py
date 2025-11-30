@@ -5,19 +5,29 @@ from flask import Flask, render_template, request, redirect, session,url_for
 import psycopg2
 import psycopg2.extras
 import secrets
+
 from passlib.hash import pbkdf2_sha256
+
+from functools import wraps
 
 import db
 
 """
 FONCTIONS AUXILIAIRES
 """
-def verifier_si_connecte():
-    utilisateur = session.get("pseudo")
-    if utilisateur == None:
-        return False
-    else:
-        return True
+def validation_connexion(f):
+    """
+    Décorateur (outil avancé pour le cours de BDD) qui va permettre de vérifier de façon 
+    plus simple si l'utilisateur est connecté et rendre son pseudo dans les routes.
+    """
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        pseudo = session.get("pseudo")
+        if pseudo == None:
+            return redirect(url_for("connexion"))
+        else:
+            return f(pseudo=pseudo, *args, *kwargs)
+    return wrapper
 
 """
 APPLICATION WEB
@@ -27,15 +37,8 @@ app = Flask(__name__)
 app.secret_key = b'%s' % secrets.token_bytes()
 
 @app.route('/')
-def accueil():
-    # vérfie si l'utilisateur est connecté et récupère son pseudo
-    if not verifier_si_connecte():
-        return redirect(url_for("connexion"))
-
-    derniers_albums = ()
-    groupes_plus_suivis = ()
-    morceaux_plus_ecoutes = ()
-    
+@validation_connexion
+def accueil(pseudo):
     with db.connect() as conn:
         with conn.cursor() as cur1:
             cur1.execute("""SELECT idAlbum, titre, encode(album.imCouverture, 'base64') AS couverture, nom AS nomGroupe 
@@ -60,7 +63,7 @@ def accueil():
 def connexion():
     if session.get("pseudo") != None:
         return redirect(url_for("accueil"))
-    return render_template('connexion.html', etat=0)
+    return render_template('authentication/connexion.html', etat=0)
 
 @app.route('/authentication', methods = ['POST'])
 def authentication():
@@ -71,18 +74,16 @@ def authentication():
             cur.execute("SELECT mpasse FROM utilisateur WHERE pseudo='%s'" % pseudo)
             resultat = cur.fetchone()
             if resultat == None:
-                return render_template('connexion.html', etat=1)
+                return render_template('authentication/connexion.html', etat=1)
             elif pbkdf2_sha256.verify(mdp,resultat.mpasse):
                 session['pseudo'] = pseudo
                 return redirect(url_for('accueil'))
             else:
-                return render_template('connexion.html', etat=1)
+                return render_template('authentication/connexion.html', etat=1)
 
 @app.route('/deconnexion')
-def deconnexion():
-    # vérfie si l'utilisateur est connecté et récupère son pseudo
-    if not verifier_si_connecte():
-        return redirect(url_for("connexion"))
+@validation_connexion
+def deconnexion(pseudo):
     session.pop("pseudo")
     return redirect(url_for("connexion"))
 
@@ -90,7 +91,7 @@ def deconnexion():
 def inscription():
     if session.get("pseudo") != None:
         return redirect(url_for("accueil"))
-    return render_template('inscription.html', etat=0)
+    return render_template('authentication/inscription.html', etat=0)
 
 @app.route('/traitement_inscription', methods=['POST'])
 def traitement_inscription():
@@ -114,21 +115,17 @@ def traitement_inscription():
                         cur3.execute(requete)
                         return redirect(url_for("connexion"))
                 else:
-                    return render_template('inscription.html', etat=3) # erreur: les mdp ne coincident pas
+                    return render_template('authentication/inscription.html', etat=3) # erreur: les mdp ne coincident pas
             else:
                 cur2.close()
-                return render_template('inscription.html', etat=2) # erreur: l'email existe déjà
+                return render_template('authentication/inscription.html', etat=2) # erreur: l'email existe déjà
         else:
             cur1.close()
-            return render_template('inscription.html', etat=1) # erreur: le pseudo existe déjà
+            return render_template('authentication/inscription.html', etat=1) # erreur: le pseudo existe déjà
 
 @app.route('/profil')
-def profil():
-    # vérfie si l'utilisateur est connecté et récupère son pseudo
-    if not verifier_si_connecte():
-        return redirect(url_for("connexion"))
-    pseudo = session.get("pseudo")
-
+@validation_connexion
+def profil(pseudo):
     with db.connect() as conn:
         with conn.cursor() as cur1:
             cur1.execute("""SELECT idMorceau, titre, nom AS groupe, sum(dureeEcoute) AS tpsEcoute 
@@ -157,14 +154,11 @@ def profil():
                          WHERE suivi = '%s' AND dFin IS NULL""" % pseudo)
             abonnes = cur4.fetchone().count
         
-    return render_template('profil.html', pseudo = pseudo, abonnes=abonnes, morceaux_plus_ecoutes = morceaux_plus_ecoutes, dernieres_ecoutes=dernieres_ecoutes, playlists=playlists)
+    return render_template('utilisateur/profil.html', pseudo = pseudo, abonnes=abonnes, morceaux_plus_ecoutes = morceaux_plus_ecoutes, dernieres_ecoutes=dernieres_ecoutes, playlists=playlists)
 
 @app.route('/supprimer_playlist')
-def supprimer_playlist():
-    # vérfie si l'utilisateur est connecté et récupère son pseudo
-    if not verifier_si_connecte():
-        return redirect(url_for("connexion"))
-    pseudo = session.get("pseudo")
+@validation_connexion
+def supprimer_playlist(pseudo):
 
     with db.connect() as conn:
         with conn.cursor() as cur:
@@ -172,15 +166,11 @@ def supprimer_playlist():
                         FROM playlist
                         WHERE pseudoCreateur = '%s'""" % pseudo)
             playlists = cur.fetchall()
-    return render_template('supprimer_playlist.html', playlists = playlists)
+    return render_template('utilisateur/supprimer_playlist.html', playlists = playlists)
 
 @app.route('/suppression_playlist', methods = ['POST'])
-def suppression_playlist():
-    # vérfie si l'utilisateur est connecté et récupère son pseudo
-    if not verifier_si_connecte():
-        return redirect(url_for("connexion"))
-    pseudo = session.get("pseudo")
-
+@validation_connexion
+def suppression_playlist(pseudo):
     id_playlist = request.form.get("idplaylist_suppr")
     with db.connect() as conn:
         with conn.cursor() as cur1:
@@ -194,20 +184,13 @@ def suppression_playlist():
     return redirect(url_for("profil"))
 
 @app.route('/creer_playlist')
-def creer_playlist():
-    # vérfie si l'utilisateur est connecté et récupère son pseudo
-    if not verifier_si_connecte():
-        return redirect(url_for("connexion"))
-    pseudo = session.get("pseudo")
-    return render_template("creer_playlist.html", pseudo = pseudo)
+@validation_connexion
+def creer_playlist(pseudo):
+    return render_template("utilisateur/creer_playlist.html", pseudo = pseudo)
 
 @app.route('/creation_playlist', methods = ['POST'])
-def creation_playlist():
-    # vérfie si l'utilisateur est connecté et récupère son pseudo
-    if not verifier_si_connecte():
-        return redirect(url_for("connexion"))
-    pseudo = session.get("pseudo")
-
+@validation_connexion
+def creation_playlist(pseudo):
     titre = request.form.get("titre")
     description = request.form.get("description")
     visibilite = bool(request.form.get("visibilité"))
@@ -230,7 +213,7 @@ def favicon():
 def recherche():
     q = request.args.get('q','')
     results = []
-    return render_template('recherche.html', q=q, results=results)
+    return render_template('general/recherche.html', q=q, results=results)
 
 if __name__ == '__main__':
     app.run(debug=True)
