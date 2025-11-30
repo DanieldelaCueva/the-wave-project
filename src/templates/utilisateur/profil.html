@@ -10,34 +10,48 @@ block content %}
   {% endif %}
 </p>
 
-<h2>Vos morceaux les plus écoutés</h2>
-<div class="grid">
-  {% if morceaux_plus_ecoutes %} {% for morceau in morceaux_plus_ecoutes %}
-  <a href="ecouter/{{morceau.idmorceau}}" class="card-link">
-    <div class="card music-card">
-      <h3>{{ morceau.titre }}</h3>
-      <p><i>{{ morceau.groupe }}</i></p>
-      <p>{{ morceau.tpsecoute }}</p>
-    </div>
-  </a>
-  {% endfor %} {% else %}
-  <p>Vous n'avez pas encore d'écoutes!</p>
-  {% endif %}
-</div>
+<div class="two-columns">
+  <!-- COLONNE GAUCHE : morceaux les plus écoutés -->
+  <div class="column">
+    <h2>Vos morceaux les plus écoutés</h2>
 
-<h2>Vos dernières écoutes</h2>
-<div class="grid">
-  {% if dernieres_ecoutes %} {% for morceau in dernieres_ecoutes %}
-  <a href="ecouter/{{morceau.idmorceau}}" class="card-link">
-    <div class="card music-card">
-      <h3>{{ morceau.titre }}</h3>
-      <p><i>{{ morceau.groupe }}</i></p>
-      <p>{{ morceau.dateecoute }}</p>
-    </div>
-  </a>
-  {% endfor %} {% else %}
-  <p>Vous n'avez pas encore d'écoutes!</p>
-  {% endif %}
+    {% if morceaux_plus_ecoutes %} {% for morceau in morceaux_plus_ecoutes %}
+    <a href="ecouter/{{morceau.idmorceau}}" class="list-card-link">
+      <div class="list-card">
+        <div class="list-card-info">
+          <h3>{{ morceau.titre }}</h3>
+          <p><i>{{ morceau.groupe }}</i></p>
+        </div>
+        <div class="list-card-meta">
+          <span>{{ morceau.tpsecoute }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %} {% else %}
+    <p>Vous n'avez pas encore d'écoutes!</p>
+    {% endif %}
+  </div>
+
+  <!-- COLONNE DROITE : dernières écoutes -->
+  <div class="column">
+    <h2>Vos dernières écoutes</h2>
+
+    {% if dernieres_ecoutes %} {% for morceau in dernieres_ecoutes %}
+    <a href="ecouter/{{morceau.idmorceau}}" class="list-card-link">
+      <div class="list-card">
+        <div class="list-card-info">
+          <h3>{{ morceau.titre }}</h3>
+          <p><i>{{ morceau.groupe }}</i></p>
+        </div>
+        <div class="list-card-meta">
+          <span>{{ morceau.dateecoute }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %} {% else %}
+    <p>Vous n'avez pas encore d'écoutes!</p>
+    {% endif %}
+  </div>
 </div>
 
 <h2>Vos Playlists</h2>
@@ -45,7 +59,12 @@ block content %}
   {% for playlist in playlists %}
   <a href="playlist/{{playlist.idplaylist}}" class="card-link">
     <div class="card music-card">
-      <h3>{{ playlist.titre }} : <span style="font-weight: normal;font-size: 1rem;">{{ playlist.nbmorceaux }} morceaux</span></h3>
+      <h3>
+        {{ playlist.titre }} :
+        <span style="font-weight: normal; font-size: 1rem"
+          >{{ playlist.nbmorceaux }} morceaux</span
+        >
+      </h3>
       {% if playlist.visibilite %}
       <p><i>Publique</i></p>
       {% else %}
@@ -54,32 +73,112 @@ block content %}
     </div>
   </a>
   {% endfor %}
+  {% if not playlists %}
+  <p>Vous n'avez pas encore de playlists!</p>
+  {% endif %}
 </div>
 
 <!-- Actions pour les playlists : créer + supprimer -->
 <div class="playlist-actions-wrapper">
   <div class="playlist-actions">
     <!-- Créer une playlist : lien vers la route de création -->
-    <a href="/creer_playlist" class="icon-button create" title="Créer une playlist" aria-label="Créer une playlist">
+    <a
+      href="/creer_playlist"
+      class="icon-button create"
+      title="Créer une playlist"
+      aria-label="Créer une playlist"
+    >
       <!-- SVG + -->
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 5v14M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 5v14M5 12h14"
+          stroke="white"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     </a>
-
+    {% if playlists %}
     <!-- Supprimer une playlist : lien -->
-<a href="/supprimer_playlist" 
-   class="icon-button delete" 
-   title="Supprimer une playlist" 
-   aria-label="Supprimer une playlist">
+    <a
+      href="/supprimer_playlist"
+      class="icon-button delete"
+      title="Supprimer une playlist"
+      aria-label="Supprimer une playlist"
+    >
+      <!-- SVG corbeille -->
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M10 6V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"
+          stroke="white"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </a>
+    {% endif %}
+  </div>
+</div>
 
-    <!-- SVG corbeille -->
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M10 6V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2" 
-              stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-</a>
+<div class="two-columns">
+  <!-- COLONNE GAUCHE : actualités des personnes suivies -->
+  <div class="column">
+    <h2>Dernières écoutes de ceux que vous suivez</h2>
 
+    {% if dernieres_ecoutes_suivis %} {% for morceau in dernieres_ecoutes_suivis %}
+    <a href="ecouter/{{morceau.idmorceau}}" class="list-card-link">
+      <div class="list-card">
+        <div class="list-card-info">
+          <h3>{{ morceau.titre }} <span style="font-weight: normal; font-size: 1rem"
+          >(@{{ morceau.utilisateur }})</span
+        ></h3>
+          <p><i>{{ morceau.groupe }}</i></p>
+        </div>
+        <div class="list-card-meta">
+          <span>{{ morceau.dateecoute }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %} {% else %}
+    <p>Vous ne suivez pas encore d'utilisateurs ou ceux-ci n'ont rien écouté.</p>
+    {% endif %}
+  </div>
+
+  <!-- COLONNE DROITE : actualités des groupes suivies -->
+  <div class="column">
+    <h2>Derniers morceaux de vos groupes préférés</h2>
+
+    {% if dernieres_publications_groupes_suivis %} {% for morceau in dernieres_publications_groupes_suivis %}
+    <a href="ecouter/{{morceau.idmorceau}}" class="list-card-link">
+      <div class="list-card">
+        <div class="list-card-info">
+          <h3>{{ morceau.titre }}</h3>
+          <p><i>{{ morceau.groupe }}</i></p>
+        </div>
+        <div class="list-card-meta">
+          <span>{{ morceau.dpublication }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %} {% else %}
+    <p>Vous ne suivez pas encore de groupes ou ceux-ci n'ont rien publié.</p>
+    {% endif %}
   </div>
 </div>
 

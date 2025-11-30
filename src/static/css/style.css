@@ -450,3 +450,61 @@ pre.lyrics {
     background: linear-gradient(90deg, #7b5cff, #9a7dff);
     color: white;
 }
+
+/* --- NOUVELLES LISTES EN DEUX COLONNES --- */
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.column h2 {
+    margin-bottom: 16px;
+}
+
+/* Cartes horizontales */
+.list-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.list-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.04);
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 2px 8px rgba(2,6,23,0.5);
+}
+
+.list-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(2,6,23,0.7);
+}
+
+.list-card-info h3 {
+    margin: 0 0 2px 0;
+    font-size: 1.1rem;
+}
+
+.list-card-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #b7c5d3;
+}
+
+.list-card-meta {
+    font-size: 0.9rem;
+    color: #d0d7e0;
+}
+
+/* Responsive : une colonne sur mobile */
+@media (max-width: 800px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+}

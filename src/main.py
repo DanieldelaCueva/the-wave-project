@@ -153,8 +153,28 @@ def profil(pseudo):
                          FROM suitUtilisateur
                          WHERE suivi = '%s' AND dFin IS NULL""" % pseudo)
             abonnes = cur4.fetchone().count
+        with conn.cursor() as cur5:
+            cur5.execute("""SELECT idMorceau, titre, nom AS groupe, dateEcoute::date, pseudo AS utilisateur
+                            FROM morceau NATURAL JOIN ecoute NATURAL JOIN joue NATURAL JOIN groupe
+                            WHERE pseudo IN (
+						                        SELECT suivi
+						                        FROM suitUtilisateur
+						                        WHERE suivant = '%s' AND dFin IS NULL
+					                        )
+                            ORDER BY dateEcoute DESC LIMIT 5;""" % pseudo)
+            dernieres_ecoutes_suivis = cur5.fetchall()
+        with conn.cursor() as cur6:
+            cur6.execute("""SELECT idMorceau, titre, nom AS groupe, dPublication::date
+                            FROM groupe NATURAL JOIN joue NATURAL JOIN morceau
+                            WHERE idGroupe IN (
+						SELECT idGroupe
+						FROM suitGroupe
+						WHERE pseudo = '%s' AND dFin IS NULL
+					    )
+                            ORDER BY dPublication DESC LIMIT 5;""" % pseudo)
+            dernieres_publications_groupes_suivis = cur6.fetchall()
         
-    return render_template('utilisateur/profil.html', pseudo = pseudo, abonnes=abonnes, morceaux_plus_ecoutes = morceaux_plus_ecoutes, dernieres_ecoutes=dernieres_ecoutes, playlists=playlists)
+    return render_template('utilisateur/profil.html', pseudo = pseudo, abonnes=abonnes, morceaux_plus_ecoutes = morceaux_plus_ecoutes, dernieres_ecoutes=dernieres_ecoutes, playlists=playlists, dernieres_ecoutes_suivis=dernieres_ecoutes_suivis, dernieres_publications_groupes_suivis=dernieres_publications_groupes_suivis)
 
 @app.route('/supprimer_playlist')
 @validation_connexion
