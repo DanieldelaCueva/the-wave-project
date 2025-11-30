@@ -1,0 +1,58 @@
+{% extends "base.html" %} {% block title %}Supprimer une playlist – The Wave{%
+endblock %} {% block content %}
+<div class="create-playlist-container">
+  <h1 class="page-title">Créer une playlist</h1>
+
+  <form action="creation_playlist" method="POST" class="playlist-form">
+    <!-- Titre -->
+    <label for="titre" class="form-label">Titre</label>
+    <input type="text" id="titre" name="titre" class="form-input" required />
+
+    <!-- Créateur -->
+    <label for="createur" class="form-label">Créateur</label>
+    <input
+      type="text"
+      id="createur"
+      name="createur"
+      class="form-input"
+      disabled="disabled"
+      value="{{ pseudo }}"
+      style="color: #aaa"
+    />
+
+    <!-- Description -->
+    <label for="description" class="form-label">Description</label>
+    <textarea
+      id="description"
+      name="description"
+      class="form-textarea"
+      rows="4"
+    ></textarea>
+
+    <label>Visibilité</label>
+    <div class="visibility-toggle">
+      <input type="radio" name="visibilite" id="private" value="0" />
+      <label for="private" class="toggle-option left">Privée</label>
+
+      <input type="radio" name="visibilite" id="public" value="1" checked />
+      <label for="public" class="toggle-option right">Publique</label>
+    </div>
+
+    <!-- Contenedor del botón a la derecha -->
+    <div class="button-right">
+      <button type="submit" class="submit-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M5 12h14M12 5v14"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+        Créer
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

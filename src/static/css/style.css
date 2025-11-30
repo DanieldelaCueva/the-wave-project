@@ -90,7 +90,7 @@ body {
     backdrop-filter: blur(4px);
 }
 
-.card:hover { transform: translateY(-6px); box-shadow: 0 8px 24px rgba(2,6,23,0.7); }
+.card:hover { box-shadow: 0 8px 24px rgba(2,6,23,0.7); }
 
 .cover { width: 100%; border-radius: 8px; display: block; }
 
@@ -100,6 +100,10 @@ body {
     height: 100%;            /* ocupa toda la celda del grid */
     text-decoration: none;
     color: inherit;         /* no cambia colores del texto */
+}
+
+.card-link:hover{
+    border-color: #7b5cff;
 }
 
 /* --- LOGIN PAGE --- */
@@ -239,3 +243,219 @@ pre.lyrics { white-space: pre-wrap; background: rgba(255,255,255,0.02); padding:
 .logout-link::after {
     display: none;
 }
+
+/* --- ACTIONS PLAYLISTS (créer / supprimer) --- */
+.playlist-actions-wrapper {
+    max-width: 1100px;   /* même largeur que .content */
+    margin: 12px auto 36px; /* espace au-dessus/dessous pour apparaître juste sous la grille */
+    padding: 0 30px;     /* même padding que .content */
+}
+
+.playlist-actions {
+    display: flex;
+    justify-content: flex-end;  /* aligné à droite */
+    gap: 12px;
+    align-items: center;
+}
+
+/* Boutons icônes : style moderne cohérent avec .login-button et .card */
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .12s ease, box-shadow .18s ease, opacity .12s ease;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.55);
+    background: linear-gradient(90deg, #7b5cff, #9a7dff);
+    color: white;
+    padding: 0;
+}
+
+/* Variante : créer (violet / mauve) */
+.icon-button.create {
+    background: linear-gradient(90deg, #7b5cff, #9a7dff);
+}
+
+/* Variante : supprimer — fond plus sombre et hover rouge */
+.icon-button.delete {
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+    color: #ffb3b3;
+}
+
+/* Effets hover / focus */
+.icon-button:hover {
+    box-shadow: 0 12px 30px rgba(2,6,23,0.72);
+    opacity: 1;
+    outline: none;
+}
+
+.icon-button.delete:hover {
+    background: linear-gradient(90deg, #ff6b6b, #ff4d4d);
+    color: #fff;
+}
+
+/* Accessibilité : focus visible */
+.icon-button:focus {
+    outline: 3px solid rgba(123,92,255,0.18);
+    outline-offset: 3px;
+}
+
+/* Ajustement pour les SVG : pas de débordement */
+.icon-button svg { display: block; }
+
+/* --- SUPPRESSION DE PLAYLISTS : page avec liste déroulante --- */
+
+.playlist-select {
+    width: 100%;
+    max-width: 320px;
+    padding: 10px 12px;
+    margin: 14px 0 22px 0;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.13);
+    color: #e9f1f7;
+    font-size: 1rem;
+    transition: border .2s ease, background .2s ease;
+}
+
+.playlist-select:focus {
+    border-color: #7b5cff;
+    background: rgba(255,255,255,0.1);
+    outline: none;
+}
+
+.delete-button {
+    padding: 12px 22px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #ff6b6b, #ff4d4d);
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .25s ease;
+}
+
+.delete-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 80, 80, 0.45);
+}
+
+.create-playlist-container {
+    background-color: #151515;
+    padding: 24px 32px;
+    border-radius: 18px;
+    max-width: 520px;
+    margin: 0 auto;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+
+.page-title {
+    color: white;
+    font-size: 26px;
+    margin-bottom: 22px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.playlist-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Labels */
+.form-label {
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: -8px;
+}
+
+/* Inputs */
+.form-input, .form-textarea {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 15px;
+
+    transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+    width: 100%;
+}
+
+.form-input:hover,
+.form-textarea:hover {
+    background-color: #262626;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #6a6aff;
+    box-shadow: 0 0 0 3px rgba(106,106,255,0.35);
+}
+
+/* Contenedor solo para el botón */
+.button-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Botón estilizado */
+.submit-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(90deg, #7b5cff, #9a7dff);
+    padding: 10px 22px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    min-width: 100px;
+    transition: transform .15s ease, box-shadow .25s ease;
+}
+
+/* Contenedor del toggle */
+.visibility-toggle {
+    display: flex;
+    width: 260px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Ocultar radios */
+.visibility-toggle input[type="radio"] {
+    display: none;
+}
+
+/* Opciones */
+.toggle-option {
+    flex: 1;
+    padding: 10px 0;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 600;
+    color: #d1d9e0;
+    transition: background .25s ease, color .25s ease;
+}
+
+/* Estado seleccionado */
+#private:checked + .left,
+#public:checked + .right {
+    background: linear-gradient(90deg, #7b5cff, #9a7dff);
+    color: white;
+}
+

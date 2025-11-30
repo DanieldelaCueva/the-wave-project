@@ -14,7 +14,6 @@ FONCTIONS AUXILIAIRES
 """
 def verifier_si_connecte():
     utilisateur = session.get("pseudo")
-    print(utilisateur)
     if utilisateur == None:
         return False
     else:
@@ -29,6 +28,7 @@ app.secret_key = b'%s' % secrets.token_bytes()
 
 @app.route('/')
 def accueil():
+    # vérfie si l'utilisateur est connecté et récupère son pseudo
     if not verifier_si_connecte():
         return redirect(url_for("connexion"))
 
@@ -70,7 +70,6 @@ def authentication():
         with conn.cursor() as cur:
             cur.execute("SELECT mpasse FROM utilisateur WHERE pseudo='%s'" % pseudo)
             resultat = cur.fetchone()
-            print(resultat.mpasse)
             if resultat == None:
                 return render_template('connexion.html', etat=1)
             elif pbkdf2_sha256.verify(mdp,resultat.mpasse):
@@ -81,6 +80,7 @@ def authentication():
 
 @app.route('/deconnexion')
 def deconnexion():
+    # vérfie si l'utilisateur est connecté et récupère son pseudo
     if not verifier_si_connecte():
         return redirect(url_for("connexion"))
     session.pop("pseudo")
@@ -124,6 +124,7 @@ def traitement_inscription():
 
 @app.route('/profil')
 def profil():
+    # vérfie si l'utilisateur est connecté et récupère son pseudo
     if not verifier_si_connecte():
         return redirect(url_for("connexion"))
     pseudo = session.get("pseudo")
@@ -143,9 +144,11 @@ def profil():
                             ORDER BY dateEcoute DESC LIMIT 5;""" % pseudo)
             dernieres_ecoutes = cur2.fetchall()
         with conn.cursor() as cur3:
-            cur3.execute("""SELECT idPlaylist, titre, visibilite
-                            FROM playlist
+            # on fait LEFT JOIN au cas où la playlist ne contient pas de morceaux
+            cur3.execute("""SELECT playlist.idPlaylist, titre, visibilite, count(idMorceau) as nbMorceaux
+                            FROM playlist LEFT JOIN inclus ON inclus.idPlaylist = playlist.idPlaylist
                             WHERE pseudoCreateur = '%s'
+			                GROUP BY playlist.idPlaylist
                             ORDER BY dCreation DESC LIMIT 5;""" % pseudo)
             playlists = cur3.fetchall()
         with conn.cursor() as cur4:
@@ -155,6 +158,69 @@ def profil():
             abonnes = cur4.fetchone().count
         
     return render_template('profil.html', pseudo = pseudo, abonnes=abonnes, morceaux_plus_ecoutes = morceaux_plus_ecoutes, dernieres_ecoutes=dernieres_ecoutes, playlists=playlists)
+
+@app.route('/supprimer_playlist')
+def supprimer_playlist():
+    # vérfie si l'utilisateur est connecté et récupère son pseudo
+    if not verifier_si_connecte():
+        return redirect(url_for("connexion"))
+    pseudo = session.get("pseudo")
+
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""SELECT idPlaylist, titre
+                        FROM playlist
+                        WHERE pseudoCreateur = '%s'""" % pseudo)
+            playlists = cur.fetchall()
+    return render_template('supprimer_playlist.html', playlists = playlists)
+
+@app.route('/suppression_playlist', methods = ['POST'])
+def suppression_playlist():
+    # vérfie si l'utilisateur est connecté et récupère son pseudo
+    if not verifier_si_connecte():
+        return redirect(url_for("connexion"))
+    pseudo = session.get("pseudo")
+
+    id_playlist = request.form.get("idplaylist_suppr")
+    with db.connect() as conn:
+        with conn.cursor() as cur1:
+            cur1.execute("""SELECT pseudoCreateur
+                         FROM playlist
+                         WHERE idPlaylist = %i""" % int(id_playlist))
+            createur = cur1.fetchone().pseudocreateur
+            if createur == pseudo:
+                with conn.cursor() as cur2:
+                    cur2.execute("""DELETE FROM playlist WHERE idPlaylist = %i""" % int(id_playlist))
+    return redirect(url_for("profil"))
+
+@app.route('/creer_playlist')
+def creer_playlist():
+    # vérfie si l'utilisateur est connecté et récupère son pseudo
+    if not verifier_si_connecte():
+        return redirect(url_for("connexion"))
+    pseudo = session.get("pseudo")
+    return render_template("creer_playlist.html", pseudo = pseudo)
+
+@app.route('/creation_playlist', methods = ['POST'])
+def creation_playlist():
+    # vérfie si l'utilisateur est connecté et récupère son pseudo
+    if not verifier_si_connecte():
+        return redirect(url_for("connexion"))
+    pseudo = session.get("pseudo")
+
+    titre = request.form.get("titre")
+    description = request.form.get("description")
+    visibilite = bool(request.form.get("visibilité"))
+
+    if titre:
+        with db.connect() as conn:
+            # idPlaylist est serial et dCreation est now par défaut
+            with conn.cursor() as cur1:
+                cur1.execute("""INSERT INTO playlist (titre, descPlaylist, visibilite, pseudoCreateur)
+                             VALUES ('%s', '%s', %s, '%s')""" % (titre, description, visibilite, pseudo))
+                return redirect(url_for("profil"))
+    else:
+        return redirect(url_for("creer_playlist"))
 
 @app.route('/favicon.ico')
 def favicon():
