@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Playlist – The Wave{% endblock %}
+
+{% block content %}
+
+<h1>{{ playlist.titre }}</h1>
+
+<p>
+  <i>Par @{{ playlist.pseudocreateur }}</i>
+</p>
+
+{% if playlist.descplaylist %}
+<p style="max-width: 800px; color: #cdd6e3; margin-bottom: 30px;">
+  {{ playlist.descplaylist }}
+</p>
+{% else %}
+<p style="color: #788089"><i>Aucune description.</i></p>
+{% endif %}
+
+<!-- Informations sur visibilité -->
+<p style="margin-top: -10px; margin-bottom: 30px;">
+  {% if playlist.visibilite %}
+    <span style="color: #8fceff;">Publique</span>
+  {% else %}
+    <span style="color: #ff8f8f;">Privée</span>
+  {% endif %}
+  – {{ morceaux|length }} morceaux
+</p>
+
+<h2>Contenu de la playlist</h2>
+
+{% if morceaux %}
+  {% for morceau in morceaux %}
+  <a href="/ecouter/{{ morceau.idmorceau }}" class="list-card-link">
+    <div class="list-card">
+      <div class="list-card-info">
+        <h3>{{ morceau.titre }}</h3>
+        <p><i>{{ morceau.groupe }}</i></p>
+      </div>
+      <div class="list-card-meta">
+        <span>{{ morceau.dureemorceau }}</span>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+{% else %}
+  <p>Cette playlist est vide pour le moment.</p>
+{% endif %}
+
+{% endblock %}
