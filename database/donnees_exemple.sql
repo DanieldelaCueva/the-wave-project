@@ -419,7 +419,27 @@ INSERT INTO Participe (idArtiste, idMorceau) VALUES
 INSERT INTO Playlist (titre, descPlaylist, visibilite, dCreation, pseudoCreateur) VALUES
 ('Best of 70s Rock', 'Hits incontournables des années 70', TRUE, '2024-01-01', 'melomane92'),
 ('Indie & Chill', 'Ambiance détendue pour l''après-midi', TRUE, '2024-02-14', 'indie_vibes'),
-('Electro Party', 'Bangers électroniques', FALSE, '2024-03-03', 'electrohead');
+('Electro Party', 'Bangers électroniques', FALSE, '2024-03-03', 'electrohead'),
+('Roadtrip Vibes', 'Rock pour prendre la route', TRUE, '2024-04-01', 'rockfan'),
+('Chill Night', 'Ambiance douce du soir', TRUE, '2024-05-12', 'lofi_dreams'),
+('Pink Floyd Essentials', 'Les meilleurs titres PF', TRUE, '2024-06-18', 'vinyl_addict'),
+('Radiohead Mood', 'Sélection mélancolique', FALSE, '2024-07-02', 'jazzlover'),
+('Queen Forever', 'La légende du rock', TRUE, '2024-07-10', 'queenfan'),
+('Electro Workout', 'Pour s’entraîner', TRUE, '2024-08-01', 'electrohead'),
+('Classic Rock Mix', 'Rock 60–80', TRUE, '2024-09-01', 'classicrock'),
+('AM Indie Mix', 'Indie UK moderne', FALSE, '2024-09-10', 'indie_vibes'),
+('Beatles Only', '100% Beatles', TRUE, '2024-09-20', 'beatlemania'),
+('Relax & Focus', 'Musique calme', TRUE, '2024-10-03', 'lofi_dreams'),
+('Epic Live Cuts', 'Performances live', TRUE, '2024-10-10', 'melomane92'),
+('Morning Boost', 'Rock motivant', FALSE, '2024-10-21', 'rockfan'),
+('Night Drive', 'Électronique sombre', TRUE, '2024-11-01', 'electrohead'),
+('French Touch', 'Électro française', TRUE, '2024-11-12', 'electrohead'),
+('Brit Rock Mix', 'Made in UK', TRUE, '2024-11-20', 'classicrock'),
+('Indie Discovery', 'Découvertes indie', TRUE, '2024-12-05', 'indie_vibes'),
+('Calm Piano', 'Ambiance zen', TRUE, '2025-01-10', 'jazzlover'),
+('Power Rock', 'Rock énergique', TRUE, '2025-01-15', 'rockfan'),
+('Soft Electro', 'Électronique douce', FALSE, '2025-01-20', 'lofi_dreams'),
+('Best of US Rock', 'Top US', TRUE, '2025-01-25', 'vinyl_addict');
 
 
 -- -----------------------------
@@ -437,6 +457,192 @@ INSERT INTO Inclus (idPlaylist, idMorceau, ordreDsPlaylist) VALUES
 INSERT INTO Inclus (idPlaylist, idMorceau, ordreDsPlaylist) VALUES
 (3,16,1),(3,18,2),(3,57,3),(3,59,4);
 
+-- ============================================================
+-- PLAYLIST 4 — Roadtrip Vibes (rock)
+-- ============================================================
+INSERT INTO Inclus VALUES
+(4, 1, 1),
+(4, 2, 2),
+(4, 5, 3),
+(4, 6, 4),
+(4, 39, 5);
+
+-- ============================================================
+-- PLAYLIST 5 — Chill Night (lofi)
+-- ============================================================
+INSERT INTO Inclus VALUES
+(5, 23, 1),
+(5, 24, 2),
+(5, 21, 3),
+(5, 47, 4),
+(5, 48, 5);
+
+-- ============================================================
+-- PLAYLIST 6 — Pink Floyd Essentials
+-- ============================================================
+INSERT INTO Inclus VALUES
+(6, 11, 1),
+(6, 12, 2),
+(6, 13, 3),
+(6, 14, 4),
+(6, 54, 5);
+
+-- ============================================================
+-- PLAYLIST 7 — Radiohead Mood
+-- ============================================================
+INSERT INTO Inclus VALUES
+(7, 28, 1),
+(7, 29, 2),
+(7, 52, 3),
+(7, 54, 4);
+
+-- ============================================================
+-- PLAYLIST 8 — Queen Forever
+-- ============================================================
+INSERT INTO Inclus VALUES
+(8, 6, 1),
+(8, 7, 2),
+(8, 8, 3),
+(8, 9, 4),
+(8, 10, 5);
+
+-- ============================================================
+-- PLAYLIST 9 — Electro Workout
+-- ============================================================
+INSERT INTO Inclus VALUES
+(9, 16, 1),
+(9, 17, 2),
+(9, 18, 3),
+(9, 57, 4),
+(9, 59, 5);
+
+-- ============================================================
+-- PLAYLIST 10 — Classic Rock Mix
+-- ============================================================
+INSERT INTO Inclus VALUES
+(10, 1, 1),
+(10, 14, 2),
+(10, 39, 3),
+(10, 8, 4),
+(10, 5, 5);
+
+-- ============================================================
+-- PLAYLIST 11 — AM Indie Mix
+-- ============================================================
+INSERT INTO Inclus VALUES
+(11, 41, 1),
+(11, 42, 2),
+(11, 43, 3),
+(11, 44, 4),
+(11, 45, 5);
+
+-- ============================================================
+-- PLAYLIST 12 — Beatles Only
+-- ============================================================
+INSERT INTO Inclus VALUES
+(12, 1, 1),
+(12, 2, 2),
+(12, 3, 3),
+(12, 5, 4);
+
+-- ============================================================
+-- PLAYLIST 13 — Relax & Focus
+-- ============================================================
+INSERT INTO Inclus VALUES
+(13, 23, 1),
+(13, 24, 2),
+(13, 47, 3),
+(13, 48, 4);
+
+-- ============================================================
+-- PLAYLIST 14 — Epic Live Cuts
+-- ============================================================
+INSERT INTO Inclus VALUES
+(14, 39, 1),
+(14, 14, 2),
+(14, 8, 3),
+(14, 54, 4);
+
+-- ============================================================
+-- PLAYLIST 15 — Morning Boost
+-- ============================================================
+INSERT INTO Inclus VALUES
+(15, 6, 1),
+(15, 34, 2),
+(15, 37, 3),
+(15, 8, 4);
+
+-- ============================================================
+-- PLAYLIST 16 — Night Drive (electro sombre)
+-- ============================================================
+INSERT INTO Inclus VALUES
+(16, 57, 1),
+(16, 58, 2),
+(16, 59, 3),
+(16, 18, 4);
+
+-- ============================================================
+-- PLAYLIST 17 — French Touch
+-- ============================================================
+INSERT INTO Inclus VALUES
+(17, 16, 1),
+(17, 17, 2),
+(17, 18, 3),
+(17, 19, 4);
+
+-- ============================================================
+-- PLAYLIST 18 — Brit Rock Mix
+-- ============================================================
+INSERT INTO Inclus VALUES
+(18, 1, 1),
+(18, 6, 2),
+(18, 39, 3),
+(18, 41, 4);
+
+-- ============================================================
+-- PLAYLIST 19 — Indie Discovery
+-- ============================================================
+INSERT INTO Inclus VALUES
+(19, 41, 1),
+(19, 42, 2),
+(19, 43, 3),
+(19, 45, 4),
+(19, 26, 5);
+
+-- ============================================================
+-- PLAYLIST 20 — Calm Piano (radiohead / chill)
+-- ============================================================
+INSERT INTO Inclus VALUES
+(20, 28, 1),
+(20, 29, 2),
+(20, 52, 3);
+
+-- ============================================================
+-- PLAYLIST 21 — Power Rock
+-- ============================================================
+INSERT INTO Inclus VALUES
+(21, 6, 1),
+(21, 7, 2),
+(21, 8, 3),
+(21, 39, 4);
+
+-- ============================================================
+-- PLAYLIST 22 — Soft Electro
+-- ============================================================
+INSERT INTO Inclus VALUES
+(22, 16, 1),
+(22, 57, 2),
+(22, 58, 3);
+
+-- ============================================================
+-- PLAYLIST 23 — Best of US Rock
+-- ============================================================
+INSERT INTO Inclus VALUES
+(23, 7, 1),
+(23, 8, 2),
+(23, 39, 3),
+(23, 34, 4);
+
 -- -----------------------------
 -- 14) ECOUTE (pseudo, idMorceau, dureeEcoute, dateEcoute)
 -- Quelques écoutes simulées (clé primaire pseudo+idMorceau)
@@ -453,6 +659,16 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('melomane92', 1, '00:04:20', '2024-09-10 08:00:00'),
 ('melomane92', 3, '00:03:27', '2024-09-12 12:30:00'),
 ('melomane92', 36, '00:04:55', '2024-09-14 17:30:00'),
+('melomane92', 5, '00:02:51', '2024-09-16 11:10:00'),
+('melomane92', 7, '00:02:52', '2024-09-18 12:40:00'),
+('melomane92', 8, '00:03:38', '2024-09-19 14:30:00'),
+('melomane92', 39, '00:08:02', '2024-09-20 10:20:00'),
+('melomane92', 14, '00:06:23', '2024-09-22 13:00:00'),
+('melomane92', 1, '00:04:20', '2024-09-23 09:05:00'),
+('melomane92', 2, '00:03:03', '2024-09-24 10:10:00'),
+('melomane92', 3, '00:03:27', '2024-09-25 11:15:00'),
+('melomane92', 6, '00:05:55', '2024-09-26 18:40:00'),
+('melomane92', 39, '00:08:02', '2024-09-27 21:30:00'),
 
 -- rockfan : Queen, Nirvana et Zeppelin
 ('rockfan', 6, '00:05:55', '2024-09-02 11:15:00'),
@@ -464,6 +680,16 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('rockfan', 8, '00:03:38', '2024-09-15 18:00:00'),
 ('rockfan', 6, '00:05:55', '2024-09-17 20:00:00'),
 ('rockfan', 7, '00:02:52', '2024-09-18 20:00:00'),
+('rockfan', 6, '00:05:55', '2024-09-20 12:15:00'),
+('rockfan', 7, '00:02:52', '2024-09-21 20:10:00'),
+('rockfan', 8, '00:03:38', '2024-09-22 19:50:00'),
+('rockfan', 34, '00:03:03', '2024-09-23 17:25:00'),
+('rockfan', 39, '00:08:02', '2024-09-25 08:40:00'),
+('rockfan', 37, '00:03:40', '2024-09-26 14:50:00'),
+('rockfan', 6, '00:05:55', '2024-09-27 20:00:00'),
+('rockfan', 7, '00:02:52', '2024-09-28 20:00:00'),
+('rockfan', 8, '00:03:38', '2024-09-29 18:00:00'),
+('rockfan', 39, '00:08:02', '2024-10-01 21:00:00'),
 
 -- jazzlover : Pink Floyd, Radiohead
 ('jazzlover', 11, '00:01:30', '2024-09-01 11:00:00'),
@@ -475,6 +701,16 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('jazzlover', 52, '00:03:59', '2024-09-11 22:00:00'),
 ('jazzlover', 54, '00:06:22', '2024-09-12 23:00:00'),
 ('jazzlover', 14, '00:06:23', '2024-09-15 12:30:00'),
+('jazzlover', 11, '00:01:30', '2024-09-16 11:30:00'),
+('jazzlover', 12, '00:02:43', '2024-09-17 12:10:00'),
+('jazzlover', 13, '00:07:06', '2024-09-18 16:20:00'),
+('jazzlover', 14, '00:06:23', '2024-09-20 15:00:00'),
+('jazzlover', 28, '00:04:27', '2024-09-22 10:00:00'),
+('jazzlover', 29, '00:04:24', '2024-09-23 11:00:00'),
+('jazzlover', 54, '00:06:22', '2024-09-25 20:00:00'),
+('jazzlover', 52, '00:03:59', '2024-09-26 22:00:00'),
+('jazzlover', 14, '00:06:23', '2024-09-28 12:30:00'),
+('jazzlover', 12, '00:02:43', '2024-09-29 13:00:00'),
 
 -- beatlemania : Beatles, Coldplay
 ('beatlemania', 1, '00:04:20', '2024-09-01 09:00:00'),
@@ -485,6 +721,16 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('beatlemania', 25, '00:04:09', '2024-09-06 22:00:00'),
 ('beatlemania', 1, '00:04:20', '2024-09-07 09:00:00'),
 ('beatlemania', 5, '00:02:51', '2024-09-08 09:00:00'),
+('beatlemania', 1, '00:04:20', '2024-09-09 09:00:00'),
+('beatlemania', 2, '00:03:03', '2024-09-10 09:00:00'),
+('beatlemania', 3, '00:03:27', '2024-09-11 09:00:00'),
+('beatlemania', 23, '00:04:29', '2024-09-12 21:00:00'),
+('beatlemania', 24, '00:02:30', '2024-09-13 21:30:00'),
+('beatlemania', 5, '00:02:51', '2024-09-14 11:20:00'),
+('beatlemania', 25, '00:04:09', '2024-09-15 22:00:00'),
+('beatlemania', 3, '00:03:27', '2024-09-16 09:00:00'),
+('beatlemania', 1, '00:04:20', '2024-09-17 09:00:00'),
+('beatlemania', 23, '00:04:29', '2024-09-18 09:30:00'),
 
 -- vinyl_addict : aime tout, surtout Pink Floyd & Zeppelin
 ('vinyl_addict', 13, '00:07:06', '2024-09-02 08:00:00'),
@@ -495,6 +741,16 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('vinyl_addict', 12, '00:02:43', '2024-09-07 08:00:00'),
 ('vinyl_addict', 40, '00:03:32', '2024-09-08 08:00:00'),
 ('vinyl_addict', 14, '00:06:23', '2024-09-09 08:00:00'),
+('vinyl_addict', 11, '00:01:30', '2024-09-12 08:00:00'),
+('vinyl_addict', 12, '00:02:43', '2024-09-13 08:00:00'),
+('vinyl_addict', 13, '00:07:06', '2024-09-14 08:00:00'),
+('vinyl_addict', 14, '00:06:23', '2024-09-15 08:00:00'),
+('vinyl_addict', 39, '00:08:02', '2024-09-16 08:00:00'),
+('vinyl_addict', 52, '00:03:59', '2024-09-17 08:00:00'),
+('vinyl_addict', 40, '00:03:32', '2024-09-18 08:00:00'),
+('vinyl_addict', 54, '00:06:22', '2024-09-19 08:00:00'),
+('vinyl_addict', 39, '00:08:02', '2024-09-20 08:00:00'),
+('vinyl_addict', 14, '00:06:23', '2024-09-21 08:00:00'),
 
 -- electrohead : Daft Punk et electro
 ('electrohead', 16, '00:05:20', '2024-09-01 22:00:00'),
@@ -505,6 +761,16 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('electrohead', 16, '00:05:20', '2024-09-08 23:30:00'),
 ('electrohead', 58, '00:05:53', '2024-09-09 23:00:00'),
 ('electrohead', 19, '00:07:10', '2024-09-10 23:15:00'),
+('electrohead', 16, '00:05:20', '2024-09-12 23:00:00'),
+('electrohead', 17, '00:04:58', '2024-09-13 23:00:00'),
+('electrohead', 18, '00:03:45', '2024-09-14 23:00:00'),
+('electrohead', 57, '00:05:53', '2024-09-15 22:30:00'),
+('electrohead', 58, '00:05:53', '2024-09-16 22:45:00'),
+('electrohead', 59, '00:05:37', '2024-09-17 23:00:00'),
+('electrohead', 19, '00:07:10', '2024-09-18 23:10:00'),
+('electrohead', 16, '00:05:20', '2024-09-20 23:00:00'),
+('electrohead', 57, '00:05:53', '2024-09-22 23:30:00'),
+('electrohead', 18, '00:03:45', '2024-09-23 23:00:00'),
 
 -- queenfan : Queen + duos rock
 ('queenfan', 6, '00:05:55', '2024-10-01 09:00:00'),
@@ -515,6 +781,16 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('queenfan', 6, '00:05:55', '2024-10-07 09:00:00'),
 ('queenfan', 7, '00:02:52', '2024-10-08 09:15:00'),
 ('queenfan', 8, '00:03:38', '2024-10-09 09:30:00'),
+('queenfan', 6, '00:05:55', '2024-10-10 09:00:00'),
+('queenfan', 7, '00:02:52', '2024-10-11 09:15:00'),
+('queenfan', 8, '00:03:38', '2024-10-12 09:30:00'),
+('queenfan', 9, '00:03:30', '2024-10-13 09:45:00'),
+('queenfan', 10, '00:03:05', '2024-10-14 10:00:00'),
+('queenfan', 6, '00:05:55', '2024-10-15 09:00:00'),
+('queenfan', 7, '00:02:52', '2024-10-16 09:15:00'),
+('queenfan', 8, '00:03:38', '2024-10-17 09:30:00'),
+('queenfan', 9, '00:03:30', '2024-10-18 09:45:00'),
+('queenfan', 10, '00:03:05', '2024-10-19 10:00:00'),
 
 -- classicrock : Beatles, Led Zeppelin, Pink Floyd
 ('classicrock', 1, '00:04:20', '2024-09-01 18:00:00'),
@@ -525,6 +801,16 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('classicrock', 12, '00:02:43', '2024-09-10 18:00:00'),
 ('classicrock', 39, '00:08:02', '2024-09-12 18:00:00'),
 ('classicrock', 40, '00:03:32', '2024-09-13 18:00:00'),
+('classicrock', 1, '00:04:20', '2024-09-15 18:00:00'),
+('classicrock', 14, '00:06:23', '2024-09-16 18:00:00'),
+('classicrock', 39, '00:08:02', '2024-09-17 18:00:00'),
+('classicrock', 54, '00:06:22', '2024-09-18 18:00:00'),
+('classicrock', 12, '00:02:43', '2024-09-19 18:00:00'),
+('classicrock', 11, '00:01:30', '2024-09-20 18:00:00'),
+('classicrock', 40, '00:03:32', '2024-09-21 18:00:00'),
+('classicrock', 14, '00:06:23', '2024-09-22 18:00:00'),
+('classicrock', 1, '00:04:20', '2024-09-23 18:00:00'),
+('classicrock', 39, '00:08:02', '2024-09-24 18:00:00'),
 
 -- indie_vibes : Arctic Monkeys, Coldplay, Radiohead
 ('indie_vibes', 41, '00:04:32', '2024-09-03 14:20:00'),
@@ -535,6 +821,16 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('indie_vibes', 44, '00:03:27', '2024-09-08 14:45:00'),
 ('indie_vibes', 45, '00:03:03', '2024-09-09 14:50:00'),
 ('indie_vibes', 26, '00:04:44', '2024-09-10 14:55:00'),
+('indie_vibes', 41, '00:04:32', '2024-09-11 14:20:00'),
+('indie_vibes', 42, '00:03:21', '2024-09-12 14:25:00'),
+('indie_vibes', 26, '00:04:44', '2024-09-13 14:30:00'),
+('indie_vibes', 23, '00:04:29', '2024-09-14 14:35:00'),
+('indie_vibes', 43, '00:04:16', '2024-09-15 14:40:00'),
+('indie_vibes', 45, '00:03:03', '2024-09-16 14:50:00'),
+('indie_vibes', 44, '00:03:27', '2024-09-17 14:55:00'),
+('indie_vibes', 26, '00:04:44', '2024-09-18 14:50:00'),
+('indie_vibes', 23, '00:04:29', '2024-09-19 14:55:00'),
+('indie_vibes', 41, '00:04:32', '2024-09-21 14:20:00'),
 
 -- lofi_dreams : Coldplay, Arctic Monkeys, Imagine Dragons
 ('lofi_dreams', 23, '00:04:29', '2024-10-02 20:45:00'),
@@ -544,7 +840,17 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('lofi_dreams', 47, '00:03:21', '2024-10-06 21:30:00'),
 ('lofi_dreams', 48, '00:03:24', '2024-10-07 21:45:00'),
 ('lofi_dreams', 49, '00:03:07', '2024-10-08 22:00:00'),
-('lofi_dreams', 23, '00:04:29', '2024-10-09 22:10:00');
+('lofi_dreams', 23, '00:04:29', '2024-10-09 22:10:00'),
+('lofi_dreams', 23, '00:04:29', '2024-10-10 20:45:00'),
+('lofi_dreams', 21, '00:02:17', '2024-10-11 20:50:00'),
+('lofi_dreams', 24, '00:02:30', '2024-10-12 21:00:00'),
+('lofi_dreams', 41, '00:04:32', '2024-10-13 21:15:00'),
+('lofi_dreams', 47, '00:03:21', '2024-10-14 21:30:00'),
+('lofi_dreams', 48, '00:03:24', '2024-10-15 21:45:00'),
+('lofi_dreams', 49, '00:03:07', '2024-10-16 22:00:00'),
+('lofi_dreams', 23, '00:04:29', '2024-10-17 22:10:00'),
+('lofi_dreams', 41, '00:04:32', '2024-10-18 20:30:00'),
+('lofi_dreams', 47, '00:03:21', '2024-10-19 20:45:00');
 
 -- -----------------------------
 -- 15) SUITUTILISATEUR (qui suit qui)
@@ -553,7 +859,32 @@ INSERT INTO SuitUtilisateur (suivant, suivi, dDebut, dFin) VALUES
 ('melomane92', 'rockfan', '2024-01-10', '2025-01-01'),
 ('indie_vibes', 'beatlemania', '2024-02-01', NULL),
 ('lofi_dreams', 'queenfan', '2024-03-12', NULL),
-('melomane92', 'rockfan', '2025-01-10', NULL);
+('melomane92', 'rockfan', '2025-01-10', NULL),
+('rockfan', 'melomane92', '2024-04-01', NULL),
+('rockfan', 'queenfan', '2024-05-01', NULL),
+('rockfan', 'vinyl_addict', '2024-06-10', NULL),
+('indie_vibes', 'rockfan', '2024-07-01', NULL),
+('indie_vibes', 'classicrock', '2024-08-12', NULL),
+('jazzlover', 'vinyl_addict', '2024-09-02', NULL),
+('jazzlover', 'indie_vibes', '2024-09-12', NULL),
+('beatlemania', 'melomane92', '2024-09-20', NULL),
+('beatlemania', 'rockfan', '2024-09-22', NULL),
+('beatlemania', 'queenfan', '2024-09-23', NULL),
+('vinyl_addict', 'rockfan', '2024-09-30', NULL),
+('vinyl_addict', 'jazzlover', '2024-10-01', NULL),
+('queenfan', 'indie_vibes', '2024-10-15', NULL),
+('queenfan', 'classicrock', '2024-10-16', NULL),
+('classicrock', 'rockfan', '2024-10-20', NULL),
+('classicrock', 'melomane92', '2024-10-21', NULL),
+('lofi_dreams', 'indie_vibes', '2024-10-25', NULL),
+('lofi_dreams', 'jazzlover', '2024-11-01', NULL),
+('electrohead', 'vinyl_addict', '2024-11-05', NULL),
+('electrohead', 'queenfan', '2024-11-06', NULL),
+('melomane92', 'classicrock', '2024-11-10', NULL),
+('melomane92', 'jazzlover', '2024-11-12', NULL),
+('rockfan', 'classicrock', '2024-11-20', NULL),
+('rockfan', 'indie_vibes', '2024-11-22', NULL),
+('indie_vibes', 'queenfan', '2024-12-01', NULL);
 
 -- -----------------------------
 -- 16) SUITGROUPE (utilisateur suit groupe)
@@ -563,7 +894,27 @@ INSERT INTO SuitGroupe (pseudo, idGroupe, dDebut, dFin) VALUES
 ('queenfan', 2, '2024-01-06', '2025-03-15'),
 ('queenfan', 2, '2025-03-15', NULL),
 ('electrohead', 4, '2024-02-20', NULL),
-('indie_vibes', 9, '2024-03-01', NULL);
+('indie_vibes', 9, '2024-03-01', NULL),
+('melomane92', 8, '2024-05-01', NULL),
+('melomane92', 1, '2024-06-01', NULL),
+('rockfan', 2, '2024-06-15', NULL),
+('rockfan', 8, '2024-07-01', NULL),
+('jazzlover', 3, '2024-07-15', NULL),
+('jazzlover', 6, '2024-07-20', NULL),
+('beatlemania', 1, '2024-08-01', NULL),
+('beatlemania', 5, '2024-08-10', NULL),
+('vinyl_addict', 3, '2024-09-01', NULL),
+('vinyl_addict', 8, '2024-09-02', NULL),
+('queenfan', 2, '2024-09-15', NULL),
+('queenfan', 1, '2024-09-20', NULL),
+('classicrock', 1, '2024-10-01', NULL),
+('classicrock', 3, '2024-10-02', NULL),
+('indie_vibes', 9, '2024-10-15', NULL),
+('indie_vibes', 5, '2024-10-20', NULL),
+('lofi_dreams', 10, '2024-11-01', NULL),
+('lofi_dreams', 5, '2024-11-05', NULL),
+('electrohead', 4, '2024-11-10', NULL),
+('electrohead', 10, '2024-11-15', NULL);
 
 -- -----------------------------
 -- INCLUSION DU CAS DE L'ÉNNONCÉ OÙ TOUS LES ARTISTES NE PARTICIPENT PAS À UN ENREGISTREMENT ET IL Y A DES INVITÉS
