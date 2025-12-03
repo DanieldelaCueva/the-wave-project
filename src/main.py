@@ -321,7 +321,7 @@ def suggestions(pseudo):
                     GROUP BY (idMorceau, titre, idGroupe, groupe)
                     ORDER BY sum(dureeEcoute) DESC LIMIT 2
                 )
-            )
+            ) AS t
             ORDER BY RANDOM() LIMIT 3;""", (pseudo, pseudo, pseudo))
             suggestion_2 = cur3.fetchall()
         with conn.cursor() as cur4:
@@ -377,7 +377,7 @@ def suggestions(pseudo):
                 FROM ecoute
                 WHERE pseudo = %s
                 )
-            )
+            ) AS t
             ORDER BY RANDOM() LIMIT 3;""",(pseudo,))
             suggestion_5 = cur7.fetchall()
         with conn.cursor() as cur8:
@@ -394,7 +394,7 @@ def suggestions(pseudo):
                 FROM suitutilisateur
                 WHERE suivant = %s
                 )
-            )
+            ) AS t
             ORDER BY RANDOM() LIMIT 3;""",(pseudo,))
             suggestion_6 = cur8.fetchall()
     return render_template('utilisateur/suggestions.html', suggestion_1 = suggestion_1, suggestion_2 = suggestion_2, suggestion_3 = suggestion_3, suggestion_4 = suggestion_4, suggestion_5 = suggestion_5, suggestion_6 = suggestion_6)
