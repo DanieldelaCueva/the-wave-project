@@ -111,9 +111,8 @@ def traitement_inscription():
                 cur2.close()
                 if mdp1 and mdp1 == mdp2:
                     hashed = pbkdf2_sha256.hash(mdp1)
-                    requete = "INSERT INTO utilisateur VALUES (%s, %s, %s, CURRENT_DATE)", (pseudo, email, hashed)
                     with conn.cursor() as cur3:
-                        cur3.execute(requete)
+                        cur3.execute("""INSERT INTO utilisateur VALUES (%s, %s, %s, CURRENT_DATE)""", (pseudo, email, hashed))
                         return redirect(url_for("connexion"))
                 else:
                     return render_template('authentication/inscription.html', etat=3) # erreur: les mdp ne coincident pas
@@ -186,8 +185,8 @@ def profil(pseudo):
                          FROM suitUtilisateur
                          WHERE suivi = %s AND dFin IS NULL""", (pseudo,))
             abonnes = cur4.fetchone().count
-        with conn.cursor() as cur5:
-            cur5.execute("""SELECT idMorceau, titre, nom AS groupe, dateEcoute::date, pseudo AS utilisateur
+        with conn.cursor() as cur4:
+            cur4.execute("""SELECT idMorceau, titre, nom AS groupe, dateEcoute::date, pseudo AS utilisateur
                             FROM morceau NATURAL JOIN ecoute NATURAL JOIN joue NATURAL JOIN groupe
                             WHERE pseudo IN (
 						                        SELECT suivi
@@ -195,9 +194,9 @@ def profil(pseudo):
 						                        WHERE suivant = %s AND dFin IS NULL
 					                        )
                             ORDER BY dateEcoute DESC LIMIT 5;""", (pseudo,))
-            dernieres_ecoutes_suivis = cur5.fetchall()
-        with conn.cursor() as cur6:
-            cur6.execute("""SELECT idMorceau, titre, nom AS groupe, dPublication::date
+            dernieres_ecoutes_suivis = cur4.fetchall()
+        with conn.cursor() as cur5:
+            cur5.execute("""SELECT idMorceau, titre, nom AS groupe, dPublication::date
                             FROM groupe NATURAL JOIN joue NATURAL JOIN morceau
                             WHERE idGroupe IN (
 						SELECT idGroupe
@@ -205,7 +204,7 @@ def profil(pseudo):
 						WHERE pseudo = %s AND dFin IS NULL
 					    )
                             ORDER BY dPublication DESC LIMIT 5;""", (pseudo,))
-            dernieres_publications_groupes_suivis = cur6.fetchall()
+            dernieres_publications_groupes_suivis = cur5.fetchall()
         
     return render_template('utilisateur/profil.html', pseudo = pseudo, abonnes=abonnes, morceaux_plus_ecoutes = morceaux_plus_ecoutes, dernieres_ecoutes=dernieres_ecoutes, playlists=playlists, dernieres_ecoutes_suivis=dernieres_ecoutes_suivis, dernieres_publications_groupes_suivis=dernieres_publications_groupes_suivis)
 
@@ -293,18 +292,48 @@ def suggestions(pseudo):
                     }
             else:
                 suggestion_1 = {}
-        with conn.cursor() as cur5:
+        with conn.cursor() as cur3:
+            # sélectionne les morceaux des groupes suivis, enlève les deux plsu écoutés et ordonne aléatoirement 
+            cur3.execute("""SELECT *
+            FROM (
+                SELECT idMorceau, titre, groupe
+                FROM (
+                    SELECT idMorceau, titre, nom AS groupe
+                    FROM suitGroupe NATURAL JOIN groupe NATURAL JOIN joue NATURAL JOIN morceau
+                    WHERE pseudo = %s AND dFin IS NULL
+                )
+                EXCEPT
+                (
+                    SELECT idMorceau, titre, nom AS groupe
+                    FROM morceau NATURAL JOIN joue NATURAL JOIN ecoute NATURAL JOIN groupe
+                    WHERE idGroupe IN (
+                        SELECT idGroupe
+                        FROM suitGroupe
+                        WHERE pseudo = %s AND dFin IS NULL
+                    )
+                    AND EXISTS (
+                        SELECT e.idMorceau 
+                        FROM ecoute e
+                        WHERE e.pseudo = %s AND e.idMorceau = morceau.idMorceau
+                    )
+                    GROUP BY (idMorceau, titre, idGroupe, groupe)
+                    ORDER BY sum(dureeEcoute) DESC LIMIT 2
+                )
+            )
+            ORDER BY RANDOM() LIMIT 3;""", (pseudo, pseudo, pseudo))
+            suggestion_2 = cur3.fetchall()
+        with conn.cursor() as cur4:
             # selectionne le groupe le plus écouté par l'utilisateur
-            cur5.execute("""SELECT idGroupe, nom
+            cur4.execute("""SELECT idGroupe, nom
             FROM morceau NATURAL JOIN ecoute NATURAL JOIN joue NATURAL JOIN groupe
             WHERE pseudo = %s
             GROUP BY (idGroupe, nom)
             ORDER BY sum(dureeEcoute) DESC LIMIT 1;""", (pseudo,))
-            groupe_prefere = cur5.fetchone()
+            groupe_prefere = cur4.fetchone()
             if groupe_prefere:
-                with conn.cursor() as cur6:
+                with conn.cursor() as cur5:
                     # selectionne les groupes suivis par les utilisateurs qui suivent le groupe préfére, en enlevant celui-ci (redondant)
-                    cur6.execute("""SELECT idGroupe, nom
+                    cur5.execute("""SELECT idGroupe, nom
                     FROM suitGroupe NATURAL JOIN groupe
                     WHERE pseudo IN (
                         SELECT pseudo
@@ -315,14 +344,31 @@ def suggestions(pseudo):
                     SELECT idGroupe, nom
                     FROM suitGroupe NATURAL JOIN groupe
                     WHERE idGroupe = %s;""", (groupe_prefere.idgroupe,groupe_prefere.idgroupe))
-                    groupes = cur6.fetchall()
+                    groupes = cur5.fetchall()
                     suggestion_3 = {
                         "groupe_prefere" : groupe_prefere.nom,
                         "groupes_suivis" : groupes
                     }
             else:
-                suggestion_2 = {}
-    return render_template('utilisateur/suggestions.html', suggestion_1 = suggestion_1, suggestion_3 = suggestion_3)
+                suggestion_3 = {}
+        with conn.cursor() as cur6:
+            cur6.execute("""SELECT DISTINCT idGroupe, nom
+            FROM suitgroupe NATURAL JOIN groupe
+            WHERE pseudo IN (
+                SELECT pseudo
+                FROM suitgroupe
+                WHERE idGroupe IN (
+                    SELECT idGroupe
+                    FROM suitgroupe
+                    WHERE pseudo = %s
+                )
+            )
+            EXCEPT
+            SELECT idGroupe, nom as groupe
+            FROM suitgroupe NATURAL JOIN groupe
+            WHERE pseudo = %s;""", (pseudo, pseudo))
+            suggestion_4 = cur6.fetchall()
+    return render_template('utilisateur/suggestions.html', suggestion_1 = suggestion_1, suggestion_2 = suggestion_2, suggestion_3 = suggestion_3, suggestion_4 = suggestion_4)
 
 @app.route('/recherche')
 def recherche():
