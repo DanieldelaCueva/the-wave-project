@@ -25,6 +25,8 @@ def validation_connexion(f):
     def wrapper(*args, **kwargs):
         pseudo = session.get("pseudo")
         if pseudo == None:
+            # Si aucun utilisateur en session, on redirige vers la page de connexion.
+            # Sinon, on appelle la fonction en injectant directement le pseudo.
             return redirect(url_for("connexion"))
         else:
             return f(pseudo=pseudo, *args, **kwargs)
@@ -185,8 +187,8 @@ def profil(pseudo):
                          FROM suitUtilisateur
                          WHERE suivi = %s AND dFin IS NULL""", (pseudo,))
             abonnes = cur4.fetchone().count
-        with conn.cursor() as cur4:
-            cur4.execute("""SELECT idMorceau, titre, nom AS groupe, dateEcoute::date, pseudo AS utilisateur
+        with conn.cursor() as cur5:
+            cur5.execute("""SELECT idMorceau, titre, nom AS groupe, dateEcoute::date, pseudo AS utilisateur
                             FROM morceau NATURAL JOIN ecoute NATURAL JOIN joue NATURAL JOIN groupe
                             WHERE pseudo IN (
 						                        SELECT suivi
@@ -194,7 +196,7 @@ def profil(pseudo):
 						                        WHERE suivant = %s AND dFin IS NULL
 					                        )
                             ORDER BY dateEcoute DESC LIMIT 5;""", (pseudo,))
-            dernieres_ecoutes_suivis = cur4.fetchall()
+            dernieres_ecoutes_suivis = cur5.fetchall()
         with conn.cursor() as cur5:
             cur5.execute("""SELECT idMorceau, titre, nom AS groupe, dPublication::date
                             FROM groupe NATURAL JOIN joue NATURAL JOIN morceau
@@ -352,6 +354,7 @@ def suggestions(pseudo):
             else:
                 suggestion_3 = {}
         with conn.cursor() as cur6:
+            # sélectionne les groupes suivis par les utilisateurs qui écoutent les mêmes morceaux et les présente aléatoirement
             cur6.execute("""SELECT DISTINCT idgroupe, nom
             FROM suitgroupe NATURAL JOIN groupe
             WHERE pseudo IN (
@@ -361,6 +364,7 @@ def suggestions(pseudo):
             ) LIMIT 3;""", (pseudo,))
             suggestion_4 = cur6.fetchall()
         with conn.cursor() as cur7:
+            # séléctionne les playlist des qui contiennent les morceaux écoutés par l'utilisateur et les présente aléatoirement
             cur7.execute("""SELECT * FROM (
                 SELECT DISTINCT idplaylist, titre, pseudoCreateur, (
                     SELECT count(idmorceau)
@@ -377,6 +381,7 @@ def suggestions(pseudo):
             ORDER BY RANDOM() LIMIT 3;""",(pseudo,))
             suggestion_5 = cur7.fetchall()
         with conn.cursor() as cur8:
+            # sélectionne les playlist créees par les utilisateurs suivis et les présente aléatoirement
             cur8.execute("""SELECT * FROM (
                 SELECT DISTINCT idplaylist, titre, pseudoCreateur, (
                     SELECT count(idmorceau)
