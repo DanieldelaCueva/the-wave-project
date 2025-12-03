@@ -295,7 +295,7 @@ def suggestions(pseudo):
             else:
                 suggestion_1 = {}
         with conn.cursor() as cur3:
-            # sélectionne les morceaux des groupes suivis, enlève les deux plsu écoutés et ordonne aléatoirement 
+            # sélectionne les morceaux des groupes suivis, enlève les deux plus écoutés et ordonne aléatoirement 
             cur3.execute("""SELECT *
             FROM (
                 SELECT idMorceau, titre, groupe
@@ -303,7 +303,7 @@ def suggestions(pseudo):
                     SELECT idMorceau, titre, nom AS groupe
                     FROM suitGroupe NATURAL JOIN groupe NATURAL JOIN joue NATURAL JOIN morceau
                     WHERE pseudo = %s AND dFin IS NULL
-                )
+                ) AS t1
                 EXCEPT
                 (
                     SELECT idMorceau, titre, nom AS groupe
@@ -394,7 +394,7 @@ def suggestions(pseudo):
                 FROM suitutilisateur
                 WHERE suivant = %s
                 )
-            ) AS t
+            ) as t
             ORDER BY RANDOM() LIMIT 3;""",(pseudo,))
             suggestion_6 = cur8.fetchall()
     return render_template('utilisateur/suggestions.html', suggestion_1 = suggestion_1, suggestion_2 = suggestion_2, suggestion_3 = suggestion_3, suggestion_4 = suggestion_4, suggestion_5 = suggestion_5, suggestion_6 = suggestion_6)
