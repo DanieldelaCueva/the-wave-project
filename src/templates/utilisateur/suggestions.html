@@ -24,7 +24,7 @@
     <p>Vous n'avez pas encore d'écoutes!</p>
     {% endif %} {% else %}
     <h2>
-      Lse artistes que
+      Les artistes que
       <span style="color: #7b5cff">vous écoutez souvent</span> participent aussi
       dans :
     </h2>
@@ -109,5 +109,51 @@
 </div>
 
 <h1>... ou des nouvelles playlists !</h1>
+<div class="two-columns">
+  <!-- COLONNE GAUCHE : playlist que contiennent les morceaux écoutés par les utilisateurs -->
+  <div class="column">
+    <h2>
+      Voici les playlists qui contiennent les <span style="color: #7b5cff">morceaux que vous écoutez</span> :
+    </h2>
 
+    {% if suggestion_5 %} {% for playlist in suggestion_5 %}
+    <a href="playlist/{{ playlist.idplaylist }}" class="list-card-link">
+      <div class="list-card">
+        <div class="list-card-info">
+          <h3>{{ playlist.titre }}</h3>
+          <p><i>@{{ playlist.pseudocreateur }}</i></p>
+        </div>
+        <div class="list-card-meta">
+          <span>{% if playlist.nbmorceaux == 1 %} 1 morceau {% else %} {{ playlist.nbmorceaux }} morceaux {% endif %}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %} {% else %}
+    <p>Les morceaux que vous écoutez ne sont dans aucune playlist :/</p>
+    {% endif %}
+  </div>
+
+  <!-- COLONNE DROITE : morceaux joués par des groupes suivis -->
+  <div class="column">
+    <h2>
+      Voici les playlists créees par les utilisateurs <span style="color: #7b5cff">que vous suivez</span> :
+    </h2>
+
+    {% if suggestion_6 %} {% for playlist in suggestion_6 %}
+    <a href="playlist/{{ playlist.idplaylist }}" class="list-card-link">
+      <div class="list-card">
+        <div class="list-card-info">
+          <h3>{{ playlist.titre }}</h3>
+          <p><i>@{{ playlist.pseudocreateur }}</i></p>
+        </div>
+        <div class="list-card-meta">
+          <span>{% if playlist.nbmorceaux == 1 %} 1 morceau {% else %} {{ playlist.nbmorceaux }} morceaux {% endif %}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %} {% else %}
+    <p>Vos suivis n'ont pas crée de playlist :/</p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

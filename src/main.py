@@ -360,7 +360,39 @@ def suggestions(pseudo):
                 WHERE e1.pseudo = %s AND e1.pseudo <> e2.pseudo AND e1.idMorceau = e2.idMorceau
             ) LIMIT 3;""", (pseudo,))
             suggestion_4 = cur6.fetchall()
-    return render_template('utilisateur/suggestions.html', suggestion_1 = suggestion_1, suggestion_2 = suggestion_2, suggestion_3 = suggestion_3, suggestion_4 = suggestion_4)
+        with conn.cursor() as cur7:
+            cur7.execute("""SELECT * FROM (
+                SELECT DISTINCT idplaylist, titre, pseudoCreateur, (
+                    SELECT count(idmorceau)
+                    FROM inclus
+                    WHERE idplaylist = i.idplaylist
+                ) as nbmorceaux
+                FROM inclus i NATURAL JOIN playlist
+                WHERE idmorceau IN (
+                SELECT idmorceau
+                FROM ecoute
+                WHERE pseudo = %s
+                )
+            )
+            ORDER BY RANDOM() LIMIT 3;""",(pseudo,))
+            suggestion_5 = cur7.fetchall()
+        with conn.cursor() as cur8:
+            cur8.execute("""SELECT * FROM (
+                SELECT DISTINCT idplaylist, titre, pseudoCreateur, (
+                    SELECT count(idmorceau)
+                    FROM inclus
+                    WHERE idplaylist = i.idplaylist
+                ) as nbmorceaux
+                FROM inclus i NATURAL JOIN playlist
+                WHERE pseudocreateur IN (
+                SELECT suivi
+                FROM suitutilisateur
+                WHERE suivant = %s
+                )
+            )
+            ORDER BY RANDOM() LIMIT 3;""",(pseudo,))
+            suggestion_6 = cur8.fetchall()
+    return render_template('utilisateur/suggestions.html', suggestion_1 = suggestion_1, suggestion_2 = suggestion_2, suggestion_3 = suggestion_3, suggestion_4 = suggestion_4, suggestion_5 = suggestion_5, suggestion_6 = suggestion_6)
 
 @app.route('/recherche')
 def recherche():
