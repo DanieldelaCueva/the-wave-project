@@ -352,21 +352,13 @@ def suggestions(pseudo):
             else:
                 suggestion_3 = {}
         with conn.cursor() as cur6:
-            cur6.execute("""SELECT DISTINCT idGroupe, nom
+            cur6.execute("""SELECT DISTINCT idgroupe, nom
             FROM suitgroupe NATURAL JOIN groupe
             WHERE pseudo IN (
-                SELECT pseudo
-                FROM suitgroupe
-                WHERE idGroupe IN (
-                    SELECT idGroupe
-                    FROM suitgroupe
-                    WHERE pseudo = %s
-                )
-            )
-            EXCEPT
-            SELECT idGroupe, nom as groupe
-            FROM suitgroupe NATURAL JOIN groupe
-            WHERE pseudo = %s;""", (pseudo, pseudo))
+                SELECT e2.pseudo
+                FROM ecoute e1, ecoute e2
+                WHERE e1.pseudo = %s AND e1.pseudo <> e2.pseudo AND e1.idMorceau = e2.idMorceau
+            ) LIMIT 3;""", (pseudo,))
             suggestion_4 = cur6.fetchall()
     return render_template('utilisateur/suggestions.html', suggestion_1 = suggestion_1, suggestion_2 = suggestion_2, suggestion_3 = suggestion_3, suggestion_4 = suggestion_4)
 
