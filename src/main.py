@@ -141,6 +141,21 @@ def playlist(pseudo, idplaylist):
             morceaux = cur2.fetchall()
     return render_template("general/playlist.html", playlist = playlist, morceaux = morceaux)
 
+@app.route('/supprimer_morceau_playlist')
+@validation_connexion
+def supprimer_morceau_playlist(pseudo):
+    idmorceau = request.args.get("idmorceau")
+    idplaylist = request.args.get("idplaylist")
+    with db.connect() as conn:
+        with conn.cursor() as cur1:
+            cur1.execute("""SELECT pseudoCreateur
+                            FROM playlist
+                            WHERE idPlaylist = %s """, (idplaylist,))
+            if pseudo == cur1.fetchone().pseudocreateur:
+                with conn.cursor() as cur2:
+                    cur2.execute("""DELETE FROM inclus WHERE idPlaylist = %s AND idMorceau = %s""", (idplaylist, idmorceau))
+    return redirect(url_for('playlist', idplaylist=idplaylist))
+
 @app.route('/profil')
 @validation_connexion
 def profil(pseudo):
