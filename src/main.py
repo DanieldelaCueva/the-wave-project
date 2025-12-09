@@ -252,7 +252,7 @@ def ajouter_morceau_playlist(pseudo):
                     cur3.execute("""SELECT idmorceau
                                  FROM inclus
                                  WHERE idplaylist=%s AND idmorceau=%s""", (id_playlist,idmorceau))
-                    if not cur3.fetchone().idmorceau:
+                    if not cur3.fetchone():
                         cur3.execute("""INSERT INTO Inclus VALUES (%s,%s,%s)""", (id_playlist,idmorceau, ordre_max+1))
     return redirect(url_for("playlist",idplaylist=id_playlist))
 
