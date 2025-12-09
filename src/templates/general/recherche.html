@@ -1,19 +1,78 @@
 {% extends "base.html" %}
 {% block title %}Recherche – The Wave{% endblock %}
 {% block content %}
+
 <h1>Recherche</h1>
-<form method="GET" class="search-bar">
-    <input name="q" placeholder="Rechercher un titre, un artiste, un album…" value="{{ q }}">
-    <button type="submit">Chercher</button>
+
+<form action="{{ url_for('recherche') }}" method="get" class="search-form">
+  <input type="text" name="q" value="{{ q }}" placeholder="Rechercher un morceau, un album ou un groupe">
+  <button type="submit">Rechercher</button>
 </form>
 
-<h2>Résultats</h2>
-<div class="grid">
-    {% for item in results %}
-        <div class="card">
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.type }}</p>
+{% if q %}
+  <h2>Résultats pour « {{ q }} »</h2>
+
+  <section>
+    <h3>Morceaux</h3>
+    <div class="grid">
+      {% for m in morceaux %}
+      <a href="{{ url_for('morceau', idmorceau=m.idmorceau) }}" class="card-link">
+        <div class="card music-card">
+          <h4>{{ m.titre }}</h4>
+          {% if m.groupe %}
+          <p><i>{{ m.groupe }}</i></p>
+          {% endif %}
+          <p>{{ m.duree }}</p>
         </div>
-    {% endfor %}
-</div>
+      </a>
+      {% else %}
+      <p>Aucun morceau trouvé.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section>
+    <h3>Groupes</h3>
+    <div class="grid">
+      {% for g in groupes %}
+      <a href="{{ url_for('groupe', idgroupe=g.idgroupe) }}" class="card-link">
+        <div class="card">
+          {% if g.couverture %}
+          <img src="data:image/png;base64,{{ g.couverture }}" class="cover" alt="Pochette" />
+          {% endif %}
+          <h4>{{ g.nom }}</h4>
+          <p>{{ g.genre }} – {{ g.nationalite }}</p>
+        </div>
+      </a>
+      {% else %}
+      <p>Aucun groupe trouvé.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section>
+    <h3>Albums</h3>
+    <div class="grid">
+      {% for a in albums %}
+      <a href="{{ url_for('album', idalbum=a.idalbum) }}" class="card-link">
+        <div class="card album-card">
+          {% if a.couverture %}
+          <img src="data:image/png;base64,{{ a.couverture }}" class="cover" alt="Pochette" />
+          {% endif %}
+          <h4>{{ a.titre }}</h4>
+          {% if a.groupe %}
+          <p><i>{{ a.groupe }}</i></p>
+          {% endif %}
+        </div>
+      </a>
+      {% else %}
+      <p>Aucun album trouvé.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+{% else %}
+  <p>Entrez un mot-clé pour lancer une recherche (titre, artiste, album, …).</p>
+{% endif %}
+
 {% endblock %}

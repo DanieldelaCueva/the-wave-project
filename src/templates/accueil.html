@@ -6,7 +6,7 @@ block content %}
   <h2>Morceaux les plus écoutés</h2>
   <div class="grid">
     {% for morceau in morceaux_plus_ecoutes %}
-    <a href="ecouter/{{morceau.idmorceau}}" class="card-link">
+    <a href="morceau/{{morceau.idmorceau}}" class="card-link">
       <div class="card music-card">
         <h3>{{ morceau.titre }}</h3>
         <p><i>{{ morceau.groupe }}</i></p>

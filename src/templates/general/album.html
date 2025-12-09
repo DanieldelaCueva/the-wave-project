@@ -1,15 +1,22 @@
 {% extends "base.html" %}
 {% block title %}{{ album.title }} – The Wave{% endblock %}
 {% block content %}
+
 <h1>{{ album.title }}</h1>
 <p>{{ album.description }}</p>
 
-<img class="album-cover" src="{{ album.cover }}" alt="Pochette">
+<img class="album-cover" src="data:image/png;base64,{{ album.cover }}" alt="Pochette" />
 
 <h2>Morceaux</h2>
-<ol>
+<div class="grid">
     {% for track in tracks %}
-        <li>{{ track.title }} ({{ track.duration }})</li>
+    <a href="{{ url_for('morceau', idmorceau=track.idmorceau) }}" class="card-link">
+        <div class="card music-card">
+            <h3>{{ loop.index }}. {{ track.title }}</h3>
+            <p>{{ track.duration }}</p>
+        </div>
+    </a>
     {% endfor %}
-</ol>
+</div>
+
 {% endblock %}

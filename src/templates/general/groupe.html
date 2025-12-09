@@ -1,41 +1,69 @@
 {% extends "base.html" %}
-{% block title %}{{ group.name }} – The Wave{% endblock %}
+{% block title %}{{ groupe.nom }} – The Wave{% endblock %}
 {% block content %}
-<h1>{{ group.name }}</h1>
-<p>{{ group.genre }} – {{ group.nationality }}</p>
-<p>{{ followers }} abonnés</p>
+
+<div class="groupe-header" style="display:flex; align-items:center; gap:1rem;">
+  <h1>{{ groupe.nom }}</h1>
+
+  <form action="{{ url_for('suivre_groupe', idgroupe=groupe.idgroupe) }}" method="post">
+    {% if suivi %}
+      <button type="submit" class="play-button">✓ Ne plus suivre</button>
+    {% else %}
+      <button type="submit" class="play-button">+ Suivre ce groupe</button>
+    {% endif %}
+  </form>
+</div>
+
+<p>{{ groupe.genre }} – {{ groupe.nationalite }}</p>
+<p>{{ abonnees }} abonnés</p>
+
 
 <h2>Membres actuels</h2>
 <ul>
-    {% for artist in current_members %}
-        <li>{{ artist.name }} ({{ artist.role }})</li>
+    {% for artiste in membres %}
+        <li>{{ artiste.nom }} ({{ artiste.role }})</li>
+    {% else %}
+        <li>Aucun membre affiché pour l’instant.</li>
     {% endfor %}
 </ul>
 
 <h2>Anciens membres</h2>
 <ul>
-    {% for artist in past_members %}
-        <li>{{ artist.name }} ({{ artist.start }} – {{ artist.end }})</li>
+    {% for artiste in anciens_membres %}
+        <li>{{ artiste.nom }} ({{ artiste.role }}) – {{ artiste.debut }} – {{ artiste.fin }}</li>
+    {% else %}
+        <li>Aucun ancien membre affiché.</li>
     {% endfor %}
 </ul>
 
 <h2>Morceaux</h2>
 <div class="grid">
-    {% for track in tracks %}
-        <div class="card">
-            <h3>{{ track.title }}</h3>
-            <p>{{ track.duration }}</p>
-        </div>
+    {% for morceau in morceaux %}
+        <a href="{{ url_for('morceau', idmorceau=morceau.idmorceau) }}" class="card-link">
+            <div class="card">
+                <h3>{{ morceau.titre }}</h3>
+                <p>{{ morceau.duree }}</p>
+            </div>
+        </a>
+    {% else %}
+        <p>Ce groupe n'a pas encore de morceaux enregistrés.</p>
     {% endfor %}
 </div>
 
 <h2>Albums</h2>
 <div class="grid">
     {% for album in albums %}
-        <div class="card album-card">
-            <img src="{{ album.cover }}" class="cover" alt="Pochette">
-            <h3>{{ album.title }}</h3>
-        </div>
+        <a href="{{ url_for('album', idalbum=album.idalbum) }}" class="card-link">
+            <div class="card album-card">
+                {% if album.couverture %}
+                <img src="data:image/png;base64,{{ album.couverture }}" class="couverture" alt="Pochette">
+                {% endif %}
+                <h3>{{ album.titre }}</h3>
+            </div>
+        </a>
+    {% else %}
+        <p>Ce groupe n'a pas encore publié d'album.</p>
     {% endfor %}
 </div>
+
 {% endblock %}

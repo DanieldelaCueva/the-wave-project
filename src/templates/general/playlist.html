@@ -28,7 +28,7 @@ block content %}
 
 {% if morceaux %} {% for morceau in morceaux %}
 <div class="list-card-wrapper">
-  <a href="/ecouter/{{ morceau.idmorceau }}" class="list-card-link">
+  <a href="/morceau/{{ morceau.idmorceau }}" class="list-card-link">
     <div class="list-card">
       <div class="list-card-info">
         <h3>{{ morceau.titre }}</h3>
@@ -37,6 +37,7 @@ block content %}
       <div class="list-card-meta">
         <span>{{ morceau.dureemorceau }}</span>
       </div>
+      {% if playlist.pseudocreateur == pseudo %}
       <!-- Supprimer le morceau de la playlist -->
       <a
         href="/supprimer_morceau_playlist?idmorceau={{ morceau.idmorceau }}&idplaylist={{ playlist.idplaylist }}"
@@ -61,10 +62,12 @@ block content %}
           />
         </svg>
       </a>
+      {% endif %}
     </div>
   </a>
 </div>
 {% endfor %}
+{% if playlist.pseudocreateur == pseudo %}
 <div class="playlist-actions-wrapper">
   <div class="playlist-actions">
     <!-- Ajouter des morceaux : lien vers la page de recherche -->
@@ -94,6 +97,7 @@ block content %}
     </a>
   </div>
 </div>
+{% endif %}
 {% else %}
 <p>Cette playlist est vide pour le moment.</p>
 {% endif %} {% endblock %}

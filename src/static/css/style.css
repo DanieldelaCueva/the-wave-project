@@ -504,3 +504,48 @@ pre.lyrics {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* --- BARRE DE RECHERCHE --- */
+.search-form {
+    display: flex;
+    gap: 12px;
+    margin: 25px 0 35px 0;
+}
+
+.search-form input[type="text"] {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #e6eef4;
+    font-size: 1rem;
+    transition: background .2s ease, border-color .2s ease;
+}
+
+.search-form input[type="text"]:focus {
+    background: rgba(255,255,255,0.12);
+    border-color: #7b5cff;
+    outline: none;
+}
+
+.search-form button {
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(90deg, #7b5cff, #9a7dff);
+    color: white;
+    font-weight: 600;
+    transition: transform .15s ease, box-shadow .3s ease;
+}
+
+.search-form button:hover {
+    box-shadow: 0 6px 20px rgba(123, 92, 255, 0.45);
+    transform: translateY(-1px);
+}
+
+.search-form button:active {
+    transform: translateY(0);
+}

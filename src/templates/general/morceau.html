@@ -1,13 +1,28 @@
 {% extends "base.html" %}
-{% block title %}{{ track.title }} – The Wave{% endblock %}
+{% block title %}{{ morceau.titre }} – The Wave{% endblock %}
 {% block content %}
-<h1>{{ track.title }}</h1>
-<p>{{ track.duration }}</p>
-<p>Par : {{ track.group }}</p>
 
-<button class="play-button">▶ Écouter</button>
-<p>Vous êtes en train d'écouter {{ track.title }}</p>
+<h1>{{ morceau.titre }}</h1>
+<p>Durée : {{ morceau.duree }}</p>
+
+{% if morceau.idgroupe %}
+  <p>
+    Par :
+    <a href="{{ url_for('groupe', idgroupe=morceau.idgroupe) }}" class="username">{{ morceau.groupe }}</a>
+  </p>
+{% else %}
+  <p>Par : {{ morceau.groupe or "Inconnu" }}</p>
+{% endif %}
+
+<form action="{{ url_for('ecouter_morceau', idmorceau=morceau.idmorceau) }}" method="post">
+    <button class="play-button" type="submit">▶ Écouter</button>
+</form>
+
+{% if en_cours %}
+  <p>Vous êtes en train d'écouter {{ morceau.titre }}</p>
+{% endif %}
 
 <h2>Paroles</h2>
-<pre class="lyrics">{{ track.lyrics }}</pre>
+<pre class="lyrics">{{ morceau.paroles }}</pre>
+
 {% endblock %}

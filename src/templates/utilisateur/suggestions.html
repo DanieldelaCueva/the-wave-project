@@ -12,7 +12,7 @@
     </h2>
 
     {% if suggestion_1.morceaux %} {% for morceau in suggestion_1.morceaux %}
-    <a href="ecouter/{{morceau.idmorceau}}" class="list-card-link">
+    <a href="morceau/{{morceau.idmorceau}}" class="list-card-link">
       <div class="list-card">
         <div class="list-card-info">
           <h3>{{ morceau.titre }}</h3>
@@ -42,7 +42,7 @@
     </h2>
 
     {% if suggestion_2 %} {% for morceau in suggestion_2 %}
-    <a href="ecouter/{{morceau.idmorceau}}" class="list-card-link">
+    <a href="morceau/{{morceau.idmorceau}}" class="list-card-link">
       <div class="list-card">
         <div class="list-card-info">
           <h3>{{ morceau.titre }}</h3>
