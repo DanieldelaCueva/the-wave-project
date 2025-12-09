@@ -326,7 +326,7 @@ def suggestions(pseudo):
                     cur2.execute("""SELECT * FROM (
                                  (SELECT idMorceau, titre, dureemorceau, nom AS groupe
                     FROM morceau NATURAL JOIN participe NATURAL JOIN joue NATURAL JOIN groupe
-                    WHERE idArtiste = %s) as t1
+                    WHERE idArtiste = %s) AS t1
                     EXCEPT
                     (SELECT idMorceau, titre, dureemorceau, nom AS groupe
                     FROM morceau NATURAL JOIN ecoute NATURAL JOIN participe NATURAL JOIN joue NATURAL JOIN groupe
@@ -390,7 +390,7 @@ def suggestions(pseudo):
                         SELECT pseudo
                         FROM suitGroupe
                         WHERE idGroupe = %s
-                    ) as t1
+                    ) AS t1
                     EXCEPT
                     SELECT idGroupe, nom
                     FROM suitGroupe NATURAL JOIN groupe
