@@ -247,7 +247,11 @@ def ajouter_morceau_playlist(pseudo):
                                  FROM Inclus
                                  WHERE idplaylist = %s
                                  GROUP BY idplaylist""",(id_playlist,))
-                    ordre_max = cur2.fetchone().omax
+                    resultat = cur2.fetchone()
+		    if resultat:
+			ordre_max = resultat.omax
+		    else:
+			ordre_max = 0
                 with conn.cursor() as cur3:
                     cur3.execute("""SELECT idmorceau
                                  FROM inclus
@@ -326,14 +330,14 @@ def suggestions(pseudo):
                     cur2.execute("""SELECT * FROM (
                                  (SELECT idMorceau, titre, dureemorceau, nom AS groupe
                     FROM morceau NATURAL JOIN participe NATURAL JOIN joue NATURAL JOIN groupe
-                    WHERE idArtiste = %s) AS t1
+                    WHERE idArtiste = %s)
                     EXCEPT
                     (SELECT idMorceau, titre, dureemorceau, nom AS groupe
                     FROM morceau NATURAL JOIN ecoute NATURAL JOIN participe NATURAL JOIN joue NATURAL JOIN groupe
                     WHERE pseudo = %s AND idArtiste = %s
                     GROUP BY (idMorceau, titre, groupe.nom)
                     ORDER BY sum(dureeEcoute) DESC LIMIT 2)
-                                 ) LIMIT 3;
+                                 ) AS t LIMIT 3;
                     """, (artiste_utilise.idartiste, pseudo, artiste_utilise.idartiste))
                     morceaux = cur2.fetchall()
                     suggestion_1 = {
@@ -390,12 +394,12 @@ def suggestions(pseudo):
                         SELECT pseudo
                         FROM suitGroupe
                         WHERE idGroupe = %s
-                    ) AS t1
+                    )
                     EXCEPT
                     SELECT idGroupe, nom
                     FROM suitGroupe NATURAL JOIN groupe
                     WHERE idGroupe = %s
-                                 ) LIMIT 3""", (groupe_prefere.idgroupe,groupe_prefere.idgroupe))
+                                 ) AS t LIMIT 3""", (groupe_prefere.idgroupe,groupe_prefere.idgroupe))
                     groupes = cur5.fetchall()
                     suggestion_3 = {
                         "groupe_prefere" : groupe_prefere.nom,
