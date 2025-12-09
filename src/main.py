@@ -134,15 +134,18 @@ def playlist(pseudo, idplaylist):
                             FROM playlist
                             WHERE idplaylist = %s""", (idplaylist,))
             playlist = cur1.fetchone()
-        with conn.cursor() as cur2:
-            cur2.execute("""SELECT idmorceau, titre, dureemorceau, nom as groupe
-                            FROM inclus NATURAL JOIN morceau NATURAL JOIN joue NATURAL JOIN groupe
-                            WHERE idplaylist = %s
-                            ORDER BY ordredsplaylist;""", (idplaylist,))
-            morceaux = cur2.fetchall()
-            nbmorceaux = len(morceaux)
-    return render_template("general/playlist.html", playlist = playlist, morceaux = morceaux, nbmorceaux = nbmorceaux, pseudo = pseudo)
-
+        if playlist.visibilite or playlist.pseudocreateur == pseudo:
+            with conn.cursor() as cur2:
+                cur2.execute("""SELECT idmorceau, titre, dureemorceau, nom as groupe
+                                FROM inclus NATURAL JOIN morceau NATURAL JOIN joue NATURAL JOIN groupe
+                                WHERE idplaylist = %s
+                                ORDER BY ordredsplaylist;""", (idplaylist,))
+                morceaux = cur2.fetchall()
+                nbmorceaux = len(morceaux)
+            return render_template("general/playlist.html", playlist = playlist, morceaux = morceaux, nbmorceaux = nbmorceaux, pseudo = pseudo)
+        else:
+            return redirect(url_for("profil"))
+        
 @app.route('/supprimer_morceau_playlist')
 @validation_connexion
 def supprimer_morceau_playlist(pseudo):
@@ -211,6 +214,48 @@ def profil(pseudo):
         
     return render_template('utilisateur/profil.html', pseudo = pseudo, abonnes=abonnes, morceaux_plus_ecoutes = morceaux_plus_ecoutes, dernieres_ecoutes=dernieres_ecoutes, playlists=playlists, dernieres_ecoutes_suivis=dernieres_ecoutes_suivis, dernieres_publications_groupes_suivis=dernieres_publications_groupes_suivis)
 
+@app.route('/ajouter_a_playlist/<int:idmorceau>')
+@validation_connexion
+def ajouter_a_playlist(pseudo, idmorceau):
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""SELECT idPlaylist, titre
+                        FROM playlist
+                        WHERE pseudoCreateur = %s""", (pseudo,))
+            playlists = cur.fetchall()
+        with conn.cursor() as cur2:
+            cur2.execute("""SELECT idmorceau, titre
+                         FROM morceau
+                         WHERE idmorceau = %s""", (idmorceau,))
+            morceau = cur2.fetchone()
+    return render_template('utilisateur/ajouter_a_playlist.html', playlists = playlists, morceau=morceau)
+
+@app.route('/ajouter_a_playlist/ajout_dans_playlist', methods = ['POST'])
+@validation_connexion
+def ajouter_morceau_playlist(pseudo):
+    id_playlist = request.form.get("idplaylist")
+    idmorceau = request.form.get("morceau")
+    with db.connect() as conn:
+        with conn.cursor() as cur1:
+            cur1.execute("""SELECT pseudoCreateur
+                         FROM playlist
+                         WHERE idPlaylist = %s""", (id_playlist,))
+            createur = cur1.fetchone().pseudocreateur
+            if createur == pseudo:
+                with conn.cursor() as cur2:
+                    cur2.execute("""SELECT max(ordreDsPlaylist) as omax
+                                 FROM Inclus
+                                 WHERE idplaylist = %s
+                                 GROUP BY idplaylist""",(id_playlist,))
+                    ordre_max = cur2.fetchone().omax
+                with conn.cursor() as cur3:
+                    cur3.execute("""SELECT idmorceau
+                                 FROM inclus
+                                 WHERE idplaylist=%s AND idmorceau=%s""", (id_playlist,idmorceau))
+                    if not cur3.fetchone().idmorceau:
+                        cur3.execute("""INSERT INTO Inclus VALUES (%s,%s,%s)""", (id_playlist,idmorceau, ordre_max+1))
+    return redirect(url_for("playlist",idplaylist=id_playlist))
+
 @app.route('/supprimer_playlist')
 @validation_connexion
 def supprimer_playlist(pseudo):
@@ -278,15 +323,17 @@ def suggestions(pseudo):
             
                 with conn.cursor() as cur2:
                     # on selectionne les morceaux joués par cet artiste sauf les deux plus écoutés par l'utilisateur
-                    cur2.execute("""(SELECT idMorceau, titre, nom AS groupe
+                    cur2.execute("""SELECT * FROM (
+                                 (SELECT idMorceau, titre, dureemorceau, nom AS groupe
                     FROM morceau NATURAL JOIN participe NATURAL JOIN joue NATURAL JOIN groupe
                     WHERE idArtiste = %s)
                     EXCEPT
-                    (SELECT idMorceau, titre, nom AS groupe
+                    (SELECT idMorceau, titre, dureemorceau, nom AS groupe
                     FROM morceau NATURAL JOIN ecoute NATURAL JOIN participe NATURAL JOIN joue NATURAL JOIN groupe
                     WHERE pseudo = %s AND idArtiste = %s
                     GROUP BY (idMorceau, titre, groupe.nom)
-                    ORDER BY sum(dureeEcoute) DESC LIMIT 2);
+                    ORDER BY sum(dureeEcoute) DESC LIMIT 2)
+                                 ) LIMIT 3;
                     """, (artiste_utilise.idartiste, pseudo, artiste_utilise.idartiste))
                     morceaux = cur2.fetchall()
                     suggestion_1 = {
@@ -299,15 +346,15 @@ def suggestions(pseudo):
             # sélectionne les morceaux des groupes suivis, enlève les deux plus écoutés et ordonne aléatoirement 
             cur3.execute("""SELECT *
             FROM (
-                SELECT idMorceau, titre, groupe
+                SELECT idMorceau, titre, dureemorceau, groupe
                 FROM (
-                    SELECT idMorceau, titre, nom AS groupe
+                    SELECT idMorceau, titre, dureemorceau, nom AS groupe
                     FROM suitGroupe NATURAL JOIN groupe NATURAL JOIN joue NATURAL JOIN morceau
                     WHERE pseudo = %s AND dFin IS NULL
                 ) AS t1
                 EXCEPT
                 (
-                    SELECT idMorceau, titre, nom AS groupe
+                    SELECT idMorceau, titre, dureemorceau, nom AS groupe
                     FROM morceau NATURAL JOIN joue NATURAL JOIN ecoute NATURAL JOIN groupe
                     WHERE idGroupe IN (
                         SELECT idGroupe
@@ -336,7 +383,8 @@ def suggestions(pseudo):
             if groupe_prefere:
                 with conn.cursor() as cur5:
                     # selectionne les groupes suivis par les utilisateurs qui suivent le groupe préfére, en enlevant celui-ci (redondant)
-                    cur5.execute("""SELECT idGroupe, nom
+                    cur5.execute("""SELECT * FROM (
+                                 SELECT idGroupe, nom
                     FROM suitGroupe NATURAL JOIN groupe
                     WHERE pseudo IN (
                         SELECT pseudo
@@ -346,7 +394,8 @@ def suggestions(pseudo):
                     EXCEPT
                     SELECT idGroupe, nom
                     FROM suitGroupe NATURAL JOIN groupe
-                    WHERE idGroupe = %s;""", (groupe_prefere.idgroupe,groupe_prefere.idgroupe))
+                    WHERE idGroupe = %s
+                                 ) LIMIT 3""", (groupe_prefere.idgroupe,groupe_prefere.idgroupe))
                     groupes = cur5.fetchall()
                     suggestion_3 = {
                         "groupe_prefere" : groupe_prefere.nom,

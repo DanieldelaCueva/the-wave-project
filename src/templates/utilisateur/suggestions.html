@@ -18,6 +18,19 @@
           <h3>{{ morceau.titre }}</h3>
           <p><i>{{ morceau.groupe }}</i></p>
         </div>
+        <div class="list-card-meta">
+          <span>{{ morceau.dureemorceau }}</span>
+          <a href="/ajouter_a_playlist/{{ morceau.idmorceau }}" class="add-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 5v14m-7-7h14"
+                stroke="#7b5cff"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </a>
+        </div>
       </div>
     </a>
     {% endfor %} {% else %}
@@ -47,6 +60,19 @@
         <div class="list-card-info">
           <h3>{{ morceau.titre }}</h3>
           <p><i>{{ morceau.groupe }}</i></p>
+        </div>
+        <div class="list-card-meta">
+          <span>{{ morceau.dureemorceau }}</span>
+          <a href="/ajouter_a_playlist/{{ morceau.idmorceau }}" class="add-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 5v14m-7-7h14"
+                stroke="#7b5cff"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </a>
         </div>
       </div>
     </a>
@@ -113,7 +139,8 @@
   <!-- COLONNE GAUCHE : playlist que contiennent les morceaux écoutés par les utilisateurs -->
   <div class="column">
     <h2>
-      Voici les playlists qui contiennent les <span style="color: #7b5cff">morceaux que vous écoutez</span> :
+      Voici les playlists qui contiennent les
+      <span style="color: #7b5cff">morceaux que vous écoutez</span> :
     </h2>
 
     {% if suggestion_5 %} {% for playlist in suggestion_5 %}
@@ -124,7 +151,10 @@
           <p><i>@{{ playlist.pseudocreateur }}</i></p>
         </div>
         <div class="list-card-meta">
-          <span>{% if playlist.nbmorceaux == 1 %} 1 morceau {% else %} {{ playlist.nbmorceaux }} morceaux {% endif %}</span>
+          <span
+            >{% if playlist.nbmorceaux == 1 %} 1 morceau {% else %} {{
+            playlist.nbmorceaux }} morceaux {% endif %}</span
+          >
         </div>
       </div>
     </a>
@@ -136,7 +166,8 @@
   <!-- COLONNE DROITE : morceaux joués par des groupes suivis -->
   <div class="column">
     <h2>
-      Voici les playlists créees par les utilisateurs <span style="color: #7b5cff">que vous suivez</span> :
+      Voici les playlists créees par les utilisateurs
+      <span style="color: #7b5cff">que vous suivez</span> :
     </h2>
 
     {% if suggestion_6 %} {% for playlist in suggestion_6 %}
@@ -147,7 +178,10 @@
           <p><i>@{{ playlist.pseudocreateur }}</i></p>
         </div>
         <div class="list-card-meta">
-          <span>{% if playlist.nbmorceaux == 1 %} 1 morceau {% else %} {{ playlist.nbmorceaux }} morceaux {% endif %}</span>
+          <span
+            >{% if playlist.nbmorceaux == 1 %} 1 morceau {% else %} {{
+            playlist.nbmorceaux }} morceaux {% endif %}</span
+          >
         </div>
       </div>
     </a>

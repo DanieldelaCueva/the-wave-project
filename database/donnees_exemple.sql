@@ -132,7 +132,17 @@ INSERT INTO Album (titre, dParution, descAlbum) VALUES
 ('AM', '2013-09-09', 'Grand succès des Arctic Monkeys.'),
 ('Evolve', '2017-06-23', 'Album pop-rock d’Imagine Dragons.'),
 ('The Wall', '1979-11-30', 'Opéra rock de Pink Floyd.'),
-('Random Access Memories', '2013-05-17', 'Dernier album studio de Daft Punk.');
+('Random Access Memories', '2013-05-17', 'Dernier album studio de Daft Punk.'),
+('Revolver', '1966-08-05', 'Album majeur des Beatles.'),
+('Jazz', '1978-11-10', 'Album culte de Queen.'),
+('Wish You Were Here', '1975-09-12', 'Classique de Pink Floyd.'),
+('Human After All', '2005-03-14', 'Troisième album de Daft Punk.'),
+('A Rush of Blood to the Head', '2002-08-26', 'Deuxième album de Coldplay.'),
+('In Rainbows', '2007-10-10', 'Album révolutionnaire de Radiohead.'),
+('In Utero', '1993-09-21', 'Dernier album de Nirvana.'),
+('Houses of the Holy', '1973-03-28', 'Album classique de Led Zeppelin.'),
+('Favourite Worst Nightmare', '2007-04-23', 'Deuxième album Arctic Monkeys.'),
+('Smoke + Mirrors', '2015-02-17', 'Deuxième album Imagine Dragons.');
 
 -- -----------------------------
 -- 7) MORCEAUX (60 : 12 albums x 5 titres)
@@ -235,6 +245,86 @@ INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
 ('Instant Crush', '00:05:37', '2013-05-17', 'I didn''t have the heart to tell you...'),
 ('Contact', '00:06:21', '2013-05-17', 'Telemetry from the moons...');
 
+-- Album 13 — Revolver (61–65)
+INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
+('Taxman', '00:02:39', '1966-08-05', 'Let me tell you how it will be...'),
+('Eleanor Rigby', '00:02:06', '1966-08-05', 'Ah look at all the lonely people...'),
+('I''m Only Sleeping', '00:03:03', '1966-08-05', 'When I wake up early in the morning...'),
+('Here, There and Everywhere', '00:02:26', '1966-08-05', 'To lead a better life...'),
+('Tomorrow Never Knows', '00:03:00', '1966-08-05', 'Turn off your mind, relax...');
+
+-- Album 14 — Jazz (66–70)
+INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
+('Mustapha', '00:03:03', '1978-11-10', 'Ibrahim...'),
+('Fat Bottomed Girls', '00:04:16', '1978-11-10', 'Are you gonna take me home tonight...'),
+('Bicycle Race', '00:03:01', '1978-11-10', 'I want to ride my bicycle...'),
+('If You Can''t Beat Them', '00:04:15', '1978-11-10', 'Keep your chin up...'),
+('Don''t Stop Me Now', '00:03:29', '1978-11-10', 'Tonight I''m gonna have myself a real good time...');
+
+-- Album 15 — Wish You Were Here (71–75)
+INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
+('Shine On You Crazy Diamond (Pt. I–V)', '00:13:31', '1975-09-12', 'Remember when you were young...'),
+('Welcome to the Machine', '00:07:31', '1975-09-12', 'Welcome my son...'),
+('Have a Cigar', '00:05:08', '1975-09-12', 'Come in here, dear boy...'),
+('Wish You Were Here', '00:05:40', '1975-09-12', 'So, so you think you can tell...'),
+('Shine On You Crazy Diamond (Pt. VI–IX)', '00:12:29', '1975-09-12', 'Nobody knows where you are...');
+
+-- Album 16 — Human After All (76–80)
+INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
+('Human After All', '00:05:20', '2005-03-14', 'We are human...'),
+('The Prime Time of Your Life', '00:04:23', '2005-03-14', 'Live...'),
+('Robot Rock', '00:04:47', '2005-03-14', 'Rock, robot rock...'),
+('Make Love', '00:04:49', '2005-03-14', 'Instrumental...'),
+('Technologic', '00:04:43', '2005-03-14', 'Buy it, use it, break it...');
+
+-- Album 17 — A Rush of Blood (81–85)
+INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
+('Politik', '00:05:18', '2002-08-26', 'Give me real...'),
+('In My Place', '00:03:48', '2002-08-26', 'In my place...'),
+('God Put a Smile...', '00:04:58', '2002-08-26', 'Where do we go...'),
+('The Scientist', '00:05:09', '2002-08-26', 'Come up to meet you...'),
+('Clocks', '00:05:07', '2002-08-26', 'Lights go out and I can''t be saved...');
+
+-- Album 18 — In Rainbows (86–90)
+INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
+('15 Step', '00:03:57', '2007-10-10', 'How come I end up where I started...'),
+('Bodysnatchers', '00:04:02', '2007-10-10', 'I do not...'),
+('Nude', '00:04:15', '2007-10-10', 'Don''t get any big ideas...'),
+('Weird Fishes', '00:05:18', '2007-10-10', 'In the deepest ocean...'),
+('Reckoner', '00:04:50', '2007-10-10', 'You are not to blame...');
+
+-- Album 19 — In Utero (91–95)
+INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
+('Serve the Servants', '00:03:36', '1993-09-21', 'Teenage angst has paid off well...'),
+('Scentless Apprentice', '00:03:49', '1993-09-21', 'Like the...'),
+('Heart-Shaped Box', '00:04:39', '1993-09-21', 'She eyes me like a Pisces...'),
+('Rape Me', '00:02:49', '1993-09-21', 'Rape me...'),
+('All Apologies', '00:03:51', '1993-09-21', 'What else should I be...');
+
+-- Album 20 — Houses of the Holy (96–100)
+INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
+('The Song Remains the Same', '00:05:29', '1973-03-28', 'I had a dream...'),
+('The Rain Song', '00:07:39', '1973-03-28', 'It is the springtime...'),
+('Over the Hills and Far Away', '00:04:50', '1973-03-28', 'Hey lady...'),
+('Dancing Days', '00:03:43', '1973-03-28', 'Dancing days are here again...'),
+('No Quarter', '00:07:00', '1973-03-28', 'Close the door, put out the light...');
+
+-- Album 21 — Favourite Worst Nightmare (101–105)
+INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
+('Brianstorm', '00:02:52', '2007-04-23', 'Brian...'),
+('Teddy Picker', '00:03:25', '2007-04-23', 'They''ve sped up...'),
+('Fluorescent Adolescent', '00:03:03', '2007-04-23', 'You used to get it...'),
+('505', '00:04:13', '2007-04-23', 'I''m going back to 505...'),
+('Do Me a Favour', '00:03:26', '2007-04-23', 'Well the morning was complete...');
+
+-- Album 22 — Smoke + Mirrors (106–110)
+INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles) VALUES
+('Shots', '00:03:52', '2015-02-17', 'I''m sorry for everything...'),
+('Gold', '00:03:36', '2015-02-17', 'First things first...'),
+('Smoke and Mirrors', '00:04:20', '2015-02-17', 'This is my word...'),
+('I''m So Sorry', '00:03:50', '2015-02-17', 'About time...'),
+('Friction', '00:03:35', '2015-02-17', 'Get down...');
+
 -- -----------------------------
 -- 8) COMPOSE (idMorceau, idAlbum, ordreDsAlbum)
 -- On relie les morceaux 1..60 aux albums 1..12, 5 par album
@@ -287,6 +377,18 @@ INSERT INTO Compose (idMorceau, idAlbum, ordreDsAlbum) VALUES
 INSERT INTO Compose (idMorceau, idAlbum, ordreDsAlbum) VALUES
 (56,12,1),(57,12,2),(58,12,3),(59,12,4),(60,12,5);
 
+INSERT INTO Compose VALUES
+(61,13,1),(62,13,2),(63,13,3),(64,13,4),(65,13,5),
+(66,14,1),(67,14,2),(68,14,3),(69,14,4),(70,14,5),
+(71,15,1),(72,15,2),(73,15,3),(74,15,4),(75,15,5),
+(76,16,1),(77,16,2),(78,16,3),(79,16,4),(80,16,5),
+(81,17,1),(82,17,2),(83,17,3),(84,17,4),(85,17,5),
+(86,18,1),(87,18,2),(88,18,3),(89,18,4),(90,18,5),
+(91,19,1),(92,19,2),(93,19,3),(94,19,4),(95,19,5),
+(96,20,1),(97,20,2),(98,20,3),(99,20,4),(100,20,5),
+(101,21,1),(102,21,2),(103,21,3),(104,21,4),(105,21,5),
+(106,22,1),(107,22,2),(108,22,3),(109,22,4),(110,22,5);
+
 -- -----------------------------
 -- 9) PUBLIE (idGroupe, idAlbum)
 -- Lien groupe -> album (groupe qui publie l'album)
@@ -303,7 +405,18 @@ INSERT INTO Publie (idGroupe, idAlbum) VALUES
 (9,9),  -- Arctic Monkeys -> AM
 (10,10),-- Imagine Dragons -> Evolve
 (3,11), -- Pink Floyd -> The Wall
-(4,12); -- Daft Punk -> Random Access Memories
+(4,12), -- Daft Punk -> Random Access Memories
+(1,13),  -- Beatles
+(2,14),  -- Queen
+(3,15),  -- Pink Floyd
+(4,16),  -- Daft Punk
+(5,17),  -- Coldplay
+(6,18),  -- Radiohead
+(7,19),  -- Nirvana
+(8,20),  -- Led Zeppelin
+(9,21),  -- Arctic Monkeys
+(10,22); -- Imagine Dragons
+
 
 -- -----------------------------
 -- 10) JOUE (idGroupe, idMorceau)
@@ -357,6 +470,18 @@ INSERT INTO Joue (idGroupe, idMorceau) VALUES
 -- Daft Punk -> Random Access Memories morceaux 56..60
 INSERT INTO Joue (idGroupe, idMorceau) VALUES
 (4,56),(4,57),(4,58),(4,59),(4,60);
+
+INSERT INTO Joue VALUES
+(1,61),(1,62),(1,63),(1,64),(1,65),
+(2,66),(2,67),(2,68),(2,69),(2,70),
+(3,71),(3,72),(3,73),(3,74),(3,75),
+(4,76),(4,77),(4,78),(4,79),(4,80),
+(5,81),(5,82),(5,83),(5,84),(5,85),
+(6,86),(6,87),(6,88),(6,89),(6,90),
+(7,91),(7,92),(7,93),(7,94),(7,95),
+(8,96),(8,97),(8,98),(8,99),(8,100),
+(9,101),(9,102),(9,103),(9,104),(9,105),
+(10,106),(10,107),(10,108),(10,109),(10,110);
 
 -- -----------------------------
 -- 11) PARTICIPE (idArtiste, idMorceau)
@@ -412,6 +537,66 @@ INSERT INTO Participe (idArtiste, idMorceau) VALUES
 -- Imagine Dragons (19) -> morceaux 46..50
 INSERT INTO Participe (idArtiste, idMorceau) VALUES
 (19,46),(19,47),(19,48),(19,49),(19,50);
+
+-- Beatles (13)
+INSERT INTO Participe VALUES
+(1,61),(2,61),(3,61),(4,61),
+(1,62),(2,62),(3,62),(4,62),
+(1,63),(2,63),(3,63),(4,63),
+(1,64),(2,64),(3,64),(4,64),
+(1,65),(2,65),(3,65),(4,65);
+
+-- Queen (14)
+INSERT INTO Participe VALUES
+(5,66),(6,66),(7,66),
+(5,67),(6,67),(7,67),
+(5,68),(6,68),(7,68),
+(5,69),(6,69),(7,69),
+(5,70),(6,70),(7,70);
+
+-- Pink Floyd (15)
+INSERT INTO Participe VALUES
+(8,71),(9,71),
+(8,72),(9,72),
+(8,73),(9,73),
+(8,74),(9,74),
+(8,75),(9,75);
+
+-- Daft Punk (16)
+INSERT INTO Participe VALUES
+(10,76),(11,76),
+(10,77),(11,77),
+(10,78),(11,78),
+(10,79),(11,79),
+(10,80),(11,80);
+
+-- Coldplay (17)
+INSERT INTO Participe VALUES
+(12,81),(12,82),(12,83),(12,84),(12,85);
+
+-- Radiohead (18)
+INSERT INTO Participe VALUES
+(14,86),(14,87),(14,88),(14,89),(14,90);
+
+-- Nirvana (19)
+INSERT INTO Participe VALUES
+(15,91),(15,92),(15,93),(15,94),(15,95);
+
+-- Led Zeppelin (20)
+INSERT INTO Participe VALUES
+(16,96),(17,96),
+(16,97),(17,97),
+(16,98),(17,98),
+(16,99),(17,99),
+(16,100),(17,100);
+
+-- Arctic Monkeys (21)
+INSERT INTO Participe VALUES
+(18,101),(18,102),(18,103),(18,104),(18,105);
+
+-- Imagine Dragons (22)
+INSERT INTO Participe VALUES
+(19,106),(19,107),(19,108),(19,109),(19,110);
 
 -- -----------------------------
 -- 12) PLAYLIST (quelques exemples)
@@ -852,6 +1037,211 @@ INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
 ('lofi_dreams', 41, '00:04:32', '2024-10-18 20:30:00'),
 ('lofi_dreams', 47, '00:03:21', '2024-10-19 20:45:00');
 
+-- Écoutes pour les morceaux 61 à 85
+INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
+('melomane92',61,INTERVAL '00:03:11','2024-01-14 10:22:11'),
+('rockfan',61,INTERVAL '00:02:58','2024-02-03 19:44:55'),
+('queenfan',61,INTERVAL '00:03:20','2024-04-22 08:11:32'),
+
+('jazzlover',62,INTERVAL '00:02:35','2024-03-18 17:05:01'),
+('beatlemania',62,INTERVAL '00:02:10','2024-05-09 13:44:19'),
+('indie_vibes',62,INTERVAL '00:02:56','2024-10-01 21:33:44'),
+('lofi_dreams',62,INTERVAL '00:02:48','2025-02-15 09:12:00'),
+
+('classicrock',63,INTERVAL '00:03:40','2024-06-12 15:14:10'),
+('vinyl_addict',63,INTERVAL '00:03:01','2024-11-07 20:05:55'),
+('melomane92',63,INTERVAL '00:03:22','2025-01-18 11:22:42'),
+
+('electrohead',64,INTERVAL '00:02:55','2024-04-28 18:44:37'),
+('rockfan',64,INTERVAL '00:02:39','2025-03-10 12:15:32'),
+('beatlemania',64,INTERVAL '00:02:50','2025-05-02 14:18:00'),
+
+('queenfan',65,INTERVAL '00:03:00','2024-02-14 20:01:11'),
+('melomane92',65,INTERVAL '00:02:58','2025-06-18 09:43:22'),
+('jazzlover',65,INTERVAL '00:03:03','2025-08-22 19:55:20'),
+
+('rockfan',66,INTERVAL '00:03:01','2024-01-20 11:15:50'),
+('queenfan',66,INTERVAL '00:03:10','2024-08-07 22:51:01'),
+('vinyl_addict',66,INTERVAL '00:03:05','2025-09-14 17:44:33'),
+
+('electrohead',67,INTERVAL '00:04:12','2024-02-02 15:45:15'),
+('classicrock',67,INTERVAL '00:04:08','2024-11-15 07:33:58'),
+('jazzlover',67,INTERVAL '00:04:16','2025-03-28 14:55:00'),
+
+('queenfan',68,INTERVAL '00:03:00','2024-04-01 12:14:20'),
+('indie_vibes',68,INTERVAL '00:03:01','2024-12-22 18:40:50'),
+('rockfan',68,INTERVAL '00:03:02','2025-04-25 10:18:45'),
+
+('melomane92',69,INTERVAL '00:04:11','2024-07-19 09:23:11'),
+('classicrock',69,INTERVAL '00:04:08','2024-09-22 15:55:50'),
+('queenfan',69,INTERVAL '00:04:10','2025-01-30 17:44:00'),
+
+('queenfan',70,INTERVAL '00:03:26','2024-03-12 21:14:33'),
+('rockfan',70,INTERVAL '00:03:20','2024-10-09 10:10:21'),
+('lofi_dreams',70,INTERVAL '00:03:05','2025-03-05 22:14:40'),
+
+('jazzlover',71,INTERVAL '00:11:45','2024-05-03 18:26:00'),
+('indie_vibes',71,INTERVAL '00:13:20','2024-09-01 22:50:44'),
+('classicrock',71,INTERVAL '00:12:00','2025-04-08 13:15:05'),
+
+('vinyl_addict',72,INTERVAL '00:07:12','2024-07-12 12:14:22'),
+('rockfan',72,INTERVAL '00:07:31','2025-02-14 11:55:35'),
+('electrohead',72,INTERVAL '00:07:28','2025-06-09 16:44:03'),
+
+('melomane92',73,INTERVAL '00:05:02','2024-04-10 17:17:11'),
+('queenfan',73,INTERVAL '00:05:07','2024-11-13 08:50:12'),
+('classicrock',73,INTERVAL '00:05:10','2025-03-12 15:22:44'),
+
+('jazzlover',74,INTERVAL '00:05:35','2024-02-02 14:19:20'),
+('beatlemania',74,INTERVAL '00:05:38','2025-05-05 18:44:11'),
+('vinyl_addict',74,INTERVAL '00:05:20','2025-07-14 20:22:30'),
+
+('indie_vibes',75,INTERVAL '00:12:25','2024-01-11 11:33:40'),
+('electrohead',75,INTERVAL '00:12:02','2024-10-28 19:10:12'),
+('lofi_dreams',75,INTERVAL '00:11:55','2025-02-01 13:40:44'),
+
+('melomane92',76,INTERVAL '00:05:15','2024-03-14 21:10:55'),
+('electrohead',76,INTERVAL '00:05:20','2024-07-30 18:59:11'),
+('rockfan',76,INTERVAL '00:05:05','2025-01-18 09:14:20'),
+
+('electrohead',77,INTERVAL '00:04:10','2024-01-28 14:00:40'),
+('queenfan',77,INTERVAL '00:04:20','2024-09-22 21:22:19'),
+('vinyl_addict',77,INTERVAL '00:04:15','2025-06-11 16:45:33'),
+
+('electrohead',78,INTERVAL '00:04:43','2024-06-18 10:14:12'),
+('lofi_dreams',78,INTERVAL '00:04:39','2024-12-27 23:40:59'),
+('rockfan',78,INTERVAL '00:04:45','2025-05-21 19:30:22'),
+
+('jazzlover',79,INTERVAL '00:04:40','2024-04-03 13:58:10'),
+('indie_vibes',79,INTERVAL '00:04:50','2024-11-05 17:15:32'),
+('electrohead',79,INTERVAL '00:04:49','2025-01-27 14:14:09'),
+
+('electrohead',80,INTERVAL '00:04:43','2024-05-15 20:11:14'),
+('lofi_dreams',80,INTERVAL '00:04:32','2024-09-20 12:44:55'),
+('queenfan',80,INTERVAL '00:04:45','2025-06-19 08:40:22'),
+
+('classicrock',81,INTERVAL '00:05:10','2024-03-18 12:14:10'),
+('melomane92',81,INTERVAL '00:05:18','2024-11-02 16:40:21'),
+('rockfan',81,INTERVAL '00:05:11','2025-04-20 19:33:47'),
+
+('indie_vibes',82,INTERVAL '00:03:44','2024-02-14 21:20:20'),
+('beatlemania',82,INTERVAL '00:03:50','2024-10-10 11:44:13'),
+('vinyl_addict',82,INTERVAL '00:03:48','2025-03-09 14:10:45'),
+
+('jazzlover',83,INTERVAL '00:04:55','2024-06-09 13:22:11'),
+('queenfan',83,INTERVAL '00:04:59','2024-12-05 19:41:22'),
+('melomane92',83,INTERVAL '00:04:50','2025-08-01 20:12:33'),
+
+('rockfan',84,INTERVAL '00:05:00','2024-05-19 17:30:42'),
+('classicrock',84,INTERVAL '00:05:08','2024-09-13 09:55:05'),
+('jazzlover',84,INTERVAL '00:05:03','2025-03-22 15:44:50'),
+
+('indie_vibes',85,INTERVAL '00:05:00','2024-03-22 20:19:33'),
+('queenfan',85,INTERVAL '00:05:05','2024-11-21 12:40:14'),
+('lofi_dreams',85,INTERVAL '00:05:07','2025-04-28 08:51:37');
+
+-- Écoutes pour les morceaux 86 à 110
+INSERT INTO Ecoute (pseudo, idMorceau, dureeEcoute, dateEcoute) VALUES
+('indie_vibes',86,INTERVAL '00:03:55','2024-01-22 16:44:11'),
+('jazzlover',86,INTERVAL '00:03:58','2024-11-03 09:51:30'),
+('rockfan',86,INTERVAL '00:03:57','2025-03-24 20:14:05'),
+
+('classicrock',87,INTERVAL '00:04:02','2024-02-18 14:33:19'),
+('queenfan',87,INTERVAL '00:04:05','2024-10-12 22:12:41'),
+('vinyl_addict',87,INTERVAL '00:04:09','2025-02-05 11:40:25'),
+
+('melomane92',88,INTERVAL '00:04:12','2024-05-14 10:10:40'),
+('electrohead',88,INTERVAL '00:04:15','2024-12-22 18:50:21'),
+('beatlemania',88,INTERVAL '00:04:10','2025-06-27 17:55:45'),
+
+('rockfan',89,INTERVAL '00:05:11','2024-06-20 20:14:22'),
+('classicrock',89,INTERVAL '00:05:05','2025-01-09 09:42:11'),
+('lofi_dreams',89,INTERVAL '00:05:03','2025-04-16 21:40:33'),
+
+('indie_vibes',90,INTERVAL '00:04:45','2024-04-09 12:09:30'),
+('melomane92',90,INTERVAL '00:04:48','2024-09-18 15:17:01'),
+('vinyl_addict',90,INTERVAL '00:04:49','2025-03-19 19:22:44'),
+
+('beatlemania',91,INTERVAL '00:03:30','2024-02-14 10:20:55'),
+('rockfan',91,INTERVAL '00:03:36','2024-11-17 17:22:09'),
+('indie_vibes',91,INTERVAL '00:03:34','2025-05-03 12:18:44'),
+
+('electrohead',92,INTERVAL '00:03:51','2024-03-25 14:55:10'),
+('jazzlover',92,INTERVAL '00:03:49','2024-08-19 10:45:18'),
+('lofi_dreams',92,INTERVAL '00:03:52','2025-03-30 21:10:01'),
+
+('rockfan',93,INTERVAL '00:04:35','2024-07-07 16:41:20'),
+('classicrock',93,INTERVAL '00:04:38','2024-12-11 14:10:54'),
+('queenfan',93,INTERVAL '00:04:39','2025-02-22 11:59:40'),
+
+('melomane92',94,INTERVAL '00:02:50','2024-04-18 13:55:02'),
+('vinyl_addict',94,INTERVAL '00:02:49','2024-10-28 19:07:42'),
+('indie_vibes',94,INTERVAL '00:02:52','2025-06-15 16:14:11'),
+
+('jazzlover',95,INTERVAL '00:03:49','2024-08-23 10:44:20'),
+('beatlemania',95,INTERVAL '00:03:45','2025-01-13 18:55:32'),
+('electrohead',95,INTERVAL '00:03:50','2025-07-29 20:19:11'),
+
+('classicrock',96,INTERVAL '00:05:22','2024-03-02 15:03:10'),
+('queenfan',96,INTERVAL '00:05:25','2024-09-14 21:48:50'),
+('rockfan',96,INTERVAL '00:05:20','2025-04-21 12:31:12'),
+
+('vinyl_addict',97,INTERVAL '00:07:21','2024-01-15 11:51:00'),
+('lofi_dreams',97,INTERVAL '00:07:28','2024-11-03 23:55:34'),
+('melomane92',97,INTERVAL '00:07:30','2025-02-08 14:12:17'),
+
+('queenfan',98,INTERVAL '00:04:49','2024-05-31 08:30:55'),
+('indie_vibes',98,INTERVAL '00:04:52','2024-10-17 10:55:12'),
+('jazzlover',98,INTERVAL '00:04:50','2025-03-14 18:40:21'),
+
+('rockfan',99,INTERVAL '00:03:52','2024-02-10 19:07:41'),
+('classicrock',99,INTERVAL '00:03:55','2024-06-26 13:40:02'),
+('electrohead',99,INTERVAL '00:03:53','2025-04-29 17:44:22'),
+
+('beatlemania',100,INTERVAL '00:07:00','2024-03-28 14:25:20'),
+('vinyl_addict',100,INTERVAL '00:07:03','2025-01-02 09:49:31'),
+('lofi_dreams',100,INTERVAL '00:07:05','2025-06-11 18:43:14'),
+
+('melomane92',101,INTERVAL '00:02:48','2024-06-16 20:34:41'),
+('queenfan',101,INTERVAL '00:02:52','2024-12-12 13:19:20'),
+('jazzlover',101,INTERVAL '00:02:55','2025-03-24 11:44:33'),
+
+('rockfan',102,INTERVAL '00:03:24','2024-03-04 21:21:20'),
+('electrohead',102,INTERVAL '00:03:26','2024-10-05 10:42:15'),
+('indie_vibes',102,INTERVAL '00:03:28','2025-06-22 09:31:14'),
+
+('beatlemania',103,INTERVAL '00:03:01','2024-01-09 18:44:19'),
+('vinyl_addict',103,INTERVAL '00:03:03','2024-09-17 20:30:42'),
+('classicrock',103,INTERVAL '00:03:05','2025-02-14 13:12:01'),
+
+('queenfan',104,INTERVAL '00:04:11','2024-04-15 10:10:40'),
+('jazzlover',104,INTERVAL '00:04:08','2024-07-28 12:50:22'),
+('lofi_dreams',104,INTERVAL '00:04:09','2025-05-07 18:44:55'),
+
+('indie_vibes',105,INTERVAL '00:03:20','2024-05-26 17:24:40'),
+('rockfan',105,INTERVAL '00:03:26','2024-11-13 22:18:33'),
+('melomane92',105,INTERVAL '00:03:23','2025-06-29 15:41:11'),
+
+('electrohead',106,INTERVAL '00:03:47','2024-02-18 13:12:30'),
+('classicrock',106,INTERVAL '00:03:52','2024-09-07 09:41:22'),
+('queenfan',106,INTERVAL '00:03:49','2025-03-03 10:55:10'),
+
+('vinyl_addict',107,INTERVAL '00:03:38','2024-03-22 16:22:10'),
+('lofi_dreams',107,INTERVAL '00:03:37','2024-08-16 18:45:40'),
+('rockfan',107,INTERVAL '00:03:40','2025-04-30 12:43:21'),
+
+('melomane92',108,INTERVAL '00:04:11','2024-01-12 15:14:10'),
+('indie_vibes',108,INTERVAL '00:04:15','2024-10-22 20:40:22'),
+('queenfan',108,INTERVAL '00:04:14','2025-02-17 09:55:44'),
+
+('beatlemania',109,INTERVAL '00:03:31','2024-04-18 19:30:20'),
+('vinyl_addict',109,INTERVAL '00:03:30','2024-11-11 08:33:44'),
+('lofi_dreams',109,INTERVAL '00:03:34','2025-08-03 17:22:00'),
+
+('classicrock',110,INTERVAL '00:03:40','2024-05-20 21:18:10'),
+('electrohead',110,INTERVAL '00:03:42','2024-08-29 14:00:55'),
+('jazzlover',110,INTERVAL '00:03:45','2025-05-12 18:51:33');
+
 -- -----------------------------
 -- 15) SUITUTILISATEUR (qui suit qui)
 -- -----------------------------
@@ -952,9 +1342,6 @@ VALUES ('Dark Passion Play', '2007-09-28', 'Album de Nightwish, premier sans Tar
 
 INSERT INTO Morceau (titre, dureeMorceau, dPublication, paroles)
 VALUES ('Last of the Wilds', '00:06:18', '2007-09-28', NULL);
-
-INSERT INTO Compose (idMorceau, idAlbum, ordreDsAlbum)
-VALUES (61, 13, 10);
 
 -- Morceau joué par Nightwish
 INSERT INTO Joue (idGroupe, idMorceau)

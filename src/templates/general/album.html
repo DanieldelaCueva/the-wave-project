@@ -19,7 +19,19 @@ endblock %} {% block content %}
   >
     <div class="list-card">
       <div class="list-card-info"><h3>{{ morceau.titre }}</h3></div>
-      <div class="list-card-meta"><p>{{ morceau.duree }}</p></div>
+      <div class="list-card-meta">
+        <p>{{ morceau.duree }}</p>
+        <a href="/ajouter_a_playlist/{{ morceau.idmorceau }}" class="add-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 5v14m-7-7h14"
+              stroke="#7b5cff"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </a>
+      </div>
     </div>
   </a>
   {% endfor %}
