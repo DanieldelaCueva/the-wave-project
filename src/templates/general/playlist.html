@@ -26,21 +26,21 @@ block content %}
 
 <h2>Contenu de la playlist</h2>
 
-{% if morceaux %} {% for morceau in morceaux %}
+{% if morceaux %} {% for i in range(nbmorceaux) %}
 <div class="list-card-wrapper">
-  <a href="/morceau/{{ morceau.idmorceau }}" class="list-card-link">
+  <a href="/morceau/{{ morceaux[i].idmorceau }}" class="list-card-link">
     <div class="list-card">
       <div class="list-card-info">
-        <h3>{{ morceau.titre }}</h3>
-        <p><i>{{ morceau.groupe }}</i></p>
+        <h3>{{ i+1 }}. {{ morceaux[i].titre }}</h3>
+        <p><i>{{ morceaux[i].groupe }}</i></p>
       </div>
       <div class="list-card-meta">
-        <span>{{ morceau.dureemorceau }}</span>
+        <span>{{ morceaux[i].dureemorceau }}</span>
       </div>
       {% if playlist.pseudocreateur == pseudo %}
       <!-- Supprimer le morceau de la playlist -->
       <a
-        href="/supprimer_morceau_playlist?idmorceau={{ morceau.idmorceau }}&idplaylist={{ playlist.idplaylist }}"
+        href="/supprimer_morceau_playlist?idmorceau={{ morceaux[i].idmorceau }}&idplaylist={{ playlist.idplaylist }}"
         class="icon-button delete delete-small"
         title="Supprimer ce morceau"
         aria-label="Supprimer ce morceau"

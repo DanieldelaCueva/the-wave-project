@@ -1,22 +1,28 @@
-{% extends "base.html" %}
-{% block title %}{{ album.title }} – The Wave{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ album.title }} – The Wave{%
+endblock %} {% block content %}
 
-<h1>{{ album.title }}</h1>
+<h1>{{ album.titre }}</h1>
 <p>{{ album.description }}</p>
 
-<img class="album-cover" src="data:image/png;base64,{{ album.cover }}" alt="Pochette" />
+<img
+  class="album-cover"
+  src="data:image/png;base64,{{ album.couverture }}"
+  alt="Pochette"
+/>
 
 <h2>Morceaux</h2>
-<div class="grid">
-    {% for track in tracks %}
-    <a href="{{ url_for('morceau', idmorceau=track.idmorceau) }}" class="card-link">
-        <div class="card music-card">
-            <h3>{{ loop.index }}. {{ track.title }}</h3>
-            <p>{{ track.duration }}</p>
-        </div>
-    </a>
-    {% endfor %}
+<div class="list-card-wrapper">
+  {% for morceau in morceaux %}
+  <a
+    href="{{ url_for('morceau', idmorceau=morceau.idmorceau) }}"
+    class="list-card-link"
+  >
+    <div class="list-card">
+      <div class="list-card-info"><h3>{{ morceau.titre }}</h3></div>
+      <div class="list-card-meta"><p>{{ morceau.duree }}</p></div>
+    </div>
+  </a>
+  {% endfor %}
 </div>
 
 {% endblock %}

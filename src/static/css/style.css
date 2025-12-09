@@ -549,3 +549,16 @@ pre.lyrics {
 .search-form button:active {
     transform: translateY(0);
 }
+
+.album_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    justify-items: start;  /* 👈 Alineación a la izquierda */
+}
+
+.album_album-card {
+    max-width: 180px;
+    margin: 0;  /* 👈 Sin centrado */
+}
+

@@ -140,7 +140,8 @@ def playlist(pseudo, idplaylist):
                             WHERE idplaylist = %s
                             ORDER BY ordredsplaylist;""", (idplaylist,))
             morceaux = cur2.fetchall()
-    return render_template("general/playlist.html", playlist = playlist, morceaux = morceaux, pseudo = pseudo)
+            nbmorceaux = len(morceaux)
+    return render_template("general/playlist.html", playlist = playlist, morceaux = morceaux, nbmorceaux = nbmorceaux, pseudo = pseudo)
 
 @app.route('/supprimer_morceau_playlist')
 @validation_connexion
