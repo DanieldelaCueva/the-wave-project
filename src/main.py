@@ -248,10 +248,10 @@ def ajouter_morceau_playlist(pseudo):
                                  WHERE idplaylist = %s
                                  GROUP BY idplaylist""",(id_playlist,))
                     resultat = cur2.fetchone()
-		            if resultat:
-			            ordre_max = resultat.omax
-		            else:
-			            ordre_max = 0
+                    if resultat:
+                        ordre_max = resultat.omax
+                    else:
+                        ordre_max = 0
                 with conn.cursor() as cur3:
                     cur3.execute("""SELECT idmorceau
                                  FROM inclus
