@@ -1,25 +1,34 @@
-{% extends "base.html" %}
-{% block title %}{{ morceau.titre }} – The Wave{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ morceau.titre }} – The Wave{%
+endblock %} {% block content %}
 
 <h1>{{ morceau.titre }}</h1>
 <p>Durée : {{ morceau.duree }}</p>
 
 {% if morceau.idgroupe %}
-  <p>
-    Par :
-    <a href="{{ url_for('groupe', idgroupe=morceau.idgroupe) }}" class="username">{{ morceau.groupe }}</a>
-  </p>
+<p>
+  Par :
+  <a href="{{ url_for('groupe', idgroupe=morceau.idgroupe) }}" class="username"
+    >{{ morceau.groupe }}</a
+  >
+</p>
 {% else %}
-  <p>Par : {{ morceau.groupe or "Inconnu" }}</p>
+<p>Par : {{ morceau.groupe or "Inconnu" }}</p>
 {% endif %}
 
-<form action="{{ url_for('ecouter_morceau', idmorceau=morceau.idmorceau) }}" method="post">
-    <button class="play-button" type="submit">▶ Écouter</button>
+<form
+  action="{{ url_for('ecouter_morceau', idmorceau=morceau.idmorceau) }}"
+  method="post"
+>
+  <button class="play-button" type="submit">▶ Écouter</button>
 </form>
 
+<a href="/ajouter_a_playlist/{{ morceau.idmorceau }}" class="playlist-add-button">
+  + Ajouter à une playlist
+</a>
+
+
 {% if en_cours %}
-  <p>Vous êtes en train d'écouter {{ morceau.titre }}</p>
+<p>Vous êtes en train d'écouter {{ morceau.titre }}</p>
 {% endif %}
 
 <h2>Paroles</h2>

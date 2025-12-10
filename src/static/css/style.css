@@ -607,4 +607,15 @@ pre.lyrics {
     background: rgba(255,255,255,0.04);
 }
 
+.playlist-add-button {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 10px 18px;
+    background: linear-gradient(90deg, #7b5cff, #9a7dff);
+    color: white;
+    border-radius: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: box-shadow .2s ease, transform .15s ease;
+}
 
