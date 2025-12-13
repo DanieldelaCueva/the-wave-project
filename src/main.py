@@ -598,12 +598,18 @@ def morceau(pseudo, idmorceau):
             cur.execute("""SELECT ordredsalbum
                            FROM compose
                            WHERE idmorceau = %s;""", (idmorceau,))
-            ordreDsAlbum = cur.fetchone()[0]
+            resultat = cur.fetchone()
+            ordreDsAlbum = None
+            if resultat:
+                ordreDsAlbum = resultat[0]
 
             cur.execute("""SELECT titre
                            FROM compose NATURAL JOIN album
                            WHERE idmorceau = %s;""", (idmorceau,))
-            titreA = cur.fetchone()[0]
+            resultat = cur.fetchone()
+            titreA = None
+            if resultat:
+                titreA = resultat[0]
 
     return render_template("general/morceau.html", pseudo=pseudo, morceau=morceau, en_cours=en_cours, artistes=artistes, ordreDsAlbum=ordreDsAlbum, titreA=titreA)
 
