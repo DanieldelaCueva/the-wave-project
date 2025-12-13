@@ -617,7 +617,15 @@ def morceau(pseudo, idmorceau):
 @validation_connexion
 def recherche(pseudo):
     q = request.args.get('q', '').strip()
-    type_recherche = request.args.get('type', 'tout')
+    type_recherche = request.args.get('type', 'morceau')
+    champ_recherche = request.args.get('champ', 'titre')
+
+    page = request.args.get('page', 1, type=int)
+    par_page = 5
+    if page < 1:
+        page = 1
+
+    total_pages = 1
 
     morceaux = []
     groupes = []
@@ -629,46 +637,311 @@ def recherche(pseudo):
         motif = f"%{q}%"
         with db.connect() as conn:
             with conn.cursor() as cur:
-                if type_recherche in ("tout", "morceau"):
-                    cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, g.nom AS groupe
-                                   FROM Morceau m
-                                   LEFT JOIN Joue j ON m.idMorceau = j.idMorceau
-                                   LEFT JOIN Groupe g ON j.idGroupe = g.idGroupe
-                                   WHERE m.titre ILIKE %s OR m.paroles ILIKE %s
-                                   ORDER BY m.titre;""", (motif, motif))
-                    morceaux = cur.fetchall()
 
-                if type_recherche in ("tout", "groupe"):
-                    cur.execute("""SELECT idGroupe AS idgroupe, nom AS nom, genre AS genre, nationalite AS nationalite, encode(imCouverture, 'base64') AS couverture
-                                   FROM Groupe
-                                   WHERE nom ILIKE %s OR genre ILIKE %s OR nationalite ILIKE %s
-                                   ORDER BY nom;""", (motif, motif, motif))
-                    groupes = cur.fetchall()
+                # ---------------- MORCEAU ----------------
+                if type_recherche == "morceau":
+                    if champ_recherche == "mot_cle":
+                        cur.execute("""SELECT COUNT(*) FROM Morceau WHERE paroles ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
 
-                if type_recherche in ("tout", "album"):
-                    cur.execute("""SELECT a.idAlbum AS idalbum, a.titre AS titre, encode(a.imCouverture,'base64') AS couverture, a.descAlbum AS description, g.nom AS groupe
-                                   FROM Album a
-                                   LEFT JOIN Publie p ON a.idAlbum = p.idAlbum
-                                   LEFT JOIN Groupe g ON p.idGroupe = g.idGroupe
-                                   WHERE a.titre ILIKE %s OR a.descAlbum ILIKE %s
-                                   ORDER BY a.titre;""", (motif, motif))
-                    albums = cur.fetchall()
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
 
-                if type_recherche in ("tout", "playlist"):
-                    cur.execute("""SELECT idPlaylist AS idplaylist, titre AS titre, descPlaylist AS description, visibilite AS visibilite, pseudoCreateur AS pseudocreateur
-                                   FROM Playlist
-                                   WHERE (visibilite = TRUE OR pseudoCreateur = %s) AND (titre ILIKE %s OR descPlaylist ILIKE %s)
-                                   ORDER BY dCreation DESC, titre;""", (pseudo, motif, motif))
-                    playlists = cur.fetchall()
+                        cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, g.nom AS groupe
+                                       FROM Morceau m
+                                       LEFT JOIN Joue j ON m.idMorceau = j.idMorceau
+                                       LEFT JOIN Groupe g ON j.idGroupe = g.idGroupe
+                                       WHERE m.paroles ILIKE %s
+                                       ORDER BY m.titre
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        morceaux = cur.fetchall()
 
-                if type_recherche in ("tout", "artiste"):
-                    cur.execute("""SELECT idArtiste AS idartiste, prenom || ' ' || nom AS nom, nationalite AS nationalite
-                                   FROM Artiste
-                                   WHERE prenom ILIKE %s OR nom ILIKE %s
-                                   ORDER BY nom;""", (motif, motif))
-                    artistes = cur.fetchall()
+                    elif champ_recherche == "titre":
+                        cur.execute("""SELECT COUNT(*) FROM Morceau WHERE titre ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
 
-    return render_template("general/recherche.html", pseudo=pseudo, q=q, type_recherche=type_recherche, morceaux=morceaux, groupes=groupes, albums=albums, playlists=playlists, artistes=artistes)
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, g.nom AS groupe
+                                       FROM Morceau m
+                                       LEFT JOIN Joue j ON m.idMorceau = j.idMorceau
+                                       LEFT JOIN Groupe g ON j.idGroupe = g.idGroupe
+                                       WHERE m.titre ILIKE %s
+                                       ORDER BY m.titre
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        morceaux = cur.fetchall()
+
+                    elif champ_recherche == "genre":
+                        cur.execute("""SELECT COUNT(*)
+                                       FROM Morceau m
+                                       JOIN Joue j ON m.idMorceau = j.idMorceau
+                                       JOIN Groupe g ON j.idGroupe = g.idGroupe
+                                       WHERE g.genre ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, g.nom AS groupe
+                                       FROM Morceau m
+                                       JOIN Joue j ON m.idMorceau = j.idMorceau
+                                       JOIN Groupe g ON j.idGroupe = g.idGroupe
+                                       WHERE g.genre ILIKE %s
+                                       ORDER BY m.titre
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        morceaux = cur.fetchall()
+
+                    elif champ_recherche == "artiste":
+                        cur.execute("""SELECT COUNT(*)FROM (
+                                       SELECT DISTINCT m.idMorceau
+                                       FROM Participe p
+                                       JOIN Artiste a ON a.idArtiste = p.idArtiste
+                                       JOIN Morceau m ON m.idMorceau = p.idMorceau
+                                       WHERE a.nom ILIKE %s OR a.prenom ILIKE %s) t;""", (motif, motif))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT DISTINCT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, g.nom AS groupe
+                                       FROM Participe p
+                                       JOIN Artiste a ON a.idArtiste = p.idArtiste
+                                       JOIN Morceau m ON m.idMorceau = p.idMorceau
+                                       LEFT JOIN Joue j ON j.idMorceau = m.idMorceau
+                                       LEFT JOIN Groupe g ON g.idGroupe = j.idGroupe
+                                       WHERE a.nom ILIKE %s OR a.prenom ILIKE %s
+                                       ORDER BY m.titre
+                                       LIMIT %s OFFSET %s;""", (motif, motif, par_page, offset))
+                        morceaux = cur.fetchall()
+
+                # ---------------- GROUPE ----------------
+                elif type_recherche == "groupe":
+                    if champ_recherche in ("titre", "mot_cle"):
+                        cur.execute("""SELECT COUNT(*) FROM Groupe WHERE nom ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT idGroupe AS idgroupe, nom, genre, nationalite, encode(imCouverture, 'base64') AS couverture
+                                       FROM Groupe
+                                       WHERE nom ILIKE %s
+                                       ORDER BY nom
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        groupes = cur.fetchall()
+
+                    elif champ_recherche == "genre":
+                        cur.execute("""SELECT COUNT(*) FROM Groupe WHERE genre ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT idGroupe AS idgroupe, nom, genre, nationalite, encode(imCouverture, 'base64') AS couverture
+                                       FROM Groupe
+                                       WHERE genre ILIKE %s
+                                       ORDER BY nom
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        groupes = cur.fetchall()
+
+                    elif champ_recherche == "artiste":
+                        cur.execute("""SELECT COUNT(*)
+                                       FROM (
+                                            SELECT DISTINCT g.idGroupe
+                                            FROM Appartient ap
+                                            JOIN Artiste a ON a.idArtiste = ap.idArtiste
+                                            JOIN Groupe g ON g.idGroupe = ap.idGroupe
+                                            WHERE a.nom ILIKE %s OR a.prenom ILIKE %s) t;""", (motif, motif))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT DISTINCT g.idGroupe AS idgroupe, g.nom, g.genre, g.nationalite, encode(g.imCouverture, 'base64') AS couverture
+                                       FROM Appartient ap
+                                       JOIN Artiste a ON a.idArtiste = ap.idArtiste
+                                       JOIN Groupe g ON g.idGroupe = ap.idGroupe
+                                       WHERE a.nom ILIKE %s OR a.prenom ILIKE %s
+                                       ORDER BY g.nom
+                                       LIMIT %s OFFSET %s;""", (motif, motif, par_page, offset))
+                        groupes = cur.fetchall()
+
+                # ---------------- ALBUM ----------------
+                elif type_recherche == "album":
+                    if champ_recherche == "mot_cle":
+                        cur.execute("""SELECT COUNT(*) FROM Album WHERE descAlbum ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT a.idAlbum AS idalbum, a.titre AS titre, encode(a.imCouverture,'base64') AS couverture, a.descAlbum AS description, g.nom AS groupe
+                                       FROM Album a
+                                       LEFT JOIN Publie p ON a.idAlbum = p.idAlbum
+                                       LEFT JOIN Groupe g ON p.idGroupe = g.idGroupe
+                                       WHERE a.descAlbum ILIKE %s
+                                       ORDER BY a.titre
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        albums = cur.fetchall()
+
+                    elif champ_recherche == "titre":
+                        cur.execute("""SELECT COUNT(*) FROM Album WHERE titre ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT a.idAlbum AS idalbum, a.titre AS titre, encode(a.imCouverture,'base64') AS couverture, a.descAlbum AS description, g.nom AS groupe
+                                       FROM Album a
+                                       LEFT JOIN Publie p ON a.idAlbum = p.idAlbum
+                                       LEFT JOIN Groupe g ON p.idGroupe = g.idGroupe
+                                       WHERE a.titre ILIKE %s
+                                       ORDER BY a.titre
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        albums = cur.fetchall()
+
+                    elif champ_recherche == "genre":
+                        cur.execute("""SELECT COUNT(*)
+                                       FROM Album a
+                                       JOIN Publie p ON a.idAlbum = p.idAlbum
+                                       JOIN Groupe g ON p.idGroupe = g.idGroupe
+                                       WHERE g.genre ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT a.idAlbum AS idalbum, a.titre AS titre, encode(a.imCouverture,'base64') AS couverture, a.descAlbum AS description, g.nom AS groupe
+                                       FROM Album a
+                                       JOIN Publie p ON a.idAlbum = p.idAlbum
+                                       JOIN Groupe g ON p.idGroupe = g.idGroupe
+                                       WHERE g.genre ILIKE %s
+                                       ORDER BY a.titre
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        albums = cur.fetchall()
+
+                    elif champ_recherche == "artiste":
+                        cur.execute("""SELECT COUNT(*)
+                                       FROM (
+                                            SELECT DISTINCT al.idAlbum
+                                            FROM Participe p
+                                            JOIN Artiste a ON a.idArtiste = p.idArtiste
+                                            JOIN Compose c ON c.idMorceau = p.idMorceau
+                                            JOIN Album al ON al.idAlbum = c.idAlbum
+                                            WHERE a.nom ILIKE %s OR a.prenom ILIKE %s) t;""", (motif, motif))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT DISTINCT al.idAlbum AS idalbum, al.titre AS titre, encode(al.imCouverture,'base64') AS couverture, al.descAlbum AS description, g.nom AS groupe
+                                       FROM Participe p
+                                       JOIN Artiste a ON a.idArtiste = p.idArtiste
+                                       JOIN Compose c ON c.idMorceau = p.idMorceau
+                                       JOIN Album al ON al.idAlbum = c.idAlbum
+                                       LEFT JOIN Publie pb ON pb.idAlbum = al.idAlbum
+                                       LEFT JOIN Groupe g ON g.idGroupe = pb.idGroupe
+                                       WHERE a.nom ILIKE %s OR a.prenom ILIKE %s
+                                       ORDER BY al.titre
+                                       LIMIT %s OFFSET %s;""", (motif, motif, par_page, offset))
+                        albums = cur.fetchall()
+
+                # ---------------- ARTISTE ----------------
+                elif type_recherche == "artiste":
+                    if champ_recherche in ("titre", "mot_cle", "artiste"):
+                        cur.execute("""SELECT COUNT(*)
+                                       FROM Artiste
+                                       WHERE nom ILIKE %s OR prenom ILIKE %s;""", (motif, motif))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT idArtiste AS idartiste, prenom || ' ' || nom AS nom, nationalite
+                                       FROM Artiste
+                                       WHERE nom ILIKE %s OR prenom ILIKE %s
+                                       ORDER BY nom
+                                       LIMIT %s OFFSET %s;""", (motif, motif, par_page, offset))
+                        artistes = cur.fetchall()
+                    else:
+                        cur.execute("""SELECT COUNT(*) FROM Artiste WHERE nationalite ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT idArtiste AS idartiste, prenom || ' ' || nom AS nom, nationalite
+                                       FROM Artiste
+                                       WHERE nationalite ILIKE %s
+                                       ORDER BY nom
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        artistes = cur.fetchall()
+
+                # ---------------- PLAYLIST (PUBLIQUE UNIQUEMENT) ----------------
+                elif type_recherche == "playlist":
+                    if champ_recherche == "mot_cle":
+                        cur.execute("""SELECT COUNT(*)
+                                       FROM Playlist
+                                       WHERE visibilite = TRUE AND descPlaylist ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT idPlaylist AS idplaylist, titre, descPlaylist AS description, pseudoCreateur AS pseudocreateur
+                                       FROM Playlist
+                                       WHERE visibilite = TRUE AND descPlaylist ILIKE %s
+                                       ORDER BY dCreation DESC, titre
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        playlists = cur.fetchall()
+                    else:
+                        cur.execute("""SELECT COUNT(*)
+                                       FROM Playlist
+                                       WHERE visibilite = TRUE AND titre ILIKE %s;""", (motif,))
+                        total_resultats = cur.fetchone()[0]
+
+                        total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                        if page > total_pages:
+                            page = total_pages
+                        offset = (page - 1) * par_page
+
+                        cur.execute("""SELECT idPlaylist AS idplaylist, titre, descPlaylist AS description, pseudoCreateur AS pseudocreateur
+                                       FROM Playlist
+                                       WHERE visibilite = TRUE AND titre ILIKE %s
+                                       ORDER BY dCreation DESC, titre
+                                       LIMIT %s OFFSET %s;""", (motif, par_page, offset))
+                        playlists = cur.fetchall()
+
+    return render_template("general/recherche.html", pseudo=pseudo, q=q, type_recherche=type_recherche, champ_recherche=champ_recherche, page=page, total_pages=total_pages, morceaux=morceaux, groupes=groupes, albums=albums, playlists=playlists, artistes=artistes)
 
 @app.route('/ecouter/<int:idmorceau>', methods=['POST'])
 @validation_connexion

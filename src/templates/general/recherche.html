@@ -1,24 +1,24 @@
-{% extends "base.html" %}
-{%
+{% extends "base.html" %} {% block title %}Recherche – The Wave{% endblock %} {%
 block content %}
 
 <h1>Recherche</h1>
 
 <form action="{{ url_for('recherche') }}" method="get" class="search-form">
-  <input
-    type="text"
-    name="q"
-    value="{{ q }}"
-    placeholder="Rechercher un morceau, un album, un groupe, un artiste ou une playlist..."
-  />
+  <input type="text" name="q" value="{{ q }}" placeholder="Rechercher..." />
 
   <select name="type">
-    <option value="tout" {% if type_recherche == 'tout' %}selected{% endif %}>Tout</option>
     <option value="morceau" {% if type_recherche == 'morceau' %}selected{% endif %}>Morceaux</option>
-    <option value="groupe" {% if type_recherche == 'groupe' %}selected{% endif %}>Groupes</option>
     <option value="album" {% if type_recherche == 'album' %}selected{% endif %}>Albums</option>
+    <option value="groupe" {% if type_recherche == 'groupe' %}selected{% endif %}>Groupes</option>
     <option value="artiste" {% if type_recherche == 'artiste' %}selected{% endif %}>Artistes</option>
     <option value="playlist" {% if type_recherche == 'playlist' %}selected{% endif %}>Playlists</option>
+  </select>
+
+  <select name="champ">
+    <option value="titre" {% if champ_recherche == 'titre' %}selected{% endif %}>Titre</option>
+    <option value="mot_cle" {% if champ_recherche == 'mot_cle' %}selected{% endif %}>Mot-clé</option>
+    <option value="genre" {% if champ_recherche == 'genre' %}selected{% endif %}>Genre</option>
+    <option value="artiste" {% if champ_recherche == 'artiste' %}selected{% endif %}>Artiste</option>
   </select>
 
   <button type="submit">Rechercher</button>
@@ -27,15 +27,12 @@ block content %}
 {% if q %}
 <h2>Résultats pour « {{ q }} »</h2>
 
-{% if type_recherche in ['tout','morceau'] %}
+{% if type_recherche == 'morceau' %}
 <section>
   <h3>Morceaux</h3>
   <div class="list-card-wrapper">
     {% for m in morceaux %}
-    <a
-      href="{{ url_for('morceau', idmorceau=m.idmorceau) }}"
-      class="list-card-link"
-    >
+    <a href="{{ url_for('morceau', idmorceau=m.idmorceau) }}" class="list-card-link">
       <div class="list-card">
         <div class="list-card-info">
           <h4>{{ m.titre }}</h4>
@@ -47,12 +44,7 @@ block content %}
           <p>{{ m.duree }}</p>
           <a href="/ajouter_a_playlist/{{ m.idmorceau }}" class="add-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 5v14m-7-7h14"
-                stroke="#7b5cff"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
+              <path d="M12 5v14m-7-7h14" stroke="#7b5cff" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </a>
         </div>
@@ -65,7 +57,7 @@ block content %}
 </section>
 {% endif %}
 
-{% if type_recherche in ['tout','groupe'] %}
+{% if type_recherche == 'groupe' %}
 <section>
   <h3>Groupes</h3>
   <div class="grid album_grid">
@@ -73,11 +65,7 @@ block content %}
     <a href="{{ url_for('groupe', idgroupe=g.idgroupe) }}" class="card-link">
       <div class="card album_album-card">
         {% if g.couverture %}
-        <img
-          src="data:image/png;base64,{{ g.couverture }}"
-          class="cover"
-          alt="Pochette"
-        />
+        <img src="data:image/png;base64,{{ g.couverture }}" class="cover" alt="Pochette" />
         {% endif %}
         <h4>{{ g.nom }}</h4>
         <p>{{ g.genre }} – {{ g.nationalite }}</p>
@@ -90,7 +78,7 @@ block content %}
 </section>
 {% endif %}
 
-{% if type_recherche in ['tout','album'] %}
+{% if type_recherche == 'album' %}
 <section>
   <h3>Albums</h3>
   <div class="grid album_grid">
@@ -98,11 +86,7 @@ block content %}
     <a href="{{ url_for('album', idalbum=a.idalbum) }}" class="card-link">
       <div class="card album-card album_album-card">
         {% if a.couverture %}
-        <img
-          src="data:image/png;base64,{{ a.couverture }}"
-          class="cover"
-          alt="Pochette"
-        />
+        <img src="data:image/png;base64,{{ a.couverture }}" class="cover" alt="Pochette" />
         {% endif %}
         <h4>{{ a.titre }}</h4>
         {% if a.groupe %}
@@ -117,7 +101,7 @@ block content %}
 </section>
 {% endif %}
 
-{% if type_recherche in ['tout','artiste'] %}
+{% if type_recherche == 'artiste' %}
 <section>
   <h3>Artistes</h3>
   <div class="grid album_grid">
@@ -135,7 +119,7 @@ block content %}
 </section>
 {% endif %}
 
-{% if type_recherche in ['tout','playlist'] %}
+{% if type_recherche == 'playlist' %}
 <section>
   <h3>Playlists</h3>
   <div class="grid album_grid">
@@ -156,6 +140,24 @@ block content %}
 </section>
 {% endif %}
 
+{% if total_pages > 1 %}
+<div>
+  {% if page > 1 %}
+    <a href="{{ url_for('recherche', q=q, type=type_recherche, champ=champ_recherche, page=page-1) }}" class="play-button">
+      ← Page précédente
+    </a>
+  {% endif %}
+
+  {% if page < total_pages %}
+    <a href="{{ url_for('recherche', q=q, type=type_recherche, champ=champ_recherche, page=page+1) }}" class="play-button">
+      Page suivante →
+    </a>
+  {% endif %}
+</div>
+{% endif %}
+
 {% else %}
 <p>Entrez un mot-clé pour lancer une recherche.</p>
-{% endif %} {% endblock %}
+{% endif %}
+
+{% endblock %}
