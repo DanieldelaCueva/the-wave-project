@@ -4,9 +4,9 @@ block content %}
 
 <p>
   {% if abonnes == 1 %}
-  <i>{{ abonnes }} abbonné</i>
+  <i>{{ abonnes }} abonné</i>
   {% else %}
-  <i>{{ abonnes }} abbonnés</i>
+  <i>{{ abonnes }} abonnés</i>
   {% endif %}
 </p>
 
@@ -172,6 +172,16 @@ block content %}
         </div>
         <div class="list-card-meta">
           <span>{{ morceau.dateecoute }}</span>
+          <a href="/ajouter_a_playlist/{{ morceau.idmorceau }}" class="add-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 5v14m-7-7h14"
+                stroke="#7b5cff"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </a>
         </div>
       </div>
     </a>

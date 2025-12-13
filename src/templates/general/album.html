@@ -3,6 +3,7 @@ endblock %} {% block content %}
 
 <h1>{{ album.titre }}</h1>
 <p>{{ album.description }}</p>
+<p>Parution : {{ album.dateparution }}</p>
 
 <img
   class="album-cover"
@@ -18,7 +19,7 @@ endblock %} {% block content %}
     class="list-card-link"
   >
     <div class="list-card">
-      <div class="list-card-info"><h3>{{ morceau.titre }}</h3></div>
+      <div class="list-card-info"><h3>{{ morceau.ordrealbum }}. {{ morceau.titre }}</h3></div>
       <div class="list-card-meta">
         <p>{{ morceau.duree }}</p>
         <a href="/ajouter_a_playlist/{{ morceau.idmorceau }}" class="add-icon">
@@ -35,6 +36,20 @@ endblock %} {% block content %}
     </div>
   </a>
   {% endfor %}
+</div>
+
+<div>
+  {% if page > 1 %}
+    <a href="{{ url_for('album', idalbum=idalbum, page=page-1) }}" class="page-btn">
+      <- Page précédente
+    </a>
+  {% endif %}
+
+  {% if page < total_pages %}
+    <a href="{{ url_for('album', idalbum=idalbum, page=page+1) }}" class="page-btn">
+      Page suivante ->
+    </a>
+  {% endif %}
 </div>
 
 {% endblock %}

@@ -50,7 +50,8 @@ def accueil(pseudo):
             derniers_albums = cur1.fetchall()
         with conn.cursor() as cur2:
             cur2.execute("""SELECT idGroupe, nom, encode(imCouverture, 'base64') AS couverture, count(pseudo) as abonnes 
-                         FROM groupe NATURAL JOIN suitGroupe 
+                         FROM groupe NATURAL JOIN suitGroupe
+                         WHERE dfin IS NULL
                          GROUP BY idGroupe 
                          ORDER BY abonnes DESC LIMIT 3""")
             groupes_plus_suivis = cur2.fetchall()
@@ -426,7 +427,7 @@ def suggestions(pseudo):
                     WHERE idplaylist = i.idplaylist
                 ) as nbmorceaux
                 FROM inclus i NATURAL JOIN playlist
-                WHERE idmorceau IN (
+                WHERE visibilite = 'True' AND idmorceau IN (
                 SELECT idmorceau
                 FROM ecoute
                 WHERE pseudo = %s
@@ -443,7 +444,7 @@ def suggestions(pseudo):
                     WHERE idplaylist = i.idplaylist
                 ) as nbmorceaux
                 FROM inclus i NATURAL JOIN playlist
-                WHERE pseudocreateur IN (
+                WHERE visibilite = 'True' AND pseudocreateur IN (
                 SELECT suivi
                 FROM suitutilisateur
                 WHERE suivant = %s
@@ -456,6 +457,11 @@ def suggestions(pseudo):
 @app.route('/groupe/<int:idgroupe>')
 @validation_connexion
 def groupe(pseudo, idgroupe):
+    page = request.args.get('page', 1, type=int)
+    par_page = 5
+    if page < 1:
+        page = 1
+
     with db.connect() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM groupe;")
@@ -467,7 +473,7 @@ def groupe(pseudo, idgroupe):
 
             idgroupe = bon_id
 
-            cur.execute("""SELECT idGroupe, nom, genre, nationalite, encode(imCouverture, 'base64') AS couverture
+            cur.execute("""SELECT idGroupe, nom, genre, nationalite, encode(imCouverture, 'base64') AS couverture, dcreation
                            FROM groupe
                            WHERE idGroupe = %s;""", (idgroupe,))
             groupe = cur.fetchone()
@@ -496,11 +502,25 @@ def groupe(pseudo, idgroupe):
                            ORDER BY appartient.dDebut;""", (idgroupe,))
             anciens_membres = cur.fetchall()
 
-            cur.execute("""SELECT morceau.idMorceau AS idmorceau, morceau.titre AS titre, morceau.dureeMorceau AS duree
-                           FROM joue JOIN morceau ON joue.idMorceau = morceau.idMorceau
-                           WHERE joue.idGroupe = %s
-                           ORDER BY morceau.dPublication DESC, morceau.titre;""", (idgroupe,))
+            cur.execute("""SELECT COUNT(*) FROM joue WHERE idGroupe = %s;""", (idgroupe,))
+            total_morceaux = cur.fetchone()[0]
+
+            total_pages = max(1, (total_morceaux + par_page - 1) // par_page)
+            if page > total_pages:
+                page = total_pages
+
+            offset = (page - 1) * par_page
+
+            
+            cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, c.ordreDsAlbum AS ordrealbum
+                           FROM joue j
+                           JOIN morceau m ON j.idMorceau = m.idMorceau
+                           LEFT JOIN compose c ON c.idMorceau = m.idMorceau
+                           WHERE j.idGroupe = %s
+                           ORDER BY m.dPublication DESC NULLS LAST, m.titre
+                           LIMIT %s OFFSET %s;""", (idgroupe, par_page, offset))
             morceaux = cur.fetchall()
+
 
             cur.execute("""SELECT album.idAlbum AS idalbum, album.titre AS titre, encode(album.imCouverture, 'base64') AS couverture, album.dParution
                            FROM publie JOIN album ON publie.idAlbum = album.idAlbum
@@ -508,7 +528,7 @@ def groupe(pseudo, idgroupe):
                            ORDER BY album.dParution DESC, album.titre;""", (idgroupe,))
             albums = cur.fetchall()
 
-    return render_template("general/groupe.html", pseudo=pseudo, groupe=groupe, abonnees=abonnees, membres=membres, anciens_membres=anciens_membres, morceaux=morceaux, albums=albums, suivi=suivi)
+    return render_template("general/groupe.html", pseudo=pseudo, groupe=groupe, abonnees=abonnees, membres=membres, anciens_membres=anciens_membres, morceaux=morceaux, albums=albums, suivi=suivi, page=page, total_pages=total_pages)
 
 @app.route('/suivre_groupe/<int:idgroupe>', methods=['POST'])
 @validation_connexion
@@ -569,52 +589,80 @@ def morceau(pseudo, idmorceau):
                            LIMIT 1;""", (idmorceau,))
             morceau = cur.fetchone()
 
-    return render_template("general/morceau.html", pseudo=pseudo, morceau=morceau, en_cours=en_cours)
+            cur.execute("""SELECT nom, prenom 
+                           FROM artiste NATURAL JOIN participe
+                           WHERE idmorceau = %s
+                           ORDER BY nom;""", (idmorceau,))
+            artistes = cur.fetchall()
+
+            cur.execute("""SELECT ordredsalbum
+                           FROM compose
+                           WHERE idmorceau = %s;""", (idmorceau,))
+            ordreDsAlbum = cur.fetchone()[0]
+
+            cur.execute("""SELECT titre
+                           FROM compose NATURAL JOIN album
+                           WHERE idmorceau = %s;""", (idmorceau,))
+            titreA = cur.fetchone()[0]
+
+    return render_template("general/morceau.html", pseudo=pseudo, morceau=morceau, en_cours=en_cours, artistes=artistes, ordreDsAlbum=ordreDsAlbum, titreA=titreA)
 
 @app.route('/recherche')
 @validation_connexion
 def recherche(pseudo):
     q = request.args.get('q', '').strip()
+    type_recherche = request.args.get('type', 'tout')
+
     morceaux = []
     groupes = []
     albums = []
+    playlists = []
+    artistes = []
 
     if q != "":
         motif = f"%{q}%"
         with db.connect() as conn:
             with conn.cursor() as cur:
-                cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, g.nom AS groupe
-                               FROM Morceau m
-                               LEFT JOIN Joue j   ON m.idMorceau = j.idMorceau
-                               LEFT JOIN Groupe g ON j.idGroupe  = g.idGroupe
-                               WHERE m.titre ILIKE %s OR m.paroles ILIKE %s
-                               GROUP BY m.idMorceau, m.titre, m.dureeMorceau, g.nom
-                               ORDER BY m.titre;""", (motif, motif))
-                morceaux = cur.fetchall()
+                if type_recherche in ("tout", "morceau"):
+                    cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, g.nom AS groupe
+                                   FROM Morceau m
+                                   LEFT JOIN Joue j ON m.idMorceau = j.idMorceau
+                                   LEFT JOIN Groupe g ON j.idGroupe = g.idGroupe
+                                   WHERE m.titre ILIKE %s OR m.paroles ILIKE %s
+                                   ORDER BY m.titre;""", (motif, motif))
+                    morceaux = cur.fetchall()
 
-            with conn.cursor() as cur:
-                cur.execute("""SELECT idGroupe AS idgroupe, nom AS nom, genre AS genre, nationalite AS nationalite, encode(imCouverture, 'base64') AS couverture
-                               FROM Groupe WHERE nom ILIKE %s OR genre ILIKE %s OR nationalite ILIKE %s
-                               ORDER BY nom;""", (motif, motif, motif))
-                groupes = cur.fetchall()
+                if type_recherche in ("tout", "groupe"):
+                    cur.execute("""SELECT idGroupe AS idgroupe, nom AS nom, genre AS genre, nationalite AS nationalite, encode(imCouverture, 'base64') AS couverture
+                                   FROM Groupe
+                                   WHERE nom ILIKE %s OR genre ILIKE %s OR nationalite ILIKE %s
+                                   ORDER BY nom;""", (motif, motif, motif))
+                    groupes = cur.fetchall()
 
-            with conn.cursor() as cur:
-                cur.execute("""SELECT a.idAlbum AS idalbum, a.titre AS titre, encode(a.imCouverture,'base64') AS couverture, a.descAlbum AS description, g.nom AS groupe
-                               FROM Album a
-                               LEFT JOIN Publie p ON a.idAlbum = p.idAlbum
-                               LEFT JOIN Groupe g ON p.idGroupe = g.idGroupe
-                               WHERE a.titre ILIKE %s OR a.descAlbum ILIKE %s
-                               ORDER BY a.titre;""", (motif, motif))
-                albums = cur.fetchall()
+                if type_recherche in ("tout", "album"):
+                    cur.execute("""SELECT a.idAlbum AS idalbum, a.titre AS titre, encode(a.imCouverture,'base64') AS couverture, a.descAlbum AS description, g.nom AS groupe
+                                   FROM Album a
+                                   LEFT JOIN Publie p ON a.idAlbum = p.idAlbum
+                                   LEFT JOIN Groupe g ON p.idGroupe = g.idGroupe
+                                   WHERE a.titre ILIKE %s OR a.descAlbum ILIKE %s
+                                   ORDER BY a.titre;""", (motif, motif))
+                    albums = cur.fetchall()
 
-    return render_template(
-        "general/recherche.html",
-        pseudo=pseudo,
-        q=q,
-        morceaux=morceaux,
-        groupes=groupes,
-        albums=albums
-    )
+                if type_recherche in ("tout", "playlist"):
+                    cur.execute("""SELECT idPlaylist AS idplaylist, titre AS titre, descPlaylist AS description, visibilite AS visibilite, pseudoCreateur AS pseudocreateur
+                                   FROM Playlist
+                                   WHERE (visibilite = TRUE OR pseudoCreateur = %s) AND (titre ILIKE %s OR descPlaylist ILIKE %s)
+                                   ORDER BY dCreation DESC, titre;""", (pseudo, motif, motif))
+                    playlists = cur.fetchall()
+
+                if type_recherche in ("tout", "artiste"):
+                    cur.execute("""SELECT idArtiste AS idartiste, prenom || ' ' || nom AS nom, nationalite AS nationalite
+                                   FROM Artiste
+                                   WHERE prenom ILIKE %s OR nom ILIKE %s
+                                   ORDER BY nom;""", (motif, motif))
+                    artistes = cur.fetchall()
+
+    return render_template("general/recherche.html", pseudo=pseudo, q=q, type_recherche=type_recherche, morceaux=morceaux, groupes=groupes, albums=albums, playlists=playlists, artistes=artistes)
 
 @app.route('/ecouter/<int:idmorceau>', methods=['POST'])
 @validation_connexion
@@ -634,6 +682,11 @@ def ecouter_morceau(pseudo, idmorceau):
 @app.route('/album/<int:idalbum>')
 @validation_connexion
 def album(pseudo, idalbum):
+    page = request.args.get('page', 1, type=int)
+    par_page = 5
+    if page < 1:
+        page = 1
+
     with db.connect() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM album;")
@@ -650,14 +703,25 @@ def album(pseudo, idalbum):
                            WHERE al.idAlbum = %s;""", (idalbum,))
             album = cur.fetchone()
 
-            cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree
-                           FROM Compose c
-                           JOIN Morceau m ON c.idMorceau = m.idMorceau
-                           WHERE c.idAlbum = %s
-                           ORDER BY c.ordreDsAlbum;""", (idalbum,))
-            morceaux = cur.fetchall()
+            cur.execute("""SELECT COUNT(*)
+                           FROM Compose
+                           WHERE idAlbum = %s; """, (idalbum,))
+            total_morceaux = cur.fetchone()[0]
 
-    return render_template("general/album.html", pseudo=pseudo, album=album, morceaux=morceaux)
+            total_pages = max(1, (total_morceaux + par_page - 1) // par_page)
+            if page > total_pages:
+                page = total_pages
+            
+            offset = (page - 1) * par_page
+
+            cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, c.ordreDsAlbum AS ordrealbum
+                           FROM Compose c JOIN Morceau m ON c.idMorceau = m.idMorceau
+                           WHERE c.idAlbum = %s
+                           ORDER BY c.ordreDsAlbum
+                           LIMIT %s OFFSET %s;""", (idalbum, par_page, offset))
+            morceaux = cur.fetchall()  
+
+    return render_template("general/album.html", pseudo=pseudo, album=album, morceaux=morceaux, page=page, total_pages=total_pages, idalbum=idalbum)
 
 if __name__ == '__main__':
     app.run(debug=True)

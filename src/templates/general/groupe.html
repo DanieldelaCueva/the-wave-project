@@ -22,6 +22,8 @@ endblock %} {% block content %}
 <p>{{ groupe.genre }} – {{ groupe.nationalite }}</p>
 <p>{{ abonnees }} abonnés</p>
 
+<p>Date de creation : {{ groupe.dcreation }}</p>
+
 <h2>Membres actuels</h2>
 <ul>
   {% for artiste in membres %}
@@ -70,6 +72,20 @@ endblock %} {% block content %}
   {% else %}
   <p>Ce groupe n'a pas encore de morceaux enregistrés.</p>
   {% endfor %}
+</div>
+
+<div>
+  {% if page > 1 %}
+    <a href="{{ url_for('groupe', idgroupe=groupe.idgroupe, page=page-1) }}" class="play-button">
+      <- Page précédente
+    </a>
+  {% endif %}
+
+  {% if page < total_pages %}
+    <a href="{{ url_for('groupe', idgroupe=groupe.idgroupe, page=page+1) }}" class="play-button">
+      Page suivante ->
+    </a>
+  {% endif %}
 </div>
 
 <h2>Albums</h2>

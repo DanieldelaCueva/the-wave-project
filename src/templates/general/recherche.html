@@ -10,12 +10,23 @@ block content %}
     value="{{ q }}"
     placeholder="Rechercher un morceau, un album, un groupe, un artiste ou une playlist..."
   />
+
+  <select name="type">
+    <option value="tout" {% if type_recherche == 'tout' %}selected{% endif %}>Tout</option>
+    <option value="morceau" {% if type_recherche == 'morceau' %}selected{% endif %}>Morceaux</option>
+    <option value="groupe" {% if type_recherche == 'groupe' %}selected{% endif %}>Groupes</option>
+    <option value="album" {% if type_recherche == 'album' %}selected{% endif %}>Albums</option>
+    <option value="artiste" {% if type_recherche == 'artiste' %}selected{% endif %}>Artistes</option>
+    <option value="playlist" {% if type_recherche == 'playlist' %}selected{% endif %}>Playlists</option>
+  </select>
+
   <button type="submit">Rechercher</button>
 </form>
 
 {% if q %}
 <h2>Résultats pour « {{ q }} »</h2>
 
+{% if type_recherche in ['tout','morceau'] %}
 <section>
   <h3>Morceaux</h3>
   <div class="list-card-wrapper">
@@ -33,10 +44,7 @@ block content %}
         </div>
         <div class="list-card-meta">
           <p>{{ m.duree }}</p>
-          <a
-            href="/ajouter_a_playlist/{{ m.idmorceau }}"
-            class="add-icon"
-          >
+          <a href="/ajouter_a_playlist/{{ m.idmorceau }}" class="add-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
               <path
                 d="M12 5v14m-7-7h14"
@@ -54,7 +62,9 @@ block content %}
     {% endfor %}
   </div>
 </section>
+{% endif %}
 
+{% if type_recherche in ['tout','groupe'] %}
 <section>
   <h3>Groupes</h3>
   <div class="grid album_grid">
@@ -77,7 +87,9 @@ block content %}
     {% endfor %}
   </div>
 </section>
+{% endif %}
 
+{% if type_recherche in ['tout','album'] %}
 <section>
   <h3>Albums</h3>
   <div class="grid album_grid">
@@ -102,6 +114,46 @@ block content %}
     {% endfor %}
   </div>
 </section>
+{% endif %}
+
+{% if type_recherche in ['tout','artiste'] %}
+<section>
+  <h3>Artistes</h3>
+  <div class="grid album_grid">
+    {% for a in artistes %}
+      <div class="card album_album-card">
+        <h4>{{ a.nom }}</h4>
+        {% if a.nationalite %}
+          <p>{{ a.nationalite }}</p>
+        {% endif %}
+      </div>
+    {% else %}
+      <p>Aucun artiste trouvé.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if type_recherche in ['tout','playlist'] %}
+<section>
+  <h3>Playlists</h3>
+  <div class="grid album_grid">
+    {% for p in playlists %}
+      <a href="{{ url_for('playlist', idplaylist=p.idplaylist) }}" class="card-link">
+        <div class="card album_album-card">
+          <h4>{{ p.titre }}</h4>
+          {% if p.description %}
+            <p>{{ p.description }}</p>
+          {% endif %}
+          <p><i>par {{ p.pseudocreateur }}</i></p>
+        </div>
+      </a>
+    {% else %}
+      <p>Aucune playlist trouvée.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 
 {% else %}
 <p>Entrez un mot-clé pour lancer une recherche.</p>

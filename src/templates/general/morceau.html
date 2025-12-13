@@ -4,15 +4,28 @@ endblock %} {% block content %}
 <h1>{{ morceau.titre }}</h1>
 <p>Durée : {{ morceau.duree }}</p>
 
+{% if ordreDsAlbum %}
+  <p>Ordre dans l’album "{{ titreA }}" : {{ ordreDsAlbum }}</p>
+{% endif %}
+
 {% if morceau.idgroupe %}
-<p>
-  Par :
-  <a href="{{ url_for('groupe', idgroupe=morceau.idgroupe) }}" class="username"
-    >{{ morceau.groupe }}</a
-  >
-</p>
+  <p>
+    Par :
+    <a href="{{ url_for('groupe', idgroupe=morceau.idgroupe) }}" class="username">
+      {{ morceau.groupe }}
+    </a>
+  </p>
 {% else %}
-<p>Par : {{ morceau.groupe or "Inconnu" }}</p>
+  <p>Par : {{ morceau.groupe or "Inconnu" }}</p>
+{% endif %}
+
+{% if artistes %}
+  <h2>Artistes ayant participé : </h2>
+  <ul>
+    {% for artiste in artistes %}
+      <li>{{ artiste.prenom }} {{ artiste.nom }}</li>
+    {% endfor %}
+  </ul>
 {% endif %}
 
 <form
