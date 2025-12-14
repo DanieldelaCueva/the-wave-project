@@ -1373,9 +1373,18 @@ VALUES (12, 62);
 -- Artistes participants
 INSERT INTO Participe (idArtiste, idMorceau)
 VALUES
-(25, 62), -- Sharon den Adel
-(26, 62), -- Robert Westerholt
-(20, 62); -- Tarja Turunen (invitée)
+(25, 112), -- Sharon den Adel
+(26, 112), -- Robert Westerholt
+(20, 112); -- Tarja Turunen (invitée)
+
+-- Artistes participants
+INSERT INTO Participe (idArtiste, idMorceau)
+VALUES
+(21, 111), 
+(22, 111), 
+(23, 111); 
+
+INSERT INTO Joue VALUES (12,112), (11,111);
 
 -- -----------------------------
 -- FIN DU SCRIPT D'INSERTION
