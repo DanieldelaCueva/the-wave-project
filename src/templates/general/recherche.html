@@ -12,15 +12,16 @@ block content %}
     <option value="groupe" {% if type_recherche == 'groupe' %}selected{% endif %}>Groupes</option>
     <option value="artiste" {% if type_recherche == 'artiste' %}selected{% endif %}>Artistes</option>
     <option value="playlist" {% if type_recherche == 'playlist' %}selected{% endif %}>Playlists</option>
+    <option value="utilisateur" {% if type_recherche == 'utilisateur' %}selected{% endif %}>Utilisateurs</option>
   </select>
-
+  {% if type_recherche != 'utilisateur' %}
   <select name="champ">
     <option value="titre" {% if champ_recherche == 'titre' %}selected{% endif %}>Titre</option>
     <option value="mot_cle" {% if champ_recherche == 'mot_cle' %}selected{% endif %}>Mot-clé</option>
     <option value="genre" {% if champ_recherche == 'genre' %}selected{% endif %}>Genre</option>
     <option value="artiste" {% if champ_recherche == 'artiste' %}selected{% endif %}>Artiste</option>
   </select>
-
+  {% endif %}
   <button type="submit">Rechercher</button>
 </form>
 
@@ -135,6 +136,32 @@ block content %}
       </a>
     {% else %}
       <p>Aucune playlist trouvée.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if type_recherche == 'utilisateur' %}
+<section>
+  <h3>Utilisateurs</h3>
+  <div class="list-card-wrapper">
+    {% for u in utilisateurs %}
+      <div class="list-card">
+        <div class="list-card-info">
+          <h4>{{ u.pseudo }}</h4>
+        </div>
+        <div class="list-card-meta">
+          <form action="{{ url_for('suivre_utilisateur', pseudo_suivi=u.pseudo) }}" method="post" style="display:inline-block;">
+            {% if u.suivi %}
+              <button type="submit" class="play-button">✓ Ne plus suivre</button>
+            {% else %}
+              <button type="submit" class="play-button">+ Suivre</button>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <p>Aucun utilisateur trouvé.</p>
     {% endfor %}
   </div>
 </section>

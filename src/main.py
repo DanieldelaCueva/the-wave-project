@@ -516,7 +516,10 @@ def groupe(pseudo, idgroupe):
     with db.connect() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM groupe;")
-            total_groupes = cur.fetchone()[0]
+            total_groupes = 0
+            resultat = cur.fetchone()
+            if resultat:
+                total_groupes = resultat[0]
 
             bon_id = ((idgroupe - 1) % total_groupes) + 1
             if bon_id != idgroupe:
@@ -535,7 +538,10 @@ def groupe(pseudo, idgroupe):
             suivi = cur.fetchone() is not None
 
             cur.execute("""SELECT COUNT(*) FROM suitgroupe WHERE idGroupe = %s AND dFin IS NULL;""", (idgroupe,))
-            abonnees = cur.fetchone()[0]
+            abonnees = 0
+            resultat = cur.fetchone()
+            if resultat:
+                abonnees = resultat[0]
 
             cur.execute("""SELECT artiste.idArtiste, artiste.prenom || ' ' || artiste.nom AS nom, role.descRole AS role
                            FROM appartient
@@ -577,7 +583,10 @@ def groupe(pseudo, idgroupe):
             morceaux = cur.fetchall()
 
             cur.execute("""SELECT COUNT(*) FROM publie WHERE idGroupe = %s;""", (idgroupe,))
-            total_albums = cur.fetchone()[0]
+            total_albums = 0
+            resultat = cur.fetchone()
+            if resultat:
+                total_albums = resultat[0]
 
             total_pages_albums = max(1, (total_albums + par_page_albums - 1) // par_page_albums)
             if page_albums > total_pages_albums:
@@ -601,7 +610,10 @@ def suivre_groupe(pseudo, idgroupe):
     with db.connect() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM groupe;")
-            total_groupes = cur.fetchone()[0]
+            total_groupes = 0
+            resultat = cur.fetchone()
+            if resultat:
+                total_groupes = resultat[0]
             bon_id = ((idgroupe - 1) % total_groupes) + 1
             idgroupe = bon_id
 
@@ -638,7 +650,10 @@ def morceau(pseudo, idmorceau):
     with db.connect() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM morceau;")
-            total_morceaux = cur.fetchone()[0]
+            total_morceaux = 0
+            resultat = cur.fetchone()
+            if resultat:
+                total_morceaux = resultat[0]
 
             bon_id = ((idmorceau - 1) % total_morceaux) + 1
             if bon_id != idmorceau:
@@ -697,6 +712,7 @@ def recherche(pseudo):
     albums = []
     playlists = []
     artistes = []
+    utilisateurs = []
 
     if q != "":
         motif = f"%{q}%"
@@ -779,7 +795,10 @@ def recherche(pseudo):
                                        JOIN Artiste a ON a.idArtiste = p.idArtiste
                                        JOIN Morceau m ON m.idMorceau = p.idMorceau
                                        WHERE a.nom ILIKE %s OR a.prenom ILIKE %s) t;""", (motif, motif))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -1011,7 +1030,10 @@ def recherche(pseudo):
                         cur.execute("""SELECT COUNT(*)
                                        FROM Playlist
                                        WHERE visibilite = TRUE AND descPlaylist ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -1028,7 +1050,10 @@ def recherche(pseudo):
                         cur.execute("""SELECT COUNT(*)
                                        FROM Playlist
                                        WHERE visibilite = TRUE AND titre ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -1042,7 +1067,31 @@ def recherche(pseudo):
                                        LIMIT %s OFFSET %s;""", (motif, par_page, offset))
                         playlists = cur.fetchall()
 
-    return render_template("general/recherche.html", pseudo=pseudo, q=q, type_recherche=type_recherche, champ_recherche=champ_recherche, page=page, total_pages=total_pages, morceaux=morceaux, groupes=groupes, albums=albums, playlists=playlists, artistes=artistes)
+                # ---------------- UTILISATEUR ----------------
+                elif type_recherche == "utilisateur":
+                    cur.execute("""SELECT COUNT(*)
+                                   FROM Utilisateur
+                                   WHERE pseudo ILIKE %s;""", (motif,))
+                    total_resultats = 0
+                    resultat = cur.fetchone()
+                    if resultat:
+                        total_resultats = resultat[0]
+
+                    total_pages = max(1, (total_resultats + par_page - 1) // par_page)
+                    if page > total_pages:
+                        page = total_pages
+                    offset = (page - 1) * par_page
+
+                    cur.execute("""SELECT u.pseudo, s.suivant IS NOT NULL AS suivi
+                                   FROM Utilisateur u
+                                   LEFT JOIN SuitUtilisateur s ON s.suivant = %s AND s.suivi = u.pseudo AND s.dFin IS NULL
+                                   WHERE u.pseudo ILIKE %s
+                                   AND u.pseudo <> %s
+                                   ORDER BY u.pseudo
+                                   LIMIT %s OFFSET %s;""", (pseudo, motif, pseudo, par_page, offset))
+                    utilisateurs = cur.fetchall()
+
+    return render_template("general/recherche.html", pseudo=pseudo, q=q, type_recherche=type_recherche, champ_recherche=champ_recherche, page=page, total_pages=total_pages, morceaux=morceaux, groupes=groupes, albums=albums, playlists=playlists, artistes=artistes, utilisateurs=utilisateurs)
 
 @app.route('/ecouter/<int:idmorceau>', methods=['POST'])
 @validation_connexion
@@ -1070,7 +1119,10 @@ def album(pseudo, idalbum):
     with db.connect() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM album;")
-            total_albums = cur.fetchone()[0]
+            total_albums = 0
+            resultat = cur.fetchone()
+            if resultat:
+                total_albums = resultat[0]
 
             bon_id = ((idalbum - 1) % total_albums) + 1
             if bon_id != idalbum:
@@ -1107,6 +1159,44 @@ def album(pseudo, idalbum):
             morceaux = cur.fetchall()  
 
     return render_template("general/album.html", pseudo=pseudo, album=album, morceaux=morceaux, page=page, total_pages=total_pages, idalbum=idalbum)
+
+@app.route('/suivre_utilisateur/<pseudo_suivi>', methods=['POST'])
+@validation_connexion
+def suivre_utilisateur(pseudo, pseudo_suivi):
+
+    if pseudo_suivi == pseudo:
+        return redirect(url_for(
+            'recherche',
+            q=request.args.get('q',''),
+            type=request.args.get('type','morceau'),
+            champ=request.args.get('champ','titre'),
+            page=request.args.get('page',1)
+        ))
+
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""SELECT 1 FROM SuitUtilisateur WHERE suivant = %s AND suivi = %s AND dFin IS NULL;""", (pseudo, pseudo_suivi))
+            suivi_actif = cur.fetchone() is not None
+
+            if suivi_actif:
+                cur.execute("""UPDATE SuitUtilisateur
+                               SET dFin = CURRENT_DATE
+                               WHERE suivant = %s AND suivi = %s AND dFin IS NULL;""", (pseudo, pseudo_suivi))
+            else:
+                cur.execute("""SELECT 1
+                               FROM SuitUtilisateur
+                               WHERE suivant = %s AND suivi = %s AND dDebut = CURRENT_DATE;""", (pseudo, pseudo_suivi))
+                existe_aujourdhui = cur.fetchone() is not None
+
+                if existe_aujourdhui:
+                    cur.execute("""UPDATE SuitUtilisateur
+                                   SET dFin = NULL
+                                   WHERE suivant = %s AND suivi = %s AND dDebut = CURRENT_DATE;""", (pseudo, pseudo_suivi))
+                else:
+                    cur.execute("""INSERT INTO SuitUtilisateur (suivant, suivi, dDebut, dFin)
+                                   VALUES (%s, %s, CURRENT_DATE, NULL);""", (pseudo, pseudo_suivi))
+
+    return redirect(url_for('recherche', q=request.args.get('q',''), type=request.args.get('type','morceau'), champ=request.args.get('champ','titre'), page=request.args.get('page',1)))
 
 if __name__ == '__main__':
     app.run(debug=True)
