@@ -512,10 +512,11 @@ def groupe(pseudo, idgroupe):
             offset = (page - 1) * par_page
 
             
-            cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, c.ordreDsAlbum AS ordrealbum
+            cur.execute("""SELECT m.idMorceau AS idmorceau, m.titre AS titre, m.dureeMorceau AS duree, c.ordreDsAlbum AS ordrealbum, a.titre AS titre_album
                            FROM joue j
                            JOIN morceau m ON j.idMorceau = m.idMorceau
                            LEFT JOIN compose c ON c.idMorceau = m.idMorceau
+                           LEFT JOIN album a ON c.idAlbum = a.idAlbum
                            WHERE j.idGroupe = %s
                            ORDER BY m.dPublication DESC NULLS LAST, m.titre
                            LIMIT %s OFFSET %s;""", (idgroupe, par_page, offset))
@@ -882,7 +883,7 @@ def recherche(pseudo):
                             page = total_pages
                         offset = (page - 1) * par_page
 
-                        cur.execute("""SELECT idArtiste AS idartiste, prenom || ' ' || nom AS nom, nationalite
+                        cur.execute("""SELECT idArtiste AS idartiste, TRIM(COALESCE(prenom, '') || ' ' || COALESCE(nom, '')) AS nom, nationalite
                                        FROM Artiste
                                        WHERE nom ILIKE %s OR prenom ILIKE %s
                                        ORDER BY nom
@@ -977,8 +978,10 @@ def album(pseudo, idalbum):
 
             idalbum = bon_id
 
-            cur.execute("""SELECT al.idAlbum AS idalbum, al.titre AS titre, al.descAlbum AS description, encode(al.imCouverture, 'base64') AS couverture, al.dParution AS dateparution
+            cur.execute("""SELECT al.idAlbum AS idalbum, al.titre AS titre, al.descAlbum AS description, encode(al.imCouverture, 'base64') AS couverture, al.dParution AS dateparution, g.idGroupe AS idgroupe, g.nom AS groupe
                            FROM album al
+                           LEFT JOIN publie p ON p.idAlbum = al.idAlbum
+                           LEFT JOIN groupe g ON g.idGroupe = p.idGroupe
                            WHERE al.idAlbum = %s;""", (idalbum,))
             album = cur.fetchone()
 

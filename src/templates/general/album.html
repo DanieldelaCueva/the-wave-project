@@ -2,6 +2,14 @@
 {% block content %}
 
 <h1>{{ album.titre }}</h1>
+{% if album.idgroupe %}
+  <p>
+    Par :
+    <a href="{{ url_for('groupe', idgroupe=album.idgroupe) }}" class="username">
+      {{ album.groupe }}
+    </a>
+  </p>
+{% endif %}
 <p>{{ album.description }}</p>
 <p>Parution : {{ album.dateparution }}</p>
 
