@@ -619,3 +619,59 @@ pre.lyrics {
     transition: box-shadow .2s ease, transform .15s ease;
 }
 
+/* --- PAGINATION --- */
+.pagination {
+    display: flex;
+    justify-content: flex-end; /* 👈 tout à droite */
+    align-items: center;
+    margin: 40px 0 10px;
+    gap: 16px;
+}
+
+.pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 600;
+    color: #e6eef4;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 18px rgba(2,6,23,0.55);
+    transition: transform .15s ease,
+                box-shadow .25s ease,
+                background .25s ease,
+                color .2s ease;
+}
+
+.pagination-btn svg {
+    flex-shrink: 0;
+}
+
+.pagination-btn:hover {
+    background: linear-gradient(90deg, #7b5cff, #9a7dff);
+    color: white;
+}
+
+.pagination-btn:active {
+    transform: translateY(0);
+}
+
+/* Alignement naturel */
+.pagination-btn.prev { justify-content: flex-start; }
+.pagination-btn.next { justify-content: flex-end; }
+
+/* Responsive */
+@media (max-width: 600px) {
+    .pagination {
+        flex-direction: column;
+    }
+
+    .pagination-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

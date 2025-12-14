@@ -54,7 +54,7 @@
     <div class="list-card">
       <div class="list-card-info">
         <h3>{{ morceau.titre }}</h3>
-        <i>{{ morceau.titre_album }}</i>
+        <i>{{morceau.titre_album}}</i>
       </div>
       <div class="list-card-meta">
         <p>{{ morceau.duree }}</p>
@@ -76,20 +76,36 @@
   {% endfor %}
 </div>
 
-<div>
+<div class="pagination">
   {% if page > 1 %}
   <a
     href="{{ url_for('groupe', idgroupe=groupe.idgroupe, page=page-1) }}"
-    class="play-button"
+    class="pagination-btn prev"
   >
-    <- Page précédente
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M15 18L9 12L15 6"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
   </a>
   {% endif %} {% if page < total_pages %}
   <a
     href="{{ url_for('groupe', idgroupe=groupe.idgroupe, page=page+1) }}"
-    class="play-button"
+    class="pagination-btn next"
   >
-    Page suivante ->
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M9 6L15 12L9 18"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
   </a>
   {% endif %}
 </div>
@@ -110,6 +126,40 @@
   {% else %}
   <p>Ce groupe n'a pas encore publié d'album.</p>
   {% endfor %}
+</div>
+
+<div class="pagination">
+  {% if page_albums > 1 %}
+  <a
+    href="{{ url_for('groupe', idgroupe=groupe.idgroupe, page=page, page_albums=page_albums-1) }}"
+    class="pagination-btn prev"
+  >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M15 18L9 12L15 6"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </a>
+  {% endif %} {% if page_albums < total_pages_albums %}
+  <a
+    href="{{ url_for('groupe', idgroupe=groupe.idgroupe, page=page, page_albums=page_albums+1) }}"
+    class="pagination-btn next"
+  >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M9 6L15 12L9 18"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </a>
+  {% endif %}
 </div>
 
 {% endblock %}

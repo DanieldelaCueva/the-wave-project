@@ -129,6 +129,16 @@ def traitement_inscription():
 @app.route('/playlist/<int:idplaylist>')
 @validation_connexion
 def playlist(pseudo, idplaylist):
+    page = request.args.get('page', 1, type=int)
+    par_page = 5
+    if page < 1:
+        page = 1
+
+    page_albums = request.args.get('page_albums', 1, type=int)
+    par_page_albums = 5
+    if page_albums < 1:
+        page_albums = 1
+
     with db.connect() as conn:
         with conn.cursor() as cur1:
             cur1.execute("""SELECT * 
@@ -137,13 +147,27 @@ def playlist(pseudo, idplaylist):
             playlist = cur1.fetchone()
         if playlist.visibilite or playlist.pseudocreateur == pseudo:
             with conn.cursor() as cur2:
-                cur2.execute("""SELECT idmorceau, titre, dureemorceau, nom as groupe
+                cur2.execute("""SELECT COUNT(*) AS compte
+                           FROM Inclus
+                           WHERE idPlaylist = %s; """, (idplaylist,))
+                resultat = cur2.fetchall()
+                total_morceaux = 0
+                if resultat:
+                    total_morceaux = resultat[0].compte
+
+                total_pages = max(1, (total_morceaux + par_page - 1) // par_page)
+                if page > total_pages:
+                    page = total_pages
+                
+                offset = (page - 1) * par_page
+                cur2.execute("""SELECT idmorceau, ordredsplaylist, titre, dureemorceau, nom as groupe
                                 FROM inclus NATURAL JOIN morceau NATURAL JOIN joue NATURAL JOIN groupe
                                 WHERE idplaylist = %s
-                                ORDER BY ordredsplaylist;""", (idplaylist,))
+                                ORDER BY ordredsplaylist
+                                LIMIT %s OFFSET %s;""", (idplaylist,par_page,offset))
                 morceaux = cur2.fetchall()
                 nbmorceaux = len(morceaux)
-            return render_template("general/playlist.html", playlist = playlist, morceaux = morceaux, nbmorceaux = nbmorceaux, pseudo = pseudo)
+            return render_template("general/playlist.html", idplaylist=idplaylist, playlist = playlist, morceaux = morceaux, nbmorceaux = nbmorceaux, pseudo = pseudo, page=page, total_pages=total_pages, par_page=par_page)
         else:
             return redirect(url_for("profil"))
         
@@ -165,6 +189,11 @@ def supprimer_morceau_playlist(pseudo):
 @app.route('/profil')
 @validation_connexion
 def profil(pseudo):
+    page = request.args.get('page', 1, type=int)
+    par_page = 3
+    if page < 1:
+        page = 1
+
     with db.connect() as conn:
         with conn.cursor() as cur1:
             cur1.execute("""SELECT idMorceau, titre, nom AS groupe, sum(dureeEcoute) AS tpsEcoute 
@@ -180,12 +209,25 @@ def profil(pseudo):
                             ORDER BY dateEcoute DESC LIMIT 5;""", (pseudo, ))
             dernieres_ecoutes = cur2.fetchall()
         with conn.cursor() as cur3:
+            cur3.execute("""SELECT COUNT(*) as compte
+                           FROM Playlist
+                           WHERE pseudocreateur = %s; """, (pseudo,))
+            resultat = cur3.fetchall()
+            total_playlist = 0
+            if resultat:
+                total_playlist = resultat[0].compte
+
+            total_pages = max(1, (total_playlist + par_page - 1) // par_page)
+            if page > total_pages:
+                page = total_pages
+            
+            offset = (page - 1) * par_page
             # on fait LEFT JOIN au cas où la playlist ne contient pas de morceaux
             cur3.execute("""SELECT playlist.idPlaylist, titre, visibilite, count(idMorceau) as nbMorceaux
                             FROM playlist LEFT JOIN inclus ON inclus.idPlaylist = playlist.idPlaylist
                             WHERE pseudoCreateur = %s
 			                GROUP BY playlist.idPlaylist
-                            ORDER BY dCreation DESC LIMIT 5;""", (pseudo,))
+                            ORDER BY dCreation DESC LIMIT %s OFFSET %s;""", (pseudo,par_page,offset))
             playlists = cur3.fetchall()
         with conn.cursor() as cur4:
             cur4.execute("""SELECT count(suivant)
@@ -213,7 +255,7 @@ def profil(pseudo):
                             ORDER BY dPublication DESC LIMIT 5;""", (pseudo,))
             dernieres_publications_groupes_suivis = cur5.fetchall()
         
-    return render_template('utilisateur/profil.html', pseudo = pseudo, abonnes=abonnes, morceaux_plus_ecoutes = morceaux_plus_ecoutes, dernieres_ecoutes=dernieres_ecoutes, playlists=playlists, dernieres_ecoutes_suivis=dernieres_ecoutes_suivis, dernieres_publications_groupes_suivis=dernieres_publications_groupes_suivis)
+    return render_template('utilisateur/profil.html', pseudo = pseudo, abonnes=abonnes, morceaux_plus_ecoutes = morceaux_plus_ecoutes, dernieres_ecoutes=dernieres_ecoutes, playlists=playlists, dernieres_ecoutes_suivis=dernieres_ecoutes_suivis, dernieres_publications_groupes_suivis=dernieres_publications_groupes_suivis,page=page, total_pages=total_pages,)
 
 @app.route('/ajouter_a_playlist/<int:idmorceau>')
 @validation_connexion
@@ -298,7 +340,10 @@ def creer_playlist(pseudo):
 def creation_playlist(pseudo):
     titre = request.form.get("titre")
     description = request.form.get("description")
-    visibilite = bool(request.form.get("visibilité"))
+    if request.form.get("visibilite") == "1":
+        visibilite = True
+    else:
+        visibilite = False
 
     if titre:
         with db.connect() as conn:
@@ -462,6 +507,12 @@ def groupe(pseudo, idgroupe):
     if page < 1:
         page = 1
 
+    page_albums = request.args.get('page_albums', 1, type=int)
+    par_page_albums = 5
+    if page_albums < 1:
+        page_albums = 1
+
+
     with db.connect() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM groupe;")
@@ -503,7 +554,10 @@ def groupe(pseudo, idgroupe):
             anciens_membres = cur.fetchall()
 
             cur.execute("""SELECT COUNT(*) FROM joue WHERE idGroupe = %s;""", (idgroupe,))
-            total_morceaux = cur.fetchone()[0]
+            total_morceaux = 0
+            resultat = cur.fetchone()
+            if resultat:
+                total_morceaux = resultat[0]
 
             total_pages = max(1, (total_morceaux + par_page - 1) // par_page)
             if page > total_pages:
@@ -522,14 +576,24 @@ def groupe(pseudo, idgroupe):
                            LIMIT %s OFFSET %s;""", (idgroupe, par_page, offset))
             morceaux = cur.fetchall()
 
+            cur.execute("""SELECT COUNT(*) FROM publie WHERE idGroupe = %s;""", (idgroupe,))
+            total_albums = cur.fetchone()[0]
+
+            total_pages_albums = max(1, (total_albums + par_page_albums - 1) // par_page_albums)
+            if page_albums > total_pages_albums:
+                page_albums = total_pages_albums
+
+            offset_albums = (page_albums - 1) * par_page_albums
+
 
             cur.execute("""SELECT album.idAlbum AS idalbum, album.titre AS titre, encode(album.imCouverture, 'base64') AS couverture, album.dParution
                            FROM publie JOIN album ON publie.idAlbum = album.idAlbum
                            WHERE publie.idGroupe = %s
-                           ORDER BY album.dParution DESC, album.titre;""", (idgroupe,))
+                           ORDER BY album.dParution DESC, album.titre
+                           LIMIT %s OFFSET %s;;""", (idgroupe, par_page_albums, offset_albums))
             albums = cur.fetchall()
 
-    return render_template("general/groupe.html", pseudo=pseudo, groupe=groupe, abonnees=abonnees, membres=membres, anciens_membres=anciens_membres, morceaux=morceaux, albums=albums, suivi=suivi, page=page, total_pages=total_pages)
+    return render_template("general/groupe.html", pseudo=pseudo, groupe=groupe, abonnees=abonnees, membres=membres, anciens_membres=anciens_membres, morceaux=morceaux, albums=albums, suivi=suivi, page=page, total_pages=total_pages, page_albums=page_albums, total_pages_albums=total_pages_albums)
 
 @app.route('/suivre_groupe/<int:idgroupe>', methods=['POST'])
 @validation_connexion
@@ -643,7 +707,10 @@ def recherche(pseudo):
                 if type_recherche == "morceau":
                     if champ_recherche == "mot_cle":
                         cur.execute("""SELECT COUNT(*) FROM Morceau WHERE paroles ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -661,7 +728,10 @@ def recherche(pseudo):
 
                     elif champ_recherche == "titre":
                         cur.execute("""SELECT COUNT(*) FROM Morceau WHERE titre ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -683,7 +753,10 @@ def recherche(pseudo):
                                        JOIN Joue j ON m.idMorceau = j.idMorceau
                                        JOIN Groupe g ON j.idGroupe = g.idGroupe
                                        WHERE g.genre ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -728,7 +801,10 @@ def recherche(pseudo):
                 elif type_recherche == "groupe":
                     if champ_recherche in ("titre", "mot_cle"):
                         cur.execute("""SELECT COUNT(*) FROM Groupe WHERE nom ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -744,7 +820,10 @@ def recherche(pseudo):
 
                     elif champ_recherche == "genre":
                         cur.execute("""SELECT COUNT(*) FROM Groupe WHERE genre ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -766,7 +845,10 @@ def recherche(pseudo):
                                             JOIN Artiste a ON a.idArtiste = ap.idArtiste
                                             JOIN Groupe g ON g.idGroupe = ap.idGroupe
                                             WHERE a.nom ILIKE %s OR a.prenom ILIKE %s) t;""", (motif, motif))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -786,7 +868,10 @@ def recherche(pseudo):
                 elif type_recherche == "album":
                     if champ_recherche == "mot_cle":
                         cur.execute("""SELECT COUNT(*) FROM Album WHERE descAlbum ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -804,7 +889,10 @@ def recherche(pseudo):
 
                     elif champ_recherche == "titre":
                         cur.execute("""SELECT COUNT(*) FROM Album WHERE titre ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -826,7 +914,10 @@ def recherche(pseudo):
                                        JOIN Publie p ON a.idAlbum = p.idAlbum
                                        JOIN Groupe g ON p.idGroupe = g.idGroupe
                                        WHERE g.genre ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -851,7 +942,10 @@ def recherche(pseudo):
                                             JOIN Compose c ON c.idMorceau = p.idMorceau
                                             JOIN Album al ON al.idAlbum = c.idAlbum
                                             WHERE a.nom ILIKE %s OR a.prenom ILIKE %s) t;""", (motif, motif))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -876,7 +970,10 @@ def recherche(pseudo):
                         cur.execute("""SELECT COUNT(*)
                                        FROM Artiste
                                        WHERE nom ILIKE %s OR prenom ILIKE %s;""", (motif, motif))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -891,7 +988,10 @@ def recherche(pseudo):
                         artistes = cur.fetchall()
                     else:
                         cur.execute("""SELECT COUNT(*) FROM Artiste WHERE nationalite ILIKE %s;""", (motif,))
-                        total_resultats = cur.fetchone()[0]
+                        total_resultats = 0
+                        resultat = cur.fetchone()
+                        if resultat:
+                            total_resultats = resultat[0]
 
                         total_pages = max(1, (total_resultats + par_page - 1) // par_page)
                         if page > total_pages:
@@ -988,7 +1088,10 @@ def album(pseudo, idalbum):
             cur.execute("""SELECT COUNT(*)
                            FROM Compose
                            WHERE idAlbum = %s; """, (idalbum,))
-            total_morceaux = cur.fetchone()[0]
+            resultat = cur.fetchone()
+            total_morceaux = 0
+            if resultat:
+                total_morceaux = resultat[0]
 
             total_pages = max(1, (total_morceaux + par_page - 1) // par_page)
             if page > total_pages:

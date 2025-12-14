@@ -32,7 +32,7 @@ block content %}
   <a href="/morceau/{{ morceaux[i].idmorceau }}" class="list-card-link">
     <div class="list-card">
       <div class="list-card-info">
-        <h3>{{ i+1 }}. {{ morceaux[i].titre }}</h3>
+        <h3>{{ morceaux[i].ordredsplaylist }}. {{ morceaux[i].titre }}</h3>
         <p><i>{{ morceaux[i].groupe }}</i></p>
       </div>
       <div class="list-card-meta">
@@ -82,7 +82,45 @@ block content %}
     </div>
   </a>
 </div>
-{% endfor %} {% if playlist.pseudocreateur == pseudo %}
+{% endfor %}{% else %}
+<p>Cette playlist est vide pour le moment.</p>
+{% endif %}
+
+<div class="pagination">
+  {% if page > 1 %}
+  <a
+    href="{{ url_for('playlist', idplaylist=idplaylist, page=page-1) }}"
+    class="pagination-btn prev"
+  >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M15 18L9 12L15 6"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </a>
+  {% endif %} {% if page < total_pages %}
+  <a
+    href="{{ url_for('playlist', idplaylist=idplaylist, page=page+1) }}"
+    class="pagination-btn next"
+  >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M9 6L15 12L9 18"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </a>
+  {% endif %}
+</div>
+
+ {% if playlist.pseudocreateur == pseudo %}
 <div class="playlist-actions-wrapper">
   <div class="playlist-actions">
     <!-- Ajouter des morceaux : lien vers la page de recherche -->
@@ -112,6 +150,6 @@ block content %}
     </a>
   </div>
 </div>
-{% endif %} {% else %}
-<p>Cette playlist est vide pour le moment.</p>
-{% endif %} {% endblock %}
+{% endif %} 
+
+{% endblock %}
