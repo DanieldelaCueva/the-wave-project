@@ -415,7 +415,9 @@ INSERT INTO Publie (idGroupe, idAlbum) VALUES
 (7,19),  -- Nirvana
 (8,20),  -- Led Zeppelin
 (9,21),  -- Arctic Monkeys
-(10,22); -- Imagine Dragons
+(10,22), -- Imagine Dragons
+(12,24),
+(11,25);
 
 
 -- -----------------------------
